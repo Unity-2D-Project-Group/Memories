@@ -262,8 +262,10 @@ MonoBehaviour:
   _groundLayer:
     serializedVersion: 2
     m_Bits: 8
-  _wallSlidingSpeed: 1
+  _wallSlidingSpeed: 1.7
   _wallSlidingCheckSize: 0.55
+  _wallJumpForce: {x: 5, y: 10}
+  _wallJumpLength: 0.1
   _wallLayer:
     serializedVersion: 2
     m_Bits: 72

@@ -22,7 +22,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float _fallMultiplier = 8f;
     [SerializeField] private float _lowJumpFallMultiplier = 5f;
     [SerializeField] private int _extraJumps = 1;
-    private bool _canJump => (_hangTimeCounter > 0 || _extraJumpsValue > 0);
+    private bool _canJump => (_hangTimeCounter > 0 && !_isWallSliding || _extraJumpsValue > 0 && !_isWallSliding);
     private int _extraJumpsValue = 0;
     private float _hangTime = 1f;
     private float _hangTimeCounter = 0f;
@@ -49,8 +49,12 @@ public class PlayerController : MonoBehaviour
     [Header("Bounce Variables")]
     [SerializeField] private float _wallSlidingSpeed = 2f;
     [SerializeField] private float _wallSlidingCheckSize = 0.6f;
+    [SerializeField] private Vector2 _wallJumpForce = new Vector2(8f, 16f);
+    [SerializeField] private float _wallJumpLength = .3f;
     [SerializeField] private LayerMask _wallLayer;
     [SerializeField] private bool _isWallSliding;
+    private bool _canWallJump => (_isWallSliding && !_onGround);
+    private bool _isWallJumping;
 
     void Start()
     {
@@ -62,7 +66,8 @@ public class PlayerController : MonoBehaviour
         if (_dashCooldownValue > 0)
             _dashCooldownValue -= Time.deltaTime;
         _horizontalDirection = GetAxis().x;
-        if (Input.GetButtonDown("Jump") && _canJump) { Jump(); }
+        if (Input.GetButtonDown("Jump") && _canJump) { Jump(); } 
+        else if(Input.GetButtonDown("Jump") && _canWallJump) { StartCoroutine(WallJump()); }
         if (Input.GetButtonDown("Dash") && _canDash) { StartCoroutine(Dash()); }
     }
 
@@ -71,7 +76,6 @@ public class PlayerController : MonoBehaviour
         MoveCharacter();
         CheckCollisions();
         FallMultiplier();
-        ChangeFacingDirection();
         WallSlide();
         if(_onGround) 
         {
@@ -81,7 +85,8 @@ public class PlayerController : MonoBehaviour
         } 
         else
         {
-            _hangTime -= Time.deltaTime;
+            if( _hangTimeCounter > 0)
+                _hangTimeCounter -= Time.deltaTime;
             ApplyAirLinearDrag();
         }
     }
@@ -98,25 +103,26 @@ public class PlayerController : MonoBehaviour
                 //Math.Sign returns always (-1,0 or 1), so we multiply this by the max move speed then we can have a linear speed 
                 _rb.velocity = new Vector2(Mathf.Sign(_rb.velocity.x) * _maxMoveSpeed, _rb.velocity.y);
             }
-            //Facing Direction
-            if (_horizontalDirection == 1)
-            {
-                _facingRight = true;
-            }
-            else if (_horizontalDirection == -1)
-            {
-                _facingRight = false;
-            }
         }
 
-        
+        ChangeFacingDirection();
     }
 
     private void ChangeFacingDirection()
     {
+        //Facing Direction
+        if (_rb.velocity.x > 0)
+        {
+            _facingRight = true;
+        }
+        else if(_rb.velocity.x < 0) 
+        {
+            _facingRight = false;
+        }
+
         if (_facingRight)
         {
-            if(!_isWallSliding)
+            if (!_isWallSliding)
                 transform.localScale = new Vector3(1, 1, 1);
             else
                 transform.localScale = new Vector3(-1, 1, 1);
@@ -136,7 +142,6 @@ public class PlayerController : MonoBehaviour
         {
             _extraJumpsValue--;
         }
-
         _rb.velocity = new Vector2(_rb.velocity.x, 0f);
         _rb.AddForce(Vector2.up * _jumpForce, ForceMode2D.Impulse);
         _hangTimeCounter = 0f;
@@ -167,6 +172,25 @@ public class PlayerController : MonoBehaviour
         _dashCooldownValue = _dashCooldown;
     }
 
+    IEnumerator WallJump()
+    {
+        _isWallJumping = true;
+        _isWallSliding = false;
+        float jumpStartTime = Time.time;
+        float _jumpingDirection = transform.localScale.x;
+        _rb.velocity = Vector2.zero;
+        _rb.gravityScale = 0f;
+        _rb.drag = 0f;
+
+
+        while (Time.time < jumpStartTime + _wallJumpLength)
+        {
+            _rb.velocity = new Vector2(_jumpingDirection * _wallJumpForce.x, _wallJumpForce.y);
+            yield return null;
+        }
+        _isWallJumping = false;
+    }
+
     private Vector2 GetAxis()
     {
         return new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
@@ -194,8 +218,8 @@ public class PlayerController : MonoBehaviour
         //Why do we do like that? Simple, if we do only 1 raycast in the middle of the player, when the player was in a corner of a platform, the raycast wouldn't identify the collision, so, we need 2 raycast, 1 in each side of the player, detecting the ground
         _onGround = Physics2D.Raycast(transform.position + _groundRaycastOffset, Vector2.down, _groundRaycastLength, _groundLayer) ||
                     Physics2D.Raycast(transform.position - _groundRaycastOffset, Vector2.down, _groundRaycastLength, _groundLayer);
-        _isWallSliding = Physics2D.Raycast(transform.position, Vector2.right, _wallSlidingCheckSize, _wallLayer) && !_onGround ||
-                         Physics2D.Raycast(transform.position, Vector2.left, _wallSlidingCheckSize, _wallLayer) && !_onGround;
+        _isWallSliding = Physics2D.Raycast(transform.position, Vector2.right, _wallSlidingCheckSize, _wallLayer) && !_onGround && !_isWallJumping ||
+                         Physics2D.Raycast(transform.position, Vector2.left, _wallSlidingCheckSize, _wallLayer) && !_onGround &&!_isWallJumping;
     }
 
     private void WallSlide()
