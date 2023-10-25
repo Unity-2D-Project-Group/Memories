@@ -63,7 +63,7 @@ public class PlayerController : MonoBehaviour
             _dashCooldownValue -= Time.deltaTime;
         _horizontalDirection = GetAxis().x;
         if (Input.GetButtonDown("Jump") && _canJump) { Jump(); }
-        if (Input.GetButtonDown("Dash") && _canDash) { StartCoroutine(Dash(_horizontalDirection)); }
+        if (Input.GetButtonDown("Dash") && _canDash) { StartCoroutine(Dash()); }
     }
 
     void FixedUpdate()
@@ -142,7 +142,7 @@ public class PlayerController : MonoBehaviour
         _hangTimeCounter = 0f;
     }
 
-    IEnumerator Dash(float x)
+    IEnumerator Dash()
     {
         float dashStartTime = Time.time;
         _rb.velocity = Vector2.zero;
@@ -150,13 +150,13 @@ public class PlayerController : MonoBehaviour
         _rb.drag = 0f;
 
         Vector2 dir;
-        if (x != 0)
+        if (_facingRight)
         {
-            dir = new Vector2(x, 0f);
+            dir = new Vector2(1f, 0f);
         }
         else
         {
-            dir = new Vector2(1f, 0f);
+            dir = new Vector2(-1f, 0f);
         }
 
         while (Time.time < dashStartTime + _dashLenght)
