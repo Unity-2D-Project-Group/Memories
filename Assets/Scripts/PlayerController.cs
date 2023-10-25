@@ -12,6 +12,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float _maxMoveSpeed = 12f;
     [SerializeField] private float _groundLinearDrag = 10f; //We could call it friction, but we don't bcz that's the way unity calls it, its easier to find it on unity like that
     private float _horizontalDirection;
+    private bool _facingRight = true;
+    private bool _canMove => (!_isWallSliding);
+    private bool _changingDirection => (_rb.velocity.x > 0f && _horizontalDirection < 0f) || (_rb.velocity.x < 0f && _horizontalDirection > 0f);
 
     [Header("Jump Variables")]
     [SerializeField] private float _jumpForce = 12f;
@@ -32,7 +35,7 @@ public class PlayerController : MonoBehaviour
     [Header("Dash Variables")]
     [SerializeField] private float _dashForce = 75f;
     [SerializeField] private float _dashCooldown = 1.5f;
-    [SerializeField] private float _dashCooldownValue = 0f;
+    private float _dashCooldownValue = 0f;
     private bool _canDash => (_dashCooldownValue <= 0);
 
     [SerializeField] private float _dashLenght = .3f;
@@ -43,7 +46,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private LayerMask _groundLayer;
     private bool _onGround;
 
-    private bool _changingDirection => (_rb.velocity.x > 0f && _horizontalDirection < 0f) || (_rb.velocity.x < 0f && _horizontalDirection > 0f);
+    [Header("Bounce Variables")]
+    [SerializeField] private float _wallSlidingSpeed = 2f;
+    [SerializeField] private float _wallSlidingCheckSize = 0.6f;
+    [SerializeField] private LayerMask _wallLayer;
+    [SerializeField] private bool _isWallSliding;
+
     void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
@@ -63,6 +71,8 @@ public class PlayerController : MonoBehaviour
         MoveCharacter();
         CheckCollisions();
         FallMultiplier();
+        ChangeFacingDirection();
+        WallSlide();
         if(_onGround) 
         {
             _extraJumpsValue = _extraJumps;
@@ -75,23 +85,91 @@ public class PlayerController : MonoBehaviour
             ApplyAirLinearDrag();
         }
     }
+    private void MoveCharacter()
+    {
+        if (_canMove)
+        {
+            //Add a force in RB in horizontal direction in the velocity of acceleration that can be changed in the variable
+            _rb.AddForce(new Vector2(_horizontalDirection, 0f) * _movementAcceleration);
+
+            //Math.Abs always returns a positive number, thats why we use it here to compare with the max move speed, because if the player is moving backwards it will give a negative number and we dont wanna that
+            if (Mathf.Abs(_rb.velocity.x) > _maxMoveSpeed)
+            {
+                //Math.Sign returns always (-1,0 or 1), so we multiply this by the max move speed then we can have a linear speed 
+                _rb.velocity = new Vector2(Mathf.Sign(_rb.velocity.x) * _maxMoveSpeed, _rb.velocity.y);
+            }
+            //Facing Direction
+            if (_horizontalDirection == 1)
+            {
+                _facingRight = true;
+            }
+            else if (_horizontalDirection == -1)
+            {
+                _facingRight = false;
+            }
+        }
+
+        
+    }
+
+    private void ChangeFacingDirection()
+    {
+        if (_facingRight)
+        {
+            if(!_isWallSliding)
+                transform.localScale = new Vector3(1, 1, 1);
+            else
+                transform.localScale = new Vector3(-1, 1, 1);
+        }
+        else
+        {
+            if (!_isWallSliding)
+                transform.localScale = new Vector3(-1, 1, 1);
+            else
+                transform.localScale = new Vector3(1, 1, 1);
+        }
+    }
+
+    private void Jump()
+    {
+        if (!_onGround)
+        {
+            _extraJumpsValue--;
+        }
+
+        _rb.velocity = new Vector2(_rb.velocity.x, 0f);
+        _rb.AddForce(Vector2.up * _jumpForce, ForceMode2D.Impulse);
+        _hangTimeCounter = 0f;
+    }
+
+    IEnumerator Dash(float x)
+    {
+        float dashStartTime = Time.time;
+        _rb.velocity = Vector2.zero;
+        _rb.gravityScale = 0f;
+        _rb.drag = 0f;
+
+        Vector2 dir;
+        if (x != 0)
+        {
+            dir = new Vector2(x, 0f);
+        }
+        else
+        {
+            dir = new Vector2(1f, 0f);
+        }
+
+        while (Time.time < dashStartTime + _dashLenght)
+        {
+            _rb.velocity = dir.normalized * _dashForce;
+            yield return null;
+        }
+        _dashCooldownValue = _dashCooldown;
+    }
 
     private Vector2 GetAxis()
     {
         return new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-    }
-
-    private void MoveCharacter()
-    {
-        //Add a force in RB in horizontal direction in the velocity of acceleration that can be changed in the variable
-        _rb.AddForce(new Vector2(_horizontalDirection, 0f) * _movementAcceleration);
-
-        //Math.Abs always returns a positive number, thats why we use it here to compare with the max move speed, because if the player is moving backwards it will give a negative number and we dont wanna that
-        if(Mathf.Abs(_rb.velocity.x) > _maxMoveSpeed)
-        {
-            //Math.Sign returns always (-1,0 or 1), so we multiply this by the max move speed then we can have a linear speed 
-            _rb.velocity = new Vector2(Mathf.Sign(_rb.velocity.x) * _maxMoveSpeed, _rb.velocity.y);
-        }
     }
 
     private void ApplyGroundLinearDrag()
@@ -111,50 +189,22 @@ public class PlayerController : MonoBehaviour
         _rb.drag = _airLinearDrag;
     }
 
-    private void Jump()
-    {
-        if(!_onGround)
-        {
-            _extraJumpsValue--;
-        }
-
-        _rb.velocity = new Vector2(_rb.velocity.x, 0f);
-        _rb.AddForce(Vector2.up * _jumpForce, ForceMode2D.Impulse);
-        _hangTimeCounter = 0f;
-    }
-
-    IEnumerator Dash(float x)
-    {
-        float dashStartTime = Time.time;
-        _rb.velocity = Vector2.zero;
-        _rb.gravityScale = 0f;
-        _rb.drag = 0f;
-
-        Vector2 dir;
-        if(x != 0)
-        {
-            dir = new Vector2(x, 0f);
-        }
-        else
-        {
-            dir = new Vector2(1f,0f);
-        }
-
-        while(Time.time <  dashStartTime + _dashLenght)
-        {
-            _rb.velocity = dir.normalized * _dashForce;
-            yield return null;
-        }
-        _dashCooldownValue = _dashCooldown;
-    }
-
     private void CheckCollisions()
     {
         //Why do we do like that? Simple, if we do only 1 raycast in the middle of the player, when the player was in a corner of a platform, the raycast wouldn't identify the collision, so, we need 2 raycast, 1 in each side of the player, detecting the ground
         _onGround = Physics2D.Raycast(transform.position + _groundRaycastOffset, Vector2.down, _groundRaycastLength, _groundLayer) ||
                     Physics2D.Raycast(transform.position - _groundRaycastOffset, Vector2.down, _groundRaycastLength, _groundLayer);
+        _isWallSliding = Physics2D.Raycast(transform.position, Vector2.right, _wallSlidingCheckSize, _wallLayer) && !_onGround ||
+                         Physics2D.Raycast(transform.position, Vector2.left, _wallSlidingCheckSize, _wallLayer) && !_onGround;
     }
 
+    private void WallSlide()
+    {
+        if(_isWallSliding)
+        {
+            _rb.velocity = new Vector2(0f, Mathf.Clamp(_rb.velocity.y, -_wallSlidingSpeed, float.MaxValue));
+        }
+    }
     private void FallMultiplier()
     {
         if(_rb.velocity.y < 0f) 
@@ -176,5 +226,7 @@ public class PlayerController : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawLine(transform.position + _groundRaycastOffset, transform.position + _groundRaycastOffset + Vector3.down * _groundRaycastLength);
         Gizmos.DrawLine(transform.position - _groundRaycastOffset, transform.position - _groundRaycastOffset + Vector3.down * _groundRaycastLength);
+        Gizmos.DrawLine(transform.position, transform.position + Vector3.left * _wallSlidingCheckSize);
+        Gizmos.DrawLine(transform.position, transform.position + Vector3.right * _wallSlidingCheckSize);
     }
 }
