@@ -55,7 +55,7 @@ public class PlayerController : MonoBehaviour
             _dashCooldownValue -= Time.deltaTime;
         _horizontalDirection = GetAxis().x;
         if (Input.GetButtonDown("Jump") && _canJump) { Jump(); }
-        if (Input.GetKeyDown(KeyCode.Q) && _canDash) { StartCoroutine(Dash(_horizontalDirection)); }
+        if (Input.GetButtonDown("Dash") && _canDash) { StartCoroutine(Dash(_horizontalDirection)); }
     }
 
     void FixedUpdate()
@@ -72,7 +72,7 @@ public class PlayerController : MonoBehaviour
         else
         {
             _hangTime -= Time.deltaTime;
-            ApplyAirLinearDrag(); 
+            ApplyAirLinearDrag();
         }
     }
 
@@ -117,6 +117,7 @@ public class PlayerController : MonoBehaviour
         {
             _extraJumpsValue--;
         }
+
         _rb.velocity = new Vector2(_rb.velocity.x, 0f);
         _rb.AddForce(Vector2.up * _jumpForce, ForceMode2D.Impulse);
         _hangTimeCounter = 0f;
