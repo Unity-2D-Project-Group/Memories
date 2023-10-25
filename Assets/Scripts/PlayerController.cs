@@ -46,7 +46,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private LayerMask _groundLayer;
     private bool _onGround;
 
-    [Header("Bounce Variables")]
+    [Header("Wall Jump/ Wall Sliding Variables")]
     [SerializeField] private float _wallSlidingSpeed = 2f;
     [SerializeField] private float _wallSlidingCheckSize = 0.6f;
     [SerializeField] private Vector2 _wallJumpForce = new Vector2(8f, 16f);
@@ -55,6 +55,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private bool _isWallSliding;
     private bool _canWallJump => (_isWallSliding && !_onGround);
     private bool _isWallJumping;
+
+    [Header("Gliding Variables")]
+    [SerializeField] private float _glideGravity = 1f;
+    [SerializeField] private bool _isGliding;
+    private bool _canGlide => (!_isWallSliding && !_onGround);
 
     void Start()
     {
@@ -69,6 +74,8 @@ public class PlayerController : MonoBehaviour
         if (Input.GetButtonDown("Jump") && _canJump) { Jump(); } 
         else if(Input.GetButtonDown("Jump") && _canWallJump) { StartCoroutine(WallJump()); }
         if (Input.GetButtonDown("Dash") && _canDash) { StartCoroutine(Dash()); }
+        if (Input.GetButtonDown("Glide") && _canGlide) { ActivateGlide(); }
+        if (Input.GetButtonUp("Glide") && _isGliding) { DeactivateGlide(); }
     }
 
     void FixedUpdate()
@@ -191,6 +198,17 @@ public class PlayerController : MonoBehaviour
         _isWallJumping = false;
     }
 
+    private void ActivateGlide()
+    {
+        _isGliding = true;
+        _rb.gravityScale = _glideGravity;
+    }
+
+    private void DeactivateGlide()
+    {
+        _isGliding = false;
+    }
+
     private Vector2 GetAxis()
     {
         return new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
@@ -231,17 +249,20 @@ public class PlayerController : MonoBehaviour
     }
     private void FallMultiplier()
     {
-        if(_rb.velocity.y < 0f) 
+        if (!_isGliding)
         {
-            _rb.gravityScale = _fallMultiplier;
-        }
-        else if (_rb.velocity.y > 0 && !Input.GetButton("Jump"))
-        {
-            _rb.gravityScale = _lowJumpFallMultiplier;
-        }
-        else
-        {
-            _rb.gravityScale = 1;
+            if (_rb.velocity.y < 0f)
+            {
+                _rb.gravityScale = _fallMultiplier;
+            }
+            else if (_rb.velocity.y > 0 && !Input.GetButton("Jump"))
+            {
+                _rb.gravityScale = _lowJumpFallMultiplier;
+            }
+            else
+            {
+                _rb.gravityScale = 1;
+            }
         }
     }
 
