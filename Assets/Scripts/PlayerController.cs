@@ -5,15 +5,21 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [Header("Components")]
+    private GameObject _mainCamera;
     private Rigidbody2D _rb;
+
+    [Header("Public Variables")]
+    [HideInInspector] public bool _facingRight = true;
+    [HideInInspector] public bool _onGround;
+    [HideInInspector] public bool _isHooking;
+    [HideInInspector] public bool _isRegreting = false;
 
     [Header("Movement Variables")]
     [SerializeField] private float _movementAcceleration = 50f;
     [SerializeField] private float _maxMoveSpeed = 12f;
     [SerializeField] private float _groundLinearDrag = 10f; //We could call it friction, but we don't bcz that's the way unity calls it, its easier to find it on unity like that
     private float _horizontalDirection;
-    private bool _facingRight = true;
-    private bool _canMove => (!_isWallSliding);
+    private bool _canMove => (!_isWallSliding && !_isHooking && !_isRegreting);
     private bool _changingDirection => (_rb.velocity.x > 0f && _horizontalDirection < 0f) || (_rb.velocity.x < 0f && _horizontalDirection > 0f);
 
     [Header("Jump Variables")]
@@ -36,7 +42,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float _dashForce = 75f;
     [SerializeField] private float _dashCooldown = 1.5f;
     private float _dashCooldownValue = 0f;
-    private bool _canDash => (_dashCooldownValue <= 0);
+    private bool _canDash => (_dashCooldownValue <= 0 && !_isGliding);
 
     [SerializeField] private float _dashLenght = .3f;
 
@@ -44,7 +50,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float _groundRaycastLength;
     [SerializeField] private Vector3 _groundRaycastOffset;
     [SerializeField] private LayerMask _groundLayer;
-    private bool _onGround;
 
     [Header("Wall Jump/ Wall Sliding Variables")]
     [SerializeField] private float _wallSlidingSpeed = 2f;
@@ -54,36 +59,74 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private LayerMask _wallLayer;
     [SerializeField] private bool _isWallSliding;
     private bool _canWallJump => (_isWallSliding && !_onGround);
-    private bool _isWallJumping;
+    private bool _isWallJumping; 
+    [SerializeField] private float _wallDirection = 0;
 
     [Header("Gliding Variables")]
     [SerializeField] private float _glideGravity = 1f;
     [SerializeField] private bool _isGliding;
     private bool _canGlide => (!_isWallSliding && !_onGround);
 
+    [Header("Hook Variables")]
+    [SerializeField] private LayerMask _hookableMask;
+    [SerializeField] private float _hookThreshold = 7f;
+    [SerializeField] private float _hookSpeed = 10f;
+    [SerializeField] private float _objSpeed = 10f;
+    [SerializeField] private float _hookCooldown = 1.5f;
+    private float _hookCooldownValue;
+    private Vector2 _target;
+    private GameObject _targetGameObject;
+    private LineRenderer _lineRenderer;
+    private bool _canHook => (_onGround && !_isWallJumping && !_isWallSliding && !_isGliding && _hookCooldownValue <= 0);
+
     void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
+        _lineRenderer = GetComponent<LineRenderer>();
+        _lineRenderer.enabled = false;
+        _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
     }
 
     void Update()
     {
+        //Functions
+        CheckCollisions();
+        ChangeFacingDirection();
+        FallMultiplier();
+
+        //Decrease the cooldown of dash
         if (_dashCooldownValue > 0)
             _dashCooldownValue -= Time.deltaTime;
+        //Decrease the cooldown of hook
+        if (_hookCooldownValue > 0)
+            _hookCooldownValue -= Time.deltaTime;
+
+        //Get the moveDirection
         _horizontalDirection = GetAxis().x;
+        //Verify if gets the input to jump
         if (Input.GetButtonDown("Jump") && _canJump) { Jump(); } 
+        //If the player cannot jump, then we verify if he can wall jump
         else if(Input.GetButtonDown("Jump") && _canWallJump) { StartCoroutine(WallJump()); }
+
         if (Input.GetButtonDown("Dash") && _canDash) { StartCoroutine(Dash()); }
         if (Input.GetButtonDown("Glide") && _canGlide) { ActivateGlide(); }
         if (Input.GetButtonUp("Glide") && _isGliding) { DeactivateGlide(); }
+        if (Input.GetMouseButtonDown(0) && _canHook){ Hook(); }
+
+        if (_isRegreting)
+        {
+            GrabAction(_targetGameObject);
+
+            _lineRenderer.SetPosition(1, transform.position);
+            _lineRenderer.enabled = false;
+        }
     }
 
     void FixedUpdate()
     {
         MoveCharacter();
-        CheckCollisions();
-        FallMultiplier();
         WallSlide();
+        //Apply Linear Drag
         if(_onGround) 
         {
             _extraJumpsValue = _extraJumps;
@@ -111,38 +154,36 @@ public class PlayerController : MonoBehaviour
                 _rb.velocity = new Vector2(Mathf.Sign(_rb.velocity.x) * _maxMoveSpeed, _rb.velocity.y);
             }
         }
-
-        ChangeFacingDirection();
     }
-
     private void ChangeFacingDirection()
     {
         //Facing Direction
-        if (_rb.velocity.x > 0)
+        if( _horizontalDirection != 0f)
         {
-            _facingRight = true;
-        }
-        else if(_rb.velocity.x < 0) 
-        {
-            _facingRight = false;
-        }
-
-        if (_facingRight)
-        {
-            if (!_isWallSliding)
-                transform.localScale = new Vector3(1, 1, 1);
-            else
-                transform.localScale = new Vector3(-1, 1, 1);
+            if (_horizontalDirection > 0) { _facingRight = true; }
+            else if (_horizontalDirection < 0) { _facingRight = false; }
         }
         else
         {
-            if (!_isWallSliding)
-                transform.localScale = new Vector3(-1, 1, 1);
-            else
-                transform.localScale = new Vector3(1, 1, 1);
+            if (_rb.velocity.x > 0) { _facingRight = true; }
+            else if (_rb.velocity.x < 0) { _facingRight = false; }
         }
-    }
 
+        //Change the scale according to facing direction
+        if (_isWallSliding)
+        {
+            transform.localScale = new Vector3(_wallDirection * -1, 1, 1);
+        }
+        else if (_facingRight)
+        {
+            transform.localScale = new Vector3(1, 1, 1);
+        }
+        else
+        {
+            transform.localScale = new Vector3(-1, 1, 1);
+        }
+        
+    }
     private void Jump()
     {
         if (!_onGround)
@@ -153,15 +194,17 @@ public class PlayerController : MonoBehaviour
         _rb.AddForce(Vector2.up * _jumpForce, ForceMode2D.Impulse);
         _hangTimeCounter = 0f;
     }
-
     IEnumerator Dash()
     {
+        //Save the start time of the dash
         float dashStartTime = Time.time;
+        //Set all the values to zero
         _rb.velocity = Vector2.zero;
         _rb.gravityScale = 0f;
         _rb.drag = 0f;
 
         Vector2 dir;
+        //Verify the direction of the dash
         if (_facingRight)
         {
             dir = new Vector2(1f, 0f);
@@ -178,12 +221,15 @@ public class PlayerController : MonoBehaviour
         }
         _dashCooldownValue = _dashCooldown;
     }
-
     IEnumerator WallJump()
     {
+        //Set the wall jump variable
         _isWallJumping = true;
         _isWallSliding = false;
+
+        //Save the start time of the wall jump
         float jumpStartTime = Time.time;
+        //Take the direction of the jump and set all the values to zero
         float _jumpingDirection = transform.localScale.x;
         _rb.velocity = Vector2.zero;
         _rb.gravityScale = 0f;
@@ -195,25 +241,22 @@ public class PlayerController : MonoBehaviour
             _rb.velocity = new Vector2(_jumpingDirection * _wallJumpForce.x, _wallJumpForce.y);
             yield return null;
         }
+        //Set it again to false
         _isWallJumping = false;
     }
-
     private void ActivateGlide()
     {
         _isGliding = true;
         _rb.gravityScale = _glideGravity;
     }
-
     private void DeactivateGlide()
     {
         _isGliding = false;
     }
-
     private Vector2 GetAxis()
     {
         return new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
     }
-
     private void ApplyGroundLinearDrag()
     {
         if (Mathf.Abs(_horizontalDirection) < 0.4f || _changingDirection)
@@ -225,21 +268,24 @@ public class PlayerController : MonoBehaviour
             _rb.drag = 0;
         }
     }
-
     private void ApplyAirLinearDrag()
     {
         _rb.drag = _airLinearDrag;
     }
-
     private void CheckCollisions()
     {
         //Why do we do like that? Simple, if we do only 1 raycast in the middle of the player, when the player was in a corner of a platform, the raycast wouldn't identify the collision, so, we need 2 raycast, 1 in each side of the player, detecting the ground
         _onGround = Physics2D.Raycast(transform.position + _groundRaycastOffset, Vector2.down, _groundRaycastLength, _groundLayer) ||
                     Physics2D.Raycast(transform.position - _groundRaycastOffset, Vector2.down, _groundRaycastLength, _groundLayer);
-        _isWallSliding = Physics2D.Raycast(transform.position, Vector2.right, _wallSlidingCheckSize, _wallLayer) && !_onGround && !_isWallJumping ||
-                         Physics2D.Raycast(transform.position, Vector2.left, _wallSlidingCheckSize, _wallLayer) && !_onGround &&!_isWallJumping;
-    }
+        
 
+        var hit = Physics2D.Raycast(transform.position - new Vector3(_wallSlidingCheckSize, 0, 0), Vector2.right, _wallSlidingCheckSize * 2, _wallLayer);
+        if(hit && hit.collider.gameObject.tag == "Slidable" && !_onGround && !_isWallJumping)
+        {
+            _isWallSliding = true;
+        }
+        else { _isWallSliding = false; }
+    }
     private void WallSlide()
     {
         if(_isWallSliding)
@@ -265,13 +311,112 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+    private void Hook()
+    {
+        Vector2 direction = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
+
+        RaycastHit2D hitHookable = Physics2D.Raycast(transform.position, direction, _hookThreshold, _hookableMask);
+
+        if (hitHookable.collider != null)
+        {
+            _target = hitHookable.point;
+            _lineRenderer.enabled = true;
+            _lineRenderer.positionCount = 2;
+            _targetGameObject = hitHookable.collider.gameObject;
+
+            StartCoroutine(Grab());
+        }
+    }
+    IEnumerator Grab()
+    {
+        float t = 0;
+        float time = 10;
+
+        Vector2 newPos;
+
+        _lineRenderer.SetPosition(1, transform.position);
+
+        for (; t < time; t += _hookSpeed * Time.deltaTime)
+        {
+            newPos = Vector2.Lerp(transform.position, _target, t / time);
+            _lineRenderer.SetPosition(0, transform.position);
+            _lineRenderer.SetPosition(1, newPos);
+            yield return null;
+        }
+
+        _lineRenderer.SetPosition(1, _target);
+
+        _isHooking = true;
+        _isRegreting = true;
+    }
+    private void GrabAction(GameObject target)
+    {
+        if (target.tag == "Hookable")
+        {
+            if (Mathf.Clamp(transform.position.x - target.transform.position.x, -1, 1) != target.GetComponent<HookableController>()._moveDirection)
+            {
+                _isHooking = false;
+                _isRegreting = false;
+                return;
+            }
+
+            Vector2 hookPos = Vector2.Lerp(target.transform.position, transform.position, _objSpeed * Time.deltaTime);
+
+            target.transform.position = hookPos;
+
+            _lineRenderer.SetPosition(1, target.transform.position);
+
+            if (Vector2.Distance(transform.position, target.transform.position) <= 1f)
+            {
+                _isHooking = false;
+                _isRegreting = false;
+            }
+        }
+        else
+        {
+            Vector2 hookPos = Vector2.Lerp(transform.position, _target, _objSpeed * Time.deltaTime);
+
+            transform.position = hookPos;
+
+            if (Vector2.Distance(transform.position, _target) <= 1f)
+            {
+                _isHooking = false;
+                _isRegreting = false;
+            }
+        }
+
+        _hookCooldownValue = _hookCooldown;
+    }
 
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawLine(transform.position + _groundRaycastOffset, transform.position + _groundRaycastOffset + Vector3.down * _groundRaycastLength);
         Gizmos.DrawLine(transform.position - _groundRaycastOffset, transform.position - _groundRaycastOffset + Vector3.down * _groundRaycastLength);
-        Gizmos.DrawLine(transform.position, transform.position + Vector3.left * _wallSlidingCheckSize);
-        Gizmos.DrawLine(transform.position, transform.position + Vector3.right * _wallSlidingCheckSize);
+        Gizmos.DrawLine(transform.position - new Vector3(_wallSlidingCheckSize, 0, 0), transform.position + Vector3.right * _wallSlidingCheckSize);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.collider.gameObject.layer == 6 || collision.collider.gameObject.layer == 3)
+        {
+            if (collision.gameObject.transform.position.x - transform.position.x < 0)
+            { _wallDirection = -1; }
+            else
+            { _wallDirection = 1; }
+        }
+        if (_isHooking)
+        {
+            _isHooking = false;
+            _isRegreting = false;
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        //if(collision.gameObject.tag == "MainCamera")
+        //{
+        //    StartCoroutine(_mainCamera.GetComponent<CamController>().RealocateCamera());
+        //}
     }
 }
