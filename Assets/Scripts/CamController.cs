@@ -6,6 +6,8 @@ public class CamController : MonoBehaviour
 {
     [Header ("Variables")]
     [SerializeField] private float _smoothVelocity = 2f;
+    [SerializeField] private Vector3 _minValues;
+    [SerializeField] private Vector3 _maxValues;
     [Header("Offsets")]
     [SerializeField] private Vector3 _leftOffset;
     [SerializeField] private Vector3 _rightOffset;
@@ -50,7 +52,12 @@ public class CamController : MonoBehaviour
                 for (; t < time; t += _smoothVelocity * Time.deltaTime)
                 {
                     Vector3 targetPosition = _player.transform.position + _leftOffset;
-                    transform.position = Vector3.Lerp(transform.position, targetPosition, t / time);
+                    Vector3 boundPosition = new Vector3(
+                        Mathf.Clamp(targetPosition.x, _minValues.x, _maxValues.x),
+                        Mathf.Clamp(targetPosition.y, _minValues.y, _maxValues.y),
+                        Mathf.Clamp(targetPosition.z, _minValues.z, _maxValues.z)
+                        );
+                    transform.position = Vector3.Lerp(transform.position, boundPosition, t / time);
 
                     yield return null;
                 }
@@ -58,8 +65,13 @@ public class CamController : MonoBehaviour
             case "Right":
                 for (; t < time; t += _smoothVelocity * Time.deltaTime)
                 {
-                    Vector3 targetPosition = _player.transform.position + _rightOffset;
-                    transform.position = Vector3.Lerp(transform.position, targetPosition, t / time);
+                    Vector3 targetPosition = _player.transform.position + _rightOffset; 
+                    Vector3 boundPosition = new Vector3(
+                        Mathf.Clamp(targetPosition.x, _minValues.x, _maxValues.x),
+                        Mathf.Clamp(targetPosition.y, _minValues.y, _maxValues.y),
+                        Mathf.Clamp(targetPosition.z, _minValues.z, _maxValues.z)
+                        );
+                    transform.position = Vector3.Lerp(transform.position, boundPosition, t / time);
 
                     yield return null;
                 }
@@ -68,7 +80,12 @@ public class CamController : MonoBehaviour
                 for (; t < time; t += _smoothVelocity * Time.deltaTime)
                 {
                     Vector3 targetPosition = _player.transform.position + _downOffset;
-                    transform.position = Vector3.Lerp(transform.position, targetPosition, t / time);
+                    Vector3 boundPosition = new Vector3(
+                        Mathf.Clamp(targetPosition.x, _minValues.x, _maxValues.x),
+                        Mathf.Clamp(targetPosition.y, _minValues.y, _maxValues.y),
+                        Mathf.Clamp(targetPosition.z, _minValues.z, _maxValues.z)
+                        );
+                    transform.position = Vector3.Lerp(transform.position, boundPosition, t / time);
 
                     yield return null;
                 }
