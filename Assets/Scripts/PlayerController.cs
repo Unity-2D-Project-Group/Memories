@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public bool _onGround;
     [HideInInspector] public bool _isHooking;
     [HideInInspector] public bool _isRegreting = false;
+    [HideInInspector] public bool _canInteract = false;
 
     [Header("Movement Variables")]
     [SerializeField] private float _movementAcceleration = 50f;
@@ -83,6 +84,9 @@ public class PlayerController : MonoBehaviour
     [Header("Death Variables")]
     [SerializeField] private float _deathDelay = 2f;
 
+    [Header("Interaction Variables")]
+    [SerializeField] private float _interactRadius = 2f;
+    [SerializeField] private LayerMask _interactLayer;
     void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
@@ -117,6 +121,7 @@ public class PlayerController : MonoBehaviour
         if (Input.GetButtonDown("Glide") && _canGlide) { ActivateGlide(); }
         if (Input.GetButtonUp("Glide") && _isGliding) { DeactivateGlide(); }
         if (Input.GetMouseButtonDown(0) && _canHook){ Hook(); }
+        if (Input.GetButtonDown("Interact")){ CallInteraction(); }
 
         if (_isRegreting)
         {
@@ -206,7 +211,7 @@ public class PlayerController : MonoBehaviour
         //Set all the values to zero
         _rb.velocity = Vector2.zero;
         _rb.gravityScale = 0f;
-        _rb.drag = 0f;
+        //_rb.drag = 0f; Currently on test, if i see that's better the other way i'll turn it back active
 
         Vector2 dir;
         //Verify the direction of the dash
@@ -410,6 +415,21 @@ public class PlayerController : MonoBehaviour
         }
 
         _checkpointController.TeleportToCheckPoint(_checkpointController._actualCheckpoint);
+    }
+
+    private void CallInteraction()
+    {
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, _interactRadius, _interactLayer);
+
+        if (colliders.Length > 0)
+        {
+            foreach(Collider2D collider in colliders)
+            {
+                collider.gameObject.GetComponent<Interact>().Interaction();
+            }
+        }
+
+
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
