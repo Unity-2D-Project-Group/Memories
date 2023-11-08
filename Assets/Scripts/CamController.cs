@@ -92,4 +92,24 @@ public class CamController : MonoBehaviour
                 break;
         }
     }
+
+    public IEnumerator SendToPlayer(Vector3 position) 
+    {
+        float t = 0;
+        float time = 0.25f;
+
+        for (; t < time; t += _smoothVelocity * Time.deltaTime)
+        {
+            Vector3 targetPosition = _player.transform.position + _rightOffset;
+            Vector3 boundPosition = new Vector3(
+                Mathf.Clamp(targetPosition.x, _minValues.x, _maxValues.x),
+                Mathf.Clamp(targetPosition.y, _minValues.y, _maxValues.y),
+                Mathf.Clamp(targetPosition.z, _minValues.z, _maxValues.z)
+                );
+            transform.position = Vector3.Lerp(transform.position, boundPosition, t / time);
+
+            yield return null;
+        }
+    }
+
 }

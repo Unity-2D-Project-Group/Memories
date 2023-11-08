@@ -5,18 +5,25 @@ using UnityEngine;
 public class CheckpointController : MonoBehaviour
 {
     [Header("Components")]
-    public GameObject _checkpoint_1;
-    public GameObject _checkpoint_2;
-    public GameObject _checkpoint_3;
-    public GameObject _actual_checkpoint;
+    public GameObject _actualCheckpoint;
+    private GameObject _mainCamera;
     void Start()
     {
-        
+        _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
     }
 
-    // Update is called once per frame
-    void Update()
+    public void TeleportToCheckPoint(GameObject checkpoint)
     {
-        
+        transform.position = checkpoint.transform.position;
+        StartCoroutine(_mainCamera.GetComponent<CamController>().SendToPlayer(checkpoint.transform.position));
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.gameObject.layer == 7)
+        {
+            _actualCheckpoint = collision.gameObject;
+            collision.gameObject.SetActive(false);
+        }
     }
 }

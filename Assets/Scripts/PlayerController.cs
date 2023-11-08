@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
     [Header("Components")]
     private GameObject _mainCamera;
     private Rigidbody2D _rb;
+    private CheckpointController _checkpointController;
 
     [Header("Public Variables")]
     [HideInInspector] public bool _facingRight = true;
@@ -79,12 +80,16 @@ public class PlayerController : MonoBehaviour
     private LineRenderer _lineRenderer;
     private bool _canHook => (_onGround && !_isWallJumping && !_isWallSliding && !_isGliding && _hookCooldownValue <= 0);
 
+    [Header("Death Variables")]
+    [SerializeField] private float _deathDelay = 2f;
+
     void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
         _lineRenderer = GetComponent<LineRenderer>();
         _lineRenderer.enabled = false;
         _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
+        _checkpointController = GetComponent<CheckpointController>();
     }
 
     void Update()
@@ -387,7 +392,6 @@ public class PlayerController : MonoBehaviour
 
         _hookCooldownValue = _hookCooldown;
     }
-
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
@@ -395,7 +399,18 @@ public class PlayerController : MonoBehaviour
         Gizmos.DrawLine(transform.position - _groundRaycastOffset, transform.position - _groundRaycastOffset + Vector3.down * _groundRaycastLength);
         Gizmos.DrawLine(transform.position - new Vector3(_wallSlidingCheckSize, 0, 0), transform.position + Vector3.right * _wallSlidingCheckSize);
     }
+    IEnumerator Death()
+    {
+        float deathTime = Time.time;
+        while (Time.time < deathTime + _deathDelay)
+        {
+            //Do something
 
+            yield return null;
+        }
+
+        _checkpointController.TeleportToCheckPoint(_checkpointController._actualCheckpoint);
+    }
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.collider.gameObject.layer == 6 || collision.collider.gameObject.layer == 3)
@@ -414,9 +429,9 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        //if(collision.gameObject.tag == "MainCamera")
-        //{
-        //    StartCoroutine(_mainCamera.GetComponent<CamController>().RealocateCamera());
-        //}
+        if (collision.gameObject.tag == "WorldLimit")
+        {
+            StartCoroutine(Death());
+        }   
     }
 }
