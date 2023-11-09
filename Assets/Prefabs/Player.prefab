@@ -252,17 +252,20 @@ MonoBehaviour:
   _onGround: 0
   _isHooking: 0
   _isRegreting: 0
+  _isDashing: 0
+  _canInteract: 0
   _movementAcceleration: 75
   _maxMoveSpeed: 8
+  _maxYSpeed: 30
   _groundLinearDrag: 10
   _jumpForce: 13
   _airLinearDrag: 5
   _fallMultiplier: 7
-  _lowJumpFallMultiplier: 6
+  _lowJumpFallMultiplier: 5
   _extraJumps: 1
-  _dashForce: 50
+  _dashForce: 25
   _dashCooldown: 0.5
-  _dashLenght: 0.25
+  _dashLenght: 0.1
   _groundRaycastLength: 1.05
   _groundRaycastOffset: {x: 0.4, y: 0, z: 0}
   _groundLayer:
@@ -270,8 +273,8 @@ MonoBehaviour:
     m_Bits: 72
   _wallSlidingSpeed: 1.7
   _wallSlidingCheckSize: 0.55
-  _wallJumpForce: {x: 5, y: 10}
-  _wallJumpLength: 0.1
+  _wallJumpForce: {x: 12, y: 10}
+  _wallJumpLength: 0.2
   _wallLayer:
     serializedVersion: 2
     m_Bits: 72
@@ -286,6 +289,11 @@ MonoBehaviour:
   _hookSpeed: 70
   _objSpeed: 10
   _hookCooldown: 1.5
+  _deathDelay: 0
+  _interactRadius: 2
+  _interactLayer:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!120 &1069483939796533357
 LineRenderer:
   serializedVersion: 2
@@ -402,7 +410,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0c60a476f276694d857f1e53759d97c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _checkpoint_1: {fileID: 0}
-  _checkpoint_2: {fileID: 0}
-  _checkpoint_3: {fileID: 0}
-  _actual_checkpoint: {fileID: 0}
+  _actualCheckpoint: {fileID: 0}

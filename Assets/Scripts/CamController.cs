@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class CamController : MonoBehaviour
@@ -11,36 +12,41 @@ public class CamController : MonoBehaviour
     [Header("Offsets")]
     [SerializeField] private Vector3 _leftOffset;
     [SerializeField] private Vector3 _rightOffset;
-    [SerializeField] private Vector3 _downOffset;
-    [SerializeField] private Vector3 _upOffset;
+    [SerializeField] private float _yOffset;
     [Header("Colliders")]
     [SerializeField] private BoxCollider2D _leftCollider;
     [SerializeField] private BoxCollider2D _rightCollider;
-    [SerializeField] private BoxCollider2D _upCollider;
-    [SerializeField] private BoxCollider2D _downCollider;
     private GameObject _player;
     void Start()
     {
         _player = GameObject.FindGameObjectWithTag("Player");
     }
-
+    
     void FixedUpdate()
     {
-        if (_leftCollider && _rightCollider && _upCollider && _downCollider)
+        //I HAVE NO IDEA HOW IT WORKS, BUT IT WORKS, SO DONT MESS WITH IT PLSS
+        float t = 0;
+        float time = 0.25f;
+        for (; t < time; t += _smoothVelocity * Time.deltaTime)
         {
-            if (_rightCollider.IsTouching(_player.GetComponent<CapsuleCollider2D>()) || _upCollider.IsTouching(_player.GetComponent<CapsuleCollider2D>()))
+            Vector3 position = transform.position;
+            position.y = _player.transform.position.y + _yOffset;
+            Vector3 boundPosition = new Vector3(transform.position.x, Mathf.Clamp(position.y, _minValues.y, _maxValues.y), transform.position.z);
+
+            transform.position = boundPosition;
+
+            transform.position = Vector3.Lerp(transform.position, boundPosition, t / time);
+        }
+
+        if (_leftCollider && _rightCollider)
+        {
+            if (_rightCollider.IsTouching(_player.GetComponent<CapsuleCollider2D>()))
             {
                 StartCoroutine(RealocateCamera("Right"));
             }
             else if (_leftCollider.IsTouching(_player.GetComponent<CapsuleCollider2D>()))
             {
                 StartCoroutine(RealocateCamera("Left"));
-            }else if (_downCollider.IsTouching(_player.GetComponent<CapsuleCollider2D>()))
-            {
-                StartCoroutine(RealocateCamera("Down"));
-            }else if (_upCollider.IsTouching(_player.GetComponent<CapsuleCollider2D>()))
-            {
-                StartCoroutine(RealocateCamera("Up"));
             }
         }
     }
@@ -70,34 +76,6 @@ public class CamController : MonoBehaviour
                 for (; t < time; t += _smoothVelocity * Time.deltaTime)
                 {
                     Vector3 targetPosition = _player.transform.position + _rightOffset; 
-                    Vector3 boundPosition = new Vector3(
-                        Mathf.Clamp(targetPosition.x, _minValues.x, _maxValues.x),
-                        Mathf.Clamp(targetPosition.y, _minValues.y, _maxValues.y),
-                        Mathf.Clamp(targetPosition.z, _minValues.z, _maxValues.z)
-                        );
-                    transform.position = Vector3.Lerp(transform.position, boundPosition, t / time);
-
-                    yield return null;
-                }
-                break;
-            case "Down":
-                for (; t < time; t += _smoothVelocity * Time.deltaTime)
-                {
-                    Vector3 targetPosition = _player.transform.position + _downOffset;
-                    Vector3 boundPosition = new Vector3(
-                        Mathf.Clamp(targetPosition.x, _minValues.x, _maxValues.x),
-                        Mathf.Clamp(targetPosition.y, _minValues.y, _maxValues.y),
-                        Mathf.Clamp(targetPosition.z, _minValues.z, _maxValues.z)
-                        );
-                    transform.position = Vector3.Lerp(transform.position, boundPosition, t / time);
-
-                    yield return null;
-                }
-                break;
-            case "Up":
-                for (; t < time; t += _smoothVelocity * Time.deltaTime)
-                {
-                    Vector3 targetPosition = _player.transform.position + _upOffset;
                     Vector3 boundPosition = new Vector3(
                         Mathf.Clamp(targetPosition.x, _minValues.x, _maxValues.x),
                         Mathf.Clamp(targetPosition.y, _minValues.y, _maxValues.y),

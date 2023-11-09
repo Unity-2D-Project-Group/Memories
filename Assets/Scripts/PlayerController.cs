@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public bool _onGround;
     [HideInInspector] public bool _isHooking;
     [HideInInspector] public bool _isRegreting = false;
-    public bool _isDashing = false;
+    [HideInInspector] public bool _isDashing = false;
     [HideInInspector] public bool _canInteract = false;
 
     [Header("Movement Variables")]
@@ -23,7 +23,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float _maxYSpeed = 30f;
     [SerializeField] private float _groundLinearDrag = 10f; //We could call it friction, but we don't bcz that's the way unity calls it, its easier to find it on unity like that
     private float _horizontalDirection;
-    private bool _canMove => (!_isWallSliding && !_isHooking && !_isRegreting && !_isDashing);
+    private bool _canMove => (!_isWallSliding && !_isHooking && !_isRegreting && !_isDashing && !_isWallJumping);
     private bool _changingDirection => (_rb.velocity.x > 0f && _horizontalDirection < 0f) || (_rb.velocity.x < 0f && _horizontalDirection > 0f);
 
     [Header("Jump Variables")]
@@ -143,6 +143,7 @@ public class PlayerController : MonoBehaviour
         {
             _extraJumpsValue = _extraJumps;
             _hangTimeCounter = _hangTime;
+            _isWallJumping = false;
             ApplyGroundLinearDrag(); 
         } 
         else
@@ -167,7 +168,6 @@ public class PlayerController : MonoBehaviour
             }
             if (Mathf.Abs(_rb.velocity.y) > _maxYSpeed)
             {
-                //Math.Sign returns always (-1,0 or 1), so we multiply this by the max move speed then we can have a linear speed 
                 _rb.velocity = new Vector2(_rb.velocity.x, Mathf.Sign(_rb.velocity.y) * _maxYSpeed);
             }
         }
@@ -175,7 +175,7 @@ public class PlayerController : MonoBehaviour
     private void ChangeFacingDirection()
     {
         //Facing Direction
-        if( _horizontalDirection != 0f)
+        if( _horizontalDirection != 0f && _onGround )
         {
             if (_horizontalDirection > 0) { _facingRight = true; }
             else if (_horizontalDirection < 0) { _facingRight = false; }
@@ -255,7 +255,7 @@ public class PlayerController : MonoBehaviour
             _rb.velocity = new Vector2(_jumpingDirection * _wallJumpForce.x, _wallJumpForce.y);
             yield return null;
         }
-        //Set it again to false
+        yield return new WaitForSeconds(0.1f);
         _isWallJumping = false;
     }
     private void ActivateGlide()
@@ -304,6 +304,7 @@ public class PlayerController : MonoBehaviour
     {
         if(_isWallSliding)
         {
+            _isWallJumping = false;
             _rb.velocity = new Vector2(0f, Mathf.Clamp(_rb.velocity.y, -_wallSlidingSpeed, float.MaxValue));
         }
     }
@@ -410,6 +411,7 @@ public class PlayerController : MonoBehaviour
     }
     public IEnumerator Death()
     {
+        this.GetComponent<SpriteRenderer>().enabled = false;
         _rb.velocity = Vector2.zero;
         _rb.angularVelocity = 0;
 
@@ -422,8 +424,8 @@ public class PlayerController : MonoBehaviour
         }
 
         _checkpointController.TeleportToCheckPoint(_checkpointController._actualCheckpoint);
+        this.GetComponent<SpriteRenderer>().enabled = true;
     }
-
     private void CallInteraction()
     {
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, _interactRadius, _interactLayer);
@@ -451,7 +453,6 @@ public class PlayerController : MonoBehaviour
             _isRegreting = false;
         }
     }
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "WorldLimit")
