@@ -1358,8 +1358,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1009072820}
   - component: {fileID: 1009072819}
-  - component: {fileID: 1009072818}
   - component: {fileID: 1009072821}
+  - component: {fileID: 1009072818}
   m_Layer: 8
   m_Name: Book Example
   m_TagString: Untagged

@@ -117,7 +117,7 @@ public class PlayerController : MonoBehaviour
         //If the player cannot jump, then we verify if he can wall jump
         else if(Input.GetButtonDown("Jump") && _canWallJump) { StartCoroutine(WallJump()); }
 
-        if (Input.GetButtonDown("Dash") && _canDash) { StartCoroutine(Dash()); }
+        if (Input.GetButtonDown("Dash") && _canDash) { /*StartCoroutine(Dash());*/Dash(); }
         if (Input.GetButtonDown("Glide") && _canGlide) { ActivateGlide(); }
         if (Input.GetButtonUp("Glide") && _isGliding) { DeactivateGlide(); }
         if (Input.GetMouseButtonDown(0) && _canHook){ Hook(); }
@@ -204,31 +204,46 @@ public class PlayerController : MonoBehaviour
         _rb.AddForce(Vector2.up * _jumpForce, ForceMode2D.Impulse);
         _hangTimeCounter = 0f;
     }
-    IEnumerator Dash()
+    //IEnumerator Dash()
+    //{
+    //    //Save the start time of the dash
+    //    float dashStartTime = Time.time;
+    //    //Set all the values to zero
+    //    _rb.velocity = Vector2.zero;
+    //    _rb.gravityScale = 0f;
+    //    _rb.drag = 0f; Currently on test, if i see that's better the other way i'll turn it back active
+
+    //    Vector2 dir;
+    //    //Verify the direction of the dash
+    //    if (_facingRight)
+    //    {
+    //        dir = new Vector2(1f, 0f);
+    //    }
+    //    else
+    //    {
+    //        dir = new Vector2(-1f, 0f);
+    //    }
+
+    //    while (Time.time < dashStartTime + _dashLenght)
+    //    {
+    //        _rb.velocity = dir.normalized * _dashForce;
+    //        yield return null;
+    //    }
+    //    _dashCooldownValue = _dashCooldown;
+    //}
+
+    void Dash()
     {
-        //Save the start time of the dash
-        float dashStartTime = Time.time;
-        //Set all the values to zero
+
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition); 
+        Vector3 direction = (transform.position - mousePosition).normalized;
+
         _rb.velocity = Vector2.zero;
         _rb.gravityScale = 0f;
-        //_rb.drag = 0f; Currently on test, if i see that's better the other way i'll turn it back active
+        _rb.drag = 0f;
 
-        Vector2 dir;
-        //Verify the direction of the dash
-        if (_facingRight)
-        {
-            dir = new Vector2(1f, 0f);
-        }
-        else
-        {
-            dir = new Vector2(-1f, 0f);
-        }
+        _rb.AddForce(-direction * _dashForce, ForceMode2D.Impulse);
 
-        while (Time.time < dashStartTime + _dashLenght)
-        {
-            _rb.velocity = dir.normalized * _dashForce;
-            yield return null;
-        }
         _dashCooldownValue = _dashCooldown;
     }
     IEnumerator WallJump()
@@ -428,8 +443,6 @@ public class PlayerController : MonoBehaviour
                 collider.gameObject.GetComponent<Interact>().Interaction();
             }
         }
-
-
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
