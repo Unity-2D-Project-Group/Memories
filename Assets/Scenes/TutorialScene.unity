@@ -674,12 +674,9 @@ MonoBehaviour:
   _maxValues: {x: 40, y: 20, z: -10}
   _leftOffset: {x: -10, y: 4, z: -10}
   _rightOffset: {x: 10, y: 4, z: -10}
-  _downOffset: {x: 10, y: -3, z: -10}
-  _upOffset: {x: 0, y: 0, z: 0}
+  _yOffset: 0
   _leftCollider: {fileID: 519420036}
   _rightCollider: {fileID: 519420037}
-  _upCollider: {fileID: 519420035}
-  _downCollider: {fileID: 519420034}
 --- !u!61 &519420034
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2093,11 +2090,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!1 &1889448769 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1310650611042123576, guid: 88f5cbdb8a868a347980bccd42b82a63, type: 3}
-  m_PrefabInstance: {fileID: 5484679498153781215}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1889448772 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8691218053992285206, guid: 88f5cbdb8a868a347980bccd42b82a63, type: 3}
@@ -2648,46 +2640,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1284764206826805584, guid: 86c8ae0e9a8a99d41b2c0355f7d8e248, type: 3}
-      propertyPath: _dashForce
-      value: 25
-      objectReference: {fileID: 0}
-    - target: {fileID: 1284764206826805584, guid: 86c8ae0e9a8a99d41b2c0355f7d8e248, type: 3}
-      propertyPath: _dashLenght
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1284764206826805584, guid: 86c8ae0e9a8a99d41b2c0355f7d8e248, type: 3}
-      propertyPath: _deathDelay
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1284764206826805584, guid: 86c8ae0e9a8a99d41b2c0355f7d8e248, type: 3}
-      propertyPath: _wallJumpLength
-      value: 0.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1284764206826805584, guid: 86c8ae0e9a8a99d41b2c0355f7d8e248, type: 3}
-      propertyPath: _wallJumpForce.x
-      value: 12
-      objectReference: {fileID: 0}
-    - target: {fileID: 1284764206826805584, guid: 86c8ae0e9a8a99d41b2c0355f7d8e248, type: 3}
-      propertyPath: _interactLayer.m_Bits
-      value: 256
-      objectReference: {fileID: 0}
-    - target: {fileID: 1284764206826805584, guid: 86c8ae0e9a8a99d41b2c0355f7d8e248, type: 3}
-      propertyPath: _lowJumpFallMultiplier
-      value: 5
-      objectReference: {fileID: 0}
     - target: {fileID: 3273498253242932800, guid: 86c8ae0e9a8a99d41b2c0355f7d8e248, type: 3}
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    - target: {fileID: 8665683196036322554, guid: 86c8ae0e9a8a99d41b2c0355f7d8e248, type: 3}
-      propertyPath: _checkpoint_1
-      value: 
-      objectReference: {fileID: 1889448769}
-    - target: {fileID: 8665683196036322554, guid: 86c8ae0e9a8a99d41b2c0355f7d8e248, type: 3}
-      propertyPath: _actualCheckpoint
-      value: 
-      objectReference: {fileID: 1889448769}
     - target: {fileID: 9180127409959360938, guid: 86c8ae0e9a8a99d41b2c0355f7d8e248, type: 3}
       propertyPath: m_LocalPosition.x
       value: -13.79
