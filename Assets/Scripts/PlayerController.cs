@@ -419,7 +419,7 @@ public class PlayerController : MonoBehaviour
         Gizmos.DrawLine(transform.position - _groundRaycastOffset, transform.position - _groundRaycastOffset + Vector3.down * _groundRaycastLength);
         Gizmos.DrawLine(transform.position - new Vector3(_wallSlidingCheckSize, 0, 0), transform.position + Vector3.right * _wallSlidingCheckSize);
     }
-    IEnumerator Death()
+    public IEnumerator Death()
     {
         float deathTime = Time.time;
         while (Time.time < deathTime + _deathDelay)
