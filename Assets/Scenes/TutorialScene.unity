@@ -2527,6 +2527,10 @@ PrefabInstance:
       value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 1284764206826805584, guid: 86c8ae0e9a8a99d41b2c0355f7d8e248, type: 3}
+      propertyPath: _deathDelay
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1284764206826805584, guid: 86c8ae0e9a8a99d41b2c0355f7d8e248, type: 3}
       propertyPath: _interactLayer.m_Bits
       value: 256
       objectReference: {fileID: 0}

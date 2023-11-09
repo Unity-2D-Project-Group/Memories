@@ -410,6 +410,9 @@ public class PlayerController : MonoBehaviour
     }
     public IEnumerator Death()
     {
+        _rb.velocity = Vector2.zero;
+        _rb.angularVelocity = 0;
+
         float deathTime = Time.time;
         while (Time.time < deathTime + _deathDelay)
         {
