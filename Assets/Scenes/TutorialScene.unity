@@ -675,6 +675,7 @@ MonoBehaviour:
   _leftOffset: {x: -10, y: 4, z: -10}
   _rightOffset: {x: 10, y: 4, z: -10}
   _downOffset: {x: 10, y: -3, z: -10}
+  _upOffset: {x: 0, y: 0, z: 0}
   _leftCollider: {fileID: 519420036}
   _rightCollider: {fileID: 519420037}
   _upCollider: {fileID: 519420035}
@@ -2517,6 +2518,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1284764206826805584, guid: 86c8ae0e9a8a99d41b2c0355f7d8e248, type: 3}
+      propertyPath: _dashForce
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 1284764206826805584, guid: 86c8ae0e9a8a99d41b2c0355f7d8e248, type: 3}
+      propertyPath: _dashLenght
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 1284764206826805584, guid: 86c8ae0e9a8a99d41b2c0355f7d8e248, type: 3}
       propertyPath: _interactLayer.m_Bits
       value: 256
