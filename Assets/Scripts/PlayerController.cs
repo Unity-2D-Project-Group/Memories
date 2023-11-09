@@ -14,14 +14,16 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public bool _onGround;
     [HideInInspector] public bool _isHooking;
     [HideInInspector] public bool _isRegreting = false;
+    public bool _isDashing = false;
     [HideInInspector] public bool _canInteract = false;
 
     [Header("Movement Variables")]
     [SerializeField] private float _movementAcceleration = 50f;
     [SerializeField] private float _maxMoveSpeed = 12f;
+    [SerializeField] private float _maxYSpeed = 30f;
     [SerializeField] private float _groundLinearDrag = 10f; //We could call it friction, but we don't bcz that's the way unity calls it, its easier to find it on unity like that
     private float _horizontalDirection;
-    private bool _canMove => (!_isWallSliding && !_isHooking && !_isRegreting);
+    private bool _canMove => (!_isWallSliding && !_isHooking && !_isRegreting && !_isDashing);
     private bool _changingDirection => (_rb.velocity.x > 0f && _horizontalDirection < 0f) || (_rb.velocity.x < 0f && _horizontalDirection > 0f);
 
     [Header("Jump Variables")]
@@ -117,7 +119,7 @@ public class PlayerController : MonoBehaviour
         //If the player cannot jump, then we verify if he can wall jump
         else if(Input.GetButtonDown("Jump") && _canWallJump) { StartCoroutine(WallJump()); }
 
-        if (Input.GetButtonDown("Dash") && _canDash) { /*StartCoroutine(Dash());*/Dash(); }
+        if (Input.GetButtonDown("Dash") && _canDash) { StartCoroutine(Dash()); }
         if (Input.GetButtonDown("Glide") && _canGlide) { ActivateGlide(); }
         if (Input.GetButtonUp("Glide") && _isGliding) { DeactivateGlide(); }
         if (Input.GetMouseButtonDown(0) && _canHook){ Hook(); }
@@ -152,16 +154,21 @@ public class PlayerController : MonoBehaviour
     }
     private void MoveCharacter()
     {
-        if (_canMove)
+        if (_canMove && !_isDashing)
         {
             //Add a force in RB in horizontal direction in the velocity of acceleration that can be changed in the variable
             _rb.AddForce(new Vector2(_horizontalDirection, 0f) * _movementAcceleration);
 
-            //Math.Abs always returns a positive number, thats why we use it here to compare with the max move speed, because if the player is moving backwards it will give a negative number and we dont wanna that
+            //Math.Abs always returns a positive number, that's why we use it here to compare with the max move speed, because if the player is moving backwards it will give a negative number and we dont wanna that
             if (Mathf.Abs(_rb.velocity.x) > _maxMoveSpeed)
             {
                 //Math.Sign returns always (-1,0 or 1), so we multiply this by the max move speed then we can have a linear speed 
                 _rb.velocity = new Vector2(Mathf.Sign(_rb.velocity.x) * _maxMoveSpeed, _rb.velocity.y);
+            }
+            if (Mathf.Abs(_rb.velocity.y) > _maxYSpeed)
+            {
+                //Math.Sign returns always (-1,0 or 1), so we multiply this by the max move speed then we can have a linear speed 
+                _rb.velocity = new Vector2(_rb.velocity.x, Mathf.Sign(_rb.velocity.y) * _maxYSpeed);
             }
         }
     }
@@ -204,47 +211,29 @@ public class PlayerController : MonoBehaviour
         _rb.AddForce(Vector2.up * _jumpForce, ForceMode2D.Impulse);
         _hangTimeCounter = 0f;
     }
-    //IEnumerator Dash()
-    //{
-    //    //Save the start time of the dash
-    //    float dashStartTime = Time.time;
-    //    //Set all the values to zero
-    //    _rb.velocity = Vector2.zero;
-    //    _rb.gravityScale = 0f;
-    //    _rb.drag = 0f; Currently on test, if i see that's better the other way i'll turn it back active
-
-    //    Vector2 dir;
-    //    //Verify the direction of the dash
-    //    if (_facingRight)
-    //    {
-    //        dir = new Vector2(1f, 0f);
-    //    }
-    //    else
-    //    {
-    //        dir = new Vector2(-1f, 0f);
-    //    }
-
-    //    while (Time.time < dashStartTime + _dashLenght)
-    //    {
-    //        _rb.velocity = dir.normalized * _dashForce;
-    //        yield return null;
-    //    }
-    //    _dashCooldownValue = _dashCooldown;
-    //}
-
-    void Dash()
+    IEnumerator Dash()
     {
+        //Save the start time of the dash
+        float dashStartTime = Time.time;
 
-        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition); 
-        Vector3 direction = (transform.position - mousePosition).normalized;
+        _isDashing = true;
+
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mousePosition.z = 0f;
+        Vector3 direction = (mousePosition - transform.position).normalized;
 
         _rb.velocity = Vector2.zero;
         _rb.gravityScale = 0f;
         _rb.drag = 0f;
-
-        _rb.AddForce(-direction * _dashForce, ForceMode2D.Impulse);
-
+        while (Time.time < dashStartTime + _dashLenght)
+        {
+            _rb.velocity = direction * _dashForce;
+            yield return null;
+        }
         _dashCooldownValue = _dashCooldown;
+
+        _isDashing = false;
+        yield return null;
     }
     IEnumerator WallJump()
     {
@@ -341,7 +330,7 @@ public class PlayerController : MonoBehaviour
         Vector2 direction = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
 
         RaycastHit2D hitHookable = Physics2D.Raycast(transform.position, direction, _hookThreshold, _hookableMask);
-
+            
         if (hitHookable.collider != null)
         {
             _target = hitHookable.point;
@@ -378,7 +367,7 @@ public class PlayerController : MonoBehaviour
     {
         if (target.tag == "Hookable")
         {
-            if (Mathf.Clamp(transform.position.x - target.transform.position.x, -1, 1) != target.GetComponent<HookableController>()._moveDirection)
+            if (Mathf.Clamp(transform.position.x - target.transform.position.x, -1, 1) != (float)target.GetComponent<HookableController>()._moveDirection)
             {
                 _isHooking = false;
                 _isRegreting = false;

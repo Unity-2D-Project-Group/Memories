@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class HookableController : MonoBehaviour
 {
-    public float _moveDirection;
+    public enum MoveDirection { Left = -1,  Right = 1 };
+
+    public MoveDirection _moveDirection = MoveDirection.Left;
 
     void Start()
     {
