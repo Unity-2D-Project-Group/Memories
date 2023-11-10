@@ -6,13 +6,16 @@ using UnityEngine;
 public class CamController : MonoBehaviour
 {
     [Header ("Variables")]
+    [Range (0f, 2f)]
     [SerializeField] private float _smoothVelocity = 2f;
     [SerializeField] private Vector3 _minValues;
     [SerializeField] private Vector3 _maxValues;
+
     [Header("Offsets")]
     [SerializeField] private Vector3 _leftOffset;
     [SerializeField] private Vector3 _rightOffset;
     [SerializeField] private float _yOffset;
+
     [Header("Colliders")]
     [SerializeField] private BoxCollider2D _leftCollider;
     [SerializeField] private BoxCollider2D _rightCollider;
@@ -20,8 +23,13 @@ public class CamController : MonoBehaviour
     void Start()
     {
         _player = GameObject.FindGameObjectWithTag("Player");
+        //Put the colliders in the right position
+        _leftCollider.offset = new Vector3(-Camera.main.orthographicSize * 0.58f, 0f);
+        _leftCollider.size = new Vector2(0.2f, Camera.main.orthographicSize / 2);
+        _rightCollider.offset = new Vector3(Camera.main.orthographicSize * 0.58f, 0f);
+        _rightCollider.size = new Vector2(0.2f, Camera.main.orthographicSize / 2);
     }
-    
+
     void FixedUpdate()
     {
         //I HAVE NO IDEA HOW IT WORKS, BUT IT WORKS, SO DONT MESS WITH IT PLSS

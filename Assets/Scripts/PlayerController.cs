@@ -81,7 +81,7 @@ public class PlayerController : MonoBehaviour
     private Vector2 _target;
     private GameObject _targetGameObject;
     private LineRenderer _lineRenderer;
-    private bool _canHook => (_onGround && !_isWallJumping && !_isWallSliding && !_isGliding && _hookCooldownValue <= 0);
+    private bool _canHook => (!_isWallJumping && !_isWallSliding && !_isGliding && _hookCooldownValue <= 0);
 
     [Header("Death Variables")]
     [SerializeField] private float _deathDelay = 2f;
@@ -414,6 +414,12 @@ public class PlayerController : MonoBehaviour
         this.GetComponent<SpriteRenderer>().enabled = false;
         _rb.velocity = Vector2.zero;
         _rb.angularVelocity = 0;
+        _lineRenderer.enabled = false;
+        _isDashing = false;
+        _isHooking = false;
+        _isRegreting = false;
+        _isWallJumping = false;
+        _isWallSliding = false;
 
         float deathTime = Time.time;
         while (Time.time < deathTime + _deathDelay)
