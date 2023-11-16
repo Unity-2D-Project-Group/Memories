@@ -8,6 +8,7 @@ TagManager:
   - Slidable
   - WorldLimit
   - Spike
+  - AngryBlock
   layers:
   - Default
   - TransparentFX
@@ -19,7 +20,7 @@ TagManager:
   - Checkpoint
   - Interactable
   - Obstacles
-  - 
+  - Player
   - 
   - 
   - 
