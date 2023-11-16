@@ -45,8 +45,9 @@ public class PlayerController : MonoBehaviour
     [Header("Dash Variables")]
     [SerializeField] private float _dashForce = 75f;
     [SerializeField] private float _dashCooldown = 1.5f;
+    [SerializeField] private float _dashAmount = 1;
     private float _dashCooldownValue = 0f;
-    private bool _canDash => (_dashCooldownValue <= 0 && !_isGliding);
+    private bool _canDash => (_dashCooldownValue <= 0 && !_isGliding && _dashAmount > 0);
 
     [SerializeField] private float _dashLenght = .3f;
 
@@ -144,6 +145,7 @@ public class PlayerController : MonoBehaviour
             _extraJumpsValue = _extraJumps;
             _hangTimeCounter = _hangTime;
             _isWallJumping = false;
+            _dashAmount = 1;
             ApplyGroundLinearDrag(); 
         } 
         else
@@ -231,7 +233,7 @@ public class PlayerController : MonoBehaviour
             yield return null;
         }
         _dashCooldownValue = _dashCooldown;
-
+        _dashAmount--;
         _isDashing = false;
         yield return null;
     }

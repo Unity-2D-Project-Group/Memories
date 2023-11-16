@@ -265,6 +265,7 @@ MonoBehaviour:
   _extraJumps: 1
   _dashForce: 25
   _dashCooldown: 0.5
+  _dashAmount: 1
   _dashLenght: 0.1
   _groundRaycastLength: 1.05
   _groundRaycastOffset: {x: 0.4, y: 0, z: 0}
@@ -285,7 +286,7 @@ MonoBehaviour:
   _hookableMask:
     serializedVersion: 2
     m_Bits: 72
-  _hookThreshold: 15
+  _hookThreshold: 12
   _hookSpeed: 70
   _objSpeed: 10
   _hookCooldown: 1.5

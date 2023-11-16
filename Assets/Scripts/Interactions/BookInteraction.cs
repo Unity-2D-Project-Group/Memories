@@ -4,5 +4,9 @@ using UnityEngine;
 
 public class BookInteraction : Interact
 {
-
+    void Interact()
+    {
+        Debug.Log("Book");
+        this.gameObject.SetActive(false);
+    }
 }
