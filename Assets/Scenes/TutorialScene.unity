@@ -867,6 +867,9 @@ MonoBehaviour:
   _yOffset: 0
   _leftCollider: {fileID: 519420036}
   _rightCollider: {fileID: 519420037}
+  _maxOffset: {x: 5, y: 5, z: 0}
+  _minOffset: {x: -5, y: -5, z: 0}
+  _moveSpeed: 1
 --- !u!61 &519420036
 BoxCollider2D:
   m_ObjectHideFlags: 0

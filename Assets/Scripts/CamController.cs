@@ -21,24 +21,64 @@ public class CamController : MonoBehaviour
     [SerializeField] private BoxCollider2D _leftCollider;
     [SerializeField] private BoxCollider2D _rightCollider;
     private GameObject _player;
+
+    [Header("Limits")]
+    [SerializeField] private Vector3 _maxOffset;
+    [SerializeField] private Vector3 _minOffset;
+
+    [Header("Camera Movement with Mouse")]
+    [SerializeField] private float _moveSpeed = 1f;
+
+    private Vector3 _initMousePos;
+    private Vector3 _initCamPos;
     void Start()
     {
         _player = GameObject.FindGameObjectWithTag("Player");
         //Put the colliders in the right position
-        _leftCollider.offset = new Vector3(-Camera.main.orthographicSize * 0.58f, 0f);
-        _leftCollider.size = new Vector2(0.2f, Camera.main.orthographicSize / 2);
-        _rightCollider.offset = new Vector3(Camera.main.orthographicSize * 0.58f, 0f);
-        _rightCollider.size = new Vector2(0.2f, Camera.main.orthographicSize / 2);
+        _leftCollider.offset = new Vector3(-Camera.main.orthographicSize * 0.57f, 0f);
+        _leftCollider.size = new Vector2(0.5f, Camera.main.orthographicSize / 2);
+        _rightCollider.offset = new Vector3(Camera.main.orthographicSize * 0.57f, 0f);
+        _rightCollider.size = new Vector2(0.5f, Camera.main.orthographicSize / 2);
+    }
+
+    private void Update()
+    {
+        if (Input.GetMouseButtonDown(1))
+        {
+            _initMousePos = Input.mousePosition;
+            _initCamPos = transform.position;
+        }
+        else if (Input.GetMouseButton(1))
+        {
+            _realocating = true;
+            Vector3 moveDir = Input.mousePosition - _initMousePos;
+            float moveX = moveDir.x * _moveSpeed * Time.fixedDeltaTime;
+            float moveY = moveDir.y * _moveSpeed * Time.fixedDeltaTime;
+
+            Vector3 newPos = transform.position + new Vector3(moveX, moveY, 0f);
+            newPos.x = Mathf.Clamp(newPos.x, _initCamPos.x + _minOffset.x, _initCamPos.x + _maxOffset.x);
+            newPos.y = Mathf.Clamp(newPos.y, _initCamPos.y + _minOffset.y, _initCamPos.y + _maxOffset.y);
+
+            transform.position = newPos;
+        }
+        else if (Input.GetMouseButtonUp(1))
+        {
+            transform.position = _initCamPos;
+            _realocating = false;
+        }
     }
 
     void FixedUpdate()
     {
+        
+
+
         //I HAVE NO IDEA HOW IT WORKS, BUT IT WORKS, SO DONT MESS WITH IT PLSS
-        if( !_realocating )
+        if (!_realocating)
         {
             float t = 0;
             float time = 0.25f;
-            for (; t < time; t += _smoothVelocity * Time.deltaTime)
+            for (; t < time; t += _smoothVelocity * Time.fixedDeltaTime)
             {
                 Vector3 position = transform.position;
                 position.y = _player.transform.position.y + _yOffset;
@@ -50,7 +90,9 @@ public class CamController : MonoBehaviour
             }
         }
 
-        if (_leftCollider && _rightCollider)
+        //transform.position = new Vector3(transform.position.x, _player.transform.position.y, transform.position.z);
+
+        if (_leftCollider && _rightCollider && !_realocating)
         {
             if (_rightCollider.IsTouching(_player.GetComponent<CapsuleCollider2D>()))
             {

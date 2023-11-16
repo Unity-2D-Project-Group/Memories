@@ -46,8 +46,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float _dashForce = 75f;
     [SerializeField] private float _dashCooldown = 1.5f;
     [SerializeField] private float _dashAmount = 1;
+    [SerializeField] private float _dashAmountValue;
     private float _dashCooldownValue = 0f;
-    private bool _canDash => (_dashCooldownValue <= 0 && !_isGliding && _dashAmount > 0);
+    private bool _canDash => (_dashCooldownValue <= 0 && !_isGliding && _dashAmountValue > 0);
 
     [SerializeField] private float _dashLenght = .3f;
 
@@ -97,6 +98,7 @@ public class PlayerController : MonoBehaviour
         _lineRenderer.enabled = false;
         _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
         _checkpointController = GetComponent<CheckpointController>();
+        _dashAmountValue = _dashAmount;
     }
 
     void Update()
@@ -145,7 +147,7 @@ public class PlayerController : MonoBehaviour
             _extraJumpsValue = _extraJumps;
             _hangTimeCounter = _hangTime;
             _isWallJumping = false;
-            _dashAmount = 1;
+            _dashAmountValue = _dashAmount;
             ApplyGroundLinearDrag(); 
         } 
         else
@@ -233,7 +235,7 @@ public class PlayerController : MonoBehaviour
             yield return null;
         }
         _dashCooldownValue = _dashCooldown;
-        _dashAmount--;
+        _dashAmountValue--;
         _isDashing = false;
         yield return null;
     }
@@ -304,7 +306,7 @@ public class PlayerController : MonoBehaviour
     }
     private void WallSlide()
     {
-        if(_isWallSliding)
+        if(_isWallSliding && !_isDashing)
         {
             _isWallJumping = false;
             _rb.velocity = new Vector2(0f, Mathf.Clamp(_rb.velocity.y, -_wallSlidingSpeed, float.MaxValue));
@@ -341,10 +343,10 @@ public class PlayerController : MonoBehaviour
             _lineRenderer.positionCount = 2;
             _targetGameObject = hitHookable.collider.gameObject;
 
-            StartCoroutine(Grab());
+            StartCoroutine(ThrowGrab());
         }
     }
-    IEnumerator Grab()
+    IEnumerator ThrowGrab()
     {
         float t = 0;
         float time = 10;
