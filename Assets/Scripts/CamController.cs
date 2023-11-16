@@ -10,6 +10,7 @@ public class CamController : MonoBehaviour
     [SerializeField] private float _smoothVelocity = 2f;
     [SerializeField] private Vector3 _minValues;
     [SerializeField] private Vector3 _maxValues;
+    private bool _realocating = false;
 
     [Header("Offsets")]
     [SerializeField] private Vector3 _leftOffset;
@@ -33,17 +34,20 @@ public class CamController : MonoBehaviour
     void FixedUpdate()
     {
         //I HAVE NO IDEA HOW IT WORKS, BUT IT WORKS, SO DONT MESS WITH IT PLSS
-        float t = 0;
-        float time = 0.25f;
-        for (; t < time; t += _smoothVelocity * Time.deltaTime)
+        if( !_realocating )
         {
-            Vector3 position = transform.position;
-            position.y = _player.transform.position.y + _yOffset;
-            Vector3 boundPosition = new Vector3(transform.position.x, Mathf.Clamp(position.y, _minValues.y, _maxValues.y), transform.position.z);
+            float t = 0;
+            float time = 0.25f;
+            for (; t < time; t += _smoothVelocity * Time.deltaTime)
+            {
+                Vector3 position = transform.position;
+                position.y = _player.transform.position.y + _yOffset;
+                Vector3 boundPosition = new Vector3(transform.position.x, Mathf.Clamp(position.y, _minValues.y, _maxValues.y), transform.position.z);
 
-            transform.position = boundPosition;
+                transform.position = boundPosition;
 
-            transform.position = Vector3.Lerp(transform.position, boundPosition, t / time);
+                transform.position = Vector3.Lerp(transform.position, boundPosition, t / time);
+            }
         }
 
         if (_leftCollider && _rightCollider)
@@ -61,6 +65,7 @@ public class CamController : MonoBehaviour
 
     public IEnumerator RealocateCamera(string position)
     {
+        _realocating = true;
         float t = 0;
         float time = 0.25f;
 
@@ -95,6 +100,7 @@ public class CamController : MonoBehaviour
                 }
                 break;
         }
+        _realocating = false;
     }
 
     public IEnumerator SendToPlayer(Vector3 position) 
