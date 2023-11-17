@@ -1,28 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
-public class AngryBlockCollision : MonoBehaviour
+public class PlayerDeath : MonoBehaviour
 {
     private GameObject _player;
-    private BoxCollider2D _collider;
 
     void Start()
     {
         _player = GameObject.FindGameObjectWithTag("Player");
-        _collider = GetComponent<BoxCollider2D>();
     }
 
-    void Update()
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-    }
-
-    void FixedUpdate()
-    {
-        if (_collider.IsTouching(_player.GetComponent<CapsuleCollider2D>()))
+        if (collision.tag == "Player")
         {
             StartCoroutine(_player.gameObject.GetComponent<PlayerController>().Death());
         }
+
     }
 }

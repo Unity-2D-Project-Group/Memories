@@ -46,7 +46,8 @@ public class AngryBlocks : MonoBehaviour
 
     private IEnumerator Attack()
     {
-        yield return new WaitForSeconds(_fallDelay);
+        yield return null;
+        //yield return new WaitForSeconds(_fallDelay);
         //rb.bodyType = RigidbodyType2D.Dynamic;
 
         Vector2 target = CurrentMovementTarget();
@@ -66,5 +67,7 @@ public class AngryBlocks : MonoBehaviour
         {
             Gizmos.DrawLine(_startPoint.position, _endPoint.position);
         }
+
+        Gizmos.DrawLine(_angryblock.transform.position, _angryblock.transform.position + Vector3.down * _distance);
     }
 }
