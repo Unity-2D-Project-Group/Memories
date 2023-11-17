@@ -11,7 +11,6 @@ public class AngryBlocks : MonoBehaviour
     private int _direction = 1;
 
     [SerializeField] private LayerMask _playerLayer;
-    [SerializeField] private float _fallDelay = 1f;
     [SerializeField] private float _speed = 1.5f;
 
     [SerializeField] private Transform _angryblock;

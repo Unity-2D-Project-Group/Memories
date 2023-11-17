@@ -10,7 +10,7 @@ public class CamController : MonoBehaviour
     [SerializeField] private float _smoothVelocity = 2f;
     [SerializeField] private Vector3 _minValues;
     [SerializeField] private Vector3 _maxValues;
-    private bool _realocating = false;
+    private bool _reallocating = false;
 
     [Header("Offsets")]
     [SerializeField] private Vector3 _leftOffset;
@@ -27,10 +27,13 @@ public class CamController : MonoBehaviour
     [SerializeField] private Vector3 _minOffset;
 
     [Header("Camera Movement with Mouse")]
-    [SerializeField] private float _moveSpeed = 1f;
+    [SerializeField] private float _horMoveSpeed = 1f;
+    [SerializeField] private float _verMoveSpeed = 1f;
 
     private Vector3 _initMousePos;
     private Vector3 _initCamPos;
+    private Vector3 _currentCamPos;
+    private bool _isMoving;
     void Start()
     {
         _player = GameObject.FindGameObjectWithTag("Player");
@@ -47,52 +50,30 @@ public class CamController : MonoBehaviour
         {
             _initMousePos = Input.mousePosition;
             _initCamPos = transform.position;
+            _isMoving = true;
         }
-        else if (Input.GetMouseButton(1))
-        {
-            _realocating = true;
-            Vector3 moveDir = Input.mousePosition - _initMousePos;
-            float moveX = moveDir.x * _moveSpeed * Time.fixedDeltaTime;
-            float moveY = moveDir.y * _moveSpeed * Time.fixedDeltaTime;
-
-            Vector3 newPos = transform.position + new Vector3(moveX, moveY, 0f);
-            newPos.x = Mathf.Clamp(newPos.x, _initCamPos.x + _minOffset.x, _initCamPos.x + _maxOffset.x);
-            newPos.y = Mathf.Clamp(newPos.y, _initCamPos.y + _minOffset.y, _initCamPos.y + _maxOffset.y);
-
-            transform.position = newPos;
-        }
-        else if (Input.GetMouseButtonUp(1))
+        else if (Input.GetMouseButtonUp(1) && _isMoving)
         {
             transform.position = _initCamPos;
-            _realocating = false;
+            StartCoroutine(SendToPlayer(_player.transform.position));
+            _isMoving = false;
         }
+
+        
     }
 
-    void FixedUpdate()
+    void LateUpdate()
     {
-        
-
-
-        //I HAVE NO IDEA HOW IT WORKS, BUT IT WORKS, SO DONT MESS WITH IT PLSS
-        if (!_realocating)
+        if (!_reallocating)
         {
-            float t = 0;
-            float time = 0.25f;
-            for (; t < time; t += _smoothVelocity * Time.fixedDeltaTime)
-            {
-                Vector3 position = transform.position;
-                position.y = _player.transform.position.y + _yOffset;
-                Vector3 boundPosition = new Vector3(transform.position.x, Mathf.Clamp(position.y, _minValues.y, _maxValues.y), transform.position.z);
+            Vector3 position = transform.position;
+            position.y = _player.transform.position.y + _yOffset;
+            Vector3 boundPosition = new Vector3(transform.position.x, Mathf.Clamp(position.y, _minValues.y, _maxValues.y), transform.position.z);
 
-                transform.position = boundPosition;
-
-                transform.position = Vector3.Lerp(transform.position, boundPosition, t / time);
-            }
+            transform.position = boundPosition;
         }
 
-        //transform.position = new Vector3(transform.position.x, _player.transform.position.y, transform.position.z);
-
-        if (_leftCollider && _rightCollider && !_realocating)
+        if (_leftCollider && _rightCollider && !_reallocating)
         {
             if (_rightCollider.IsTouching(_player.GetComponent<CapsuleCollider2D>()))
             {
@@ -103,11 +84,28 @@ public class CamController : MonoBehaviour
                 StartCoroutine(RealocateCamera("Left"));
             }
         }
+
+        if (_isMoving)
+        {
+            _currentCamPos = _player.transform.position;
+            Vector3 moveDir = Input.mousePosition - _initMousePos;
+            float moveX = moveDir.x * _horMoveSpeed * Time.fixedDeltaTime;
+            float moveY = moveDir.y * _verMoveSpeed * Time.fixedDeltaTime;
+
+            Vector3 newPos = transform.position + new Vector3(moveX, moveY, 0f);
+            newPos.x = Mathf.Clamp(newPos.x, _initCamPos.x + _minOffset.x, _currentCamPos.x + _maxOffset.x);
+            newPos.y = Mathf.Clamp(newPos.y, _initCamPos.y + _minOffset.y, _currentCamPos.y + _maxOffset.y);
+
+            transform.position = newPos;
+        }
     }
 
     public IEnumerator RealocateCamera(string position)
     {
-        _realocating = true;
+        _reallocating = true;
+        _isMoving = false;
+        _initMousePos = Vector3.zero;
+        _currentCamPos = Vector3.zero;
         float t = 0;
         float time = 0.25f;
 
@@ -142,7 +140,7 @@ public class CamController : MonoBehaviour
                 }
                 break;
         }
-        _realocating = false;
+        _reallocating = false;
     }
 
     public IEnumerator SendToPlayer(Vector3 position) 

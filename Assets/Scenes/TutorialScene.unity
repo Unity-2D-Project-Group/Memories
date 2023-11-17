@@ -391,6 +391,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1146862502733266919, guid: 0dea65d54f2343b4a8a984b1c4079525, type: 3}
+      propertyPath: _speed
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 4767952779001925244, guid: 0dea65d54f2343b4a8a984b1c4079525, type: 3}
       propertyPath: m_LocalPosition.x
       value: 131.9
@@ -864,7 +868,8 @@ MonoBehaviour:
   _rightCollider: {fileID: 519420037}
   _maxOffset: {x: 5, y: 5, z: 0}
   _minOffset: {x: -5, y: -5, z: 0}
-  _moveSpeed: 1
+  _horMoveSpeed: 0.2
+  _verMoveSpeed: 1
 --- !u!61 &519420036
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3084,6 +3089,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 947300054437953423, guid: d73536f16d55c5d438f36263d4ad1b08, type: 3}
+      propertyPath: _speed
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 1013710365490454899, guid: d73536f16d55c5d438f36263d4ad1b08, type: 3}
       propertyPath: m_Name
       value: Horizontal Platform
@@ -4025,7 +4034,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5584407460979476751, guid: 86c8ae0e9a8a99d41b2c0355f7d8e248, type: 3}
       propertyPath: m_CollisionDetection
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8665683196036322554, guid: 86c8ae0e9a8a99d41b2c0355f7d8e248, type: 3}
       propertyPath: _actualCheckpoint

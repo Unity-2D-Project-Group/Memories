@@ -10,10 +10,10 @@ public class MovingPlat : MonoBehaviour
     public float _speed = 1.5f;
     int _direction = 1;
 
-    private void Update()
+    private void FixedUpdate()
     {
         Vector2 target = CurrentMovementTarget();
-        _platform.position = Vector2.Lerp(_platform.position, target, _speed * Time.deltaTime);
+        _platform.position = Vector3.MoveTowards(_platform.position, target, _speed);
 
         float distance = (target - (Vector2)_platform.position).magnitude;
 

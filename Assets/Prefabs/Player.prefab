@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7050827506932617712}
   - component: {fileID: 848391558711502635}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Square
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -99,7 +99,7 @@ GameObject:
   - component: {fileID: 1284764206826805584}
   - component: {fileID: 1069483939796533357}
   - component: {fileID: 8665683196036322554}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -266,6 +266,7 @@ MonoBehaviour:
   _dashForce: 25
   _dashCooldown: 0.5
   _dashAmount: 1
+  _dashAmountValue: 0
   _dashLenght: 0.1
   _groundRaycastLength: 1.05
   _groundRaycastOffset: {x: 0.4, y: 0, z: 0}
@@ -290,7 +291,6 @@ MonoBehaviour:
   _hookSpeed: 70
   _objSpeed: 10
   _hookCooldown: 1.5
-  _deathDelay: 0
   _interactRadius: 2
   _interactLayer:
     serializedVersion: 2
@@ -411,4 +411,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0c60a476f276694d857f1e53759d97c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _actualCheckpoint: {fileID: 0}
+  _checkpoints: []

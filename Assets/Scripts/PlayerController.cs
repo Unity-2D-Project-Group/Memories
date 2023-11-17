@@ -86,9 +86,6 @@ public class PlayerController : MonoBehaviour
     private LineRenderer _lineRenderer;
     private bool _canHook => (!_isWallJumping && !_isWallSliding && !_isGliding && _hookCooldownValue <= 0);
 
-    [Header("Death Variables")]
-    [SerializeField] private float _deathDelay = 2f;
-
     [Header("Interaction Variables")]
     [SerializeField] private float _interactRadius = 2f;
     [SerializeField] private LayerMask _interactLayer;
@@ -107,6 +104,7 @@ public class PlayerController : MonoBehaviour
         _dashAmountValue = _dashAmount;
 
         _checkpointController.TeleportToCheckPoint();
+        Time.timeScale = 1;
     }
 
     void Update()
@@ -431,10 +429,10 @@ public class PlayerController : MonoBehaviour
         _isRegreting = false;
         _isWallJumping = false;
         _isWallSliding = false;
-
-        float deathTime = Time.time;
-        yield return new WaitForSeconds(_deathDelay);
+        Time.timeScale = 0;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+
+        yield return null;
     }
     private void CallInteraction()
     {

@@ -298,7 +298,7 @@ MonoBehaviour:
   _platform: {fileID: 8968282589367856017}
   _startPoint: {fileID: 5566806928437260487}
   _endPoint: {fileID: 1530486300020818630}
-  _speed: 1.5
+  _speed: 0.1
 --- !u!1 &9167432992457624249
 GameObject:
   m_ObjectHideFlags: 0
