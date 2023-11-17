@@ -3089,10 +3089,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 947300054437953423, guid: d73536f16d55c5d438f36263d4ad1b08, type: 3}
-      propertyPath: _speed
-      value: 0.1
-      objectReference: {fileID: 0}
     - target: {fileID: 1013710365490454899, guid: d73536f16d55c5d438f36263d4ad1b08, type: 3}
       propertyPath: m_Name
       value: Horizontal Platform
@@ -4016,29 +4012,9 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 839765864819385232, guid: 86c8ae0e9a8a99d41b2c0355f7d8e248, type: 3}
-      propertyPath: m_Layer
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 1284764206826805584, guid: 86c8ae0e9a8a99d41b2c0355f7d8e248, type: 3}
-      propertyPath: _deathDelay
-      value: 0.5
-      objectReference: {fileID: 0}
     - target: {fileID: 3273498253242932800, guid: 86c8ae0e9a8a99d41b2c0355f7d8e248, type: 3}
       propertyPath: m_Name
       value: Player
-      objectReference: {fileID: 0}
-    - target: {fileID: 3273498253242932800, guid: 86c8ae0e9a8a99d41b2c0355f7d8e248, type: 3}
-      propertyPath: m_Layer
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 5584407460979476751, guid: 86c8ae0e9a8a99d41b2c0355f7d8e248, type: 3}
-      propertyPath: m_CollisionDetection
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8665683196036322554, guid: 86c8ae0e9a8a99d41b2c0355f7d8e248, type: 3}
-      propertyPath: _actualCheckpoint
-      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 9180127409959360938, guid: 86c8ae0e9a8a99d41b2c0355f7d8e248, type: 3}
       propertyPath: m_LocalPosition.x
