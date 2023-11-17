@@ -11,12 +11,11 @@ public class PlayerDeath : MonoBehaviour
         _player = GameObject.FindGameObjectWithTag("Player");
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.tag == "Player")
+        if (collision.collider.gameObject.tag == "Player")
         {
             StartCoroutine(_player.gameObject.GetComponent<PlayerController>().Death());
         }
-
     }
 }

@@ -33,7 +33,7 @@ public class CheckpointController : MonoBehaviour
 
     public void TeleportToCheckPoint()
     {
-        print(SaveLoad._savedGame._currentCheckpoint);
+        //print(SaveLoad._savedGame._currentCheckpoint);
         _player.transform.position = _checkpoints[SaveLoad._savedGame._currentCheckpoint].transform.position;
     }
 }
