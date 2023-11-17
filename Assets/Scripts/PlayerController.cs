@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -91,6 +92,11 @@ public class PlayerController : MonoBehaviour
     [Header("Interaction Variables")]
     [SerializeField] private float _interactRadius = 2f;
     [SerializeField] private LayerMask _interactLayer;
+
+    private void Awake()
+    {
+        SaveLoad.LoadSave();
+    }
     void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
@@ -99,6 +105,8 @@ public class PlayerController : MonoBehaviour
         _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
         _checkpointController = GetComponent<CheckpointController>();
         _dashAmountValue = _dashAmount;
+
+        _checkpointController.TeleportToCheckPoint();
     }
 
     void Update()
@@ -415,7 +423,6 @@ public class PlayerController : MonoBehaviour
     }
     public IEnumerator Death()
     {
-        this.GetComponent<SpriteRenderer>().enabled = false;
         _rb.velocity = Vector2.zero;
         _rb.angularVelocity = 0;
         _lineRenderer.enabled = false;
@@ -426,15 +433,8 @@ public class PlayerController : MonoBehaviour
         _isWallSliding = false;
 
         float deathTime = Time.time;
-        while (Time.time < deathTime + _deathDelay)
-        {
-            //Do something
-
-            yield return null;
-        }
-
-        _checkpointController.TeleportToCheckPoint(_checkpointController._actualCheckpoint);
-        this.GetComponent<SpriteRenderer>().enabled = true;
+        yield return new WaitForSeconds(_deathDelay);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
     private void CallInteraction()
     {
