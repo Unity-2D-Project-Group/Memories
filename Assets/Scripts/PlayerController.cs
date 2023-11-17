@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public bool _isRegreting = false;
     [HideInInspector] public bool _isDashing = false;
     [HideInInspector] public bool _canInteract = false;
+    [HideInInspector] public bool _isWallSliding;
 
     [Header("Movement Variables")]
     [SerializeField] private float _movementAcceleration = 50f;
@@ -64,7 +65,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Vector2 _wallJumpForce = new Vector2(8f, 16f);
     [SerializeField] private float _wallJumpLength = .3f;
     [SerializeField] private LayerMask _wallLayer;
-    [SerializeField] private bool _isWallSliding;
     private bool _canWallJump => (_isWallSliding && !_onGround);
     private bool _isWallJumping; 
     [SerializeField] private float _wallDirection = 0;

@@ -9,6 +9,7 @@ TagManager:
   - WorldLimit
   - Spike
   - AngryBlock
+  - Pet
   layers:
   - Default
   - TransparentFX
