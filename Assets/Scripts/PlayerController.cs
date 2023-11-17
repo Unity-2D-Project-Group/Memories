@@ -105,6 +105,7 @@ public class PlayerController : MonoBehaviour
 
         _checkpointController.TeleportToCheckPoint();
         Time.timeScale = 1;
+        GameObject.FindGameObjectWithTag("Pet").GetComponent<PetController>().TeleportPetToPlayer();
     }
 
     void Update()

@@ -174,7 +174,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -283,7 +283,6 @@ MonoBehaviour:
   _playerLayer:
     serializedVersion: 2
     m_Bits: 0
-  _fallDelay: 1
   _speed: 1.5
   _angryblock: {fileID: 8754145105110889453}
   _startPoint: {fileID: 1869005701554755960}

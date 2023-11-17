@@ -103,12 +103,10 @@ MonoBehaviour:
   _playerLayer:
     serializedVersion: 2
     m_Bits: 1024
-  _groundLayer:
-    serializedVersion: 2
-    m_Bits: 8
   _raycastSize: 5.5
   _fallDelay: 0.1
   _dropMultiplier: 9
+  _destroyTimer: 0.1
 --- !u!50 &2643144292399899116
 Rigidbody2D:
   serializedVersion: 4
@@ -135,7 +133,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 5
 --- !u!114 &5563180572112270241
 MonoBehaviour:
   m_ObjectHideFlags: 0

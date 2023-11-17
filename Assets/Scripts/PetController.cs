@@ -52,7 +52,7 @@ public class PetController : MonoBehaviour
         }
         else
         {
-            direction = _player.transform.position + _offset - transform.position;
+            direction = _player.transform.position + new Vector3(_offset.x * _player.transform.localScale.x, _offset.y, _offset.z) - transform.position;
         }
         
         float distance = direction.magnitude;
@@ -61,5 +61,10 @@ public class PetController : MonoBehaviour
 
         Vector3 velocity = direction.normalized * actualSpeed;
         _rb.velocity = velocity;
+    }
+
+    public void TeleportPetToPlayer()
+    {
+        transform.position = _player.transform.position + _offset;
     }
 }
