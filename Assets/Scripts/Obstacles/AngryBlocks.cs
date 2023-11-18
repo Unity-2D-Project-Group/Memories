@@ -6,67 +6,65 @@ using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class AngryBlocks : MonoBehaviour
 {
-    private Rigidbody2D rb;
-    private float _distance;
-    private int _direction = 1;
+    [Header("Angry Block Variables")]
+    [SerializeField] private float _gravity;
+    [SerializeField] private float _speedToGetUp;
+    [SerializeField] private float _maxTimeToGetUp;
+    private Rigidbody2D _rb;
+    private float _timeToGetUp;
+    private Vector3 _inicialPosition;
+    private bool _canFall;
+    private bool _hasFallen;
 
-    [SerializeField] private LayerMask _playerLayer;
-    [SerializeField] private float _speed = 1.5f;
-
-    [SerializeField] private Transform _angryblock;
-    [SerializeField] private Transform _startPoint;
-    [SerializeField] private Transform _endPoint;
-
-    void Start()
+    private void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
-        _distance = Vector2.Distance(_endPoint.position, _startPoint.position);
+        _rb = GetComponent<Rigidbody2D>();
+        _canFall = false;
+        _hasFallen = false;
+        _rb.gravityScale = 0f;
+
+        _inicialPosition = transform.position;
+        _timeToGetUp = _maxTimeToGetUp;
     }
 
     private void Update()
     {
-        if (Physics2D.Raycast(_angryblock.transform.position, Vector2.down, _distance, _playerLayer))
-        {
-            StartCoroutine(Attack());
-        }
+        Chronometer();
     }
 
-    Vector2 CurrentMovementTarget()
+    private void Chronometer()
     {
-        if (_direction == 1)
+        if (_hasFallen) 
         {
-            return _startPoint.position;
+            _timeToGetUp -= Time.deltaTime;
+
+            if ( _timeToGetUp <= 0)
+            {
+                _hasFallen= false;
+                _rb.gravityScale= 0f;
+                _timeToGetUp = _maxTimeToGetUp;
+            }
         }
         else
         {
-            return _endPoint.position;
+            if (transform.position != _inicialPosition)
+            {
+                transform.position = Vector3.MoveTowards(transform.position, _inicialPosition, _speedToGetUp * Time.deltaTime);
+                _canFall = false;
+            }
+            else
+            {
+                _canFall = true;
+            }
         }
     }
 
-    private IEnumerator Attack()
+    public void ActivateGravity()
     {
-        yield return null;
-        //yield return new WaitForSeconds(_fallDelay);
-        //rb.bodyType = RigidbodyType2D.Dynamic;
-
-        Vector2 target = CurrentMovementTarget();
-        _angryblock.position = Vector2.Lerp(_angryblock.position, target, _speed * Time.deltaTime);
-
-        float distance = (target - (Vector2)_angryblock.position).magnitude;
-
-        if (distance <= 0.1f)
+        if (_canFall)
         {
-            _direction *= -1;
+            _hasFallen = true;
+            _rb.gravityScale = _gravity;
         }
-    }
-
-    private void OnDrawGizmos()
-    {
-        if (_endPoint && _startPoint)
-        {
-            Gizmos.DrawLine(_startPoint.position, _endPoint.position);
-        }
-
-        Gizmos.DrawLine(_angryblock.transform.position, _angryblock.transform.position + Vector3.down * _distance);
     }
 }

@@ -3997,7 +3997,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9051905720687527276, guid: b5a62f39fab511f4b9f43dc429b85b0f, type: 3}
       propertyPath: m_Name
-      value: Angry Block
+      value: AngryBlock
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4169,6 +4169,14 @@ PrefabInstance:
     - target: {fileID: 5856511961339684672, guid: 6bd984a89ce77da43b18a49b2d386a39, type: 3}
       propertyPath: m_Name
       value: Pet Example
+      objectReference: {fileID: 0}
+    - target: {fileID: 7177523106362919600, guid: 6bd984a89ce77da43b18a49b2d386a39, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7177523106362919600, guid: 6bd984a89ce77da43b18a49b2d386a39, type: 3}
+      propertyPath: m_ExcludeLayers.m_Bits
+      value: 4023
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
