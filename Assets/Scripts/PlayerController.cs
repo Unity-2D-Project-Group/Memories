@@ -159,21 +159,23 @@ public class PlayerController : MonoBehaviour
             _lineRenderer.SetPosition(1, transform.position);
             _lineRenderer.enabled = false;
         }
-
-        // Get the joystick position
-        leftStick = Gamepad.current.leftStick.ReadValue();
-        // Prevent annoying jitter when not using joystick
-        if (leftStick.magnitude < 0.1f) return;
-        // Get the current mouse position to add to the joystick movement
-        mousePosition = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
-        // Precise value for desired cursor position, which unfortunately cannot be used directly
-        warpPosition = mousePosition + bias + overflow + sensitivity * Time.deltaTime * leftStick;
-        // Keep the cursor in the game screen (behavior gets weird out of bounds)
-        warpPosition = new Vector2(Mathf.Clamp(warpPosition.x, 0, Screen.width), Mathf.Clamp(warpPosition.y, 0, Screen.height));
-        // Store floating point values so they are not lost in WarpCursorPosition (which applies FloorToInt)
-        overflow = new Vector2(warpPosition.x % 1, warpPosition.y % 1);
-        // Move the cursor
-        Mouse.current.WarpCursorPosition(warpPosition);
+        if (Gamepad.current != null)
+        {
+            // Get the joystick position
+            leftStick = Gamepad.current.leftStick.ReadValue();
+            // Prevent annoying jitter when not using joystick
+            if (leftStick.magnitude < 0.1f) return;
+            // Get the current mouse position to add to the joystick movement
+            mousePosition = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+            // Precise value for desired cursor position, which unfortunately cannot be used directly
+            warpPosition = mousePosition + bias + overflow + sensitivity * Time.deltaTime * leftStick;
+            // Keep the cursor in the game screen (behavior gets weird out of bounds)
+            warpPosition = new Vector2(Mathf.Clamp(warpPosition.x, 0, Screen.width), Mathf.Clamp(warpPosition.y, 0, Screen.height));
+            // Store floating point values so they are not lost in WarpCursorPosition (which applies FloorToInt)
+            overflow = new Vector2(warpPosition.x % 1, warpPosition.y % 1);
+            // Move the cursor
+            Mouse.current.WarpCursorPosition(warpPosition);
+        }
     }
 
     void FixedUpdate()
@@ -417,8 +419,8 @@ public class PlayerController : MonoBehaviour
                 _isRegreting = false;
                 return;
             }
-
-            Vector2 hookPos = Vector2.Lerp(target.transform.position, transform.position, _objSpeed * Time.deltaTime);
+            
+            Vector2 hookPos = Vector2.Lerp(new Vector2(target.transform.position.x, target.transform.position.y), new Vector2(transform.position.x, target.transform.position.y), _objSpeed * Time.deltaTime);
 
             target.transform.position = hookPos;
 
