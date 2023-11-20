@@ -9,7 +9,7 @@ public class FragmentController : MonoBehaviour
     //private GameObject _player;
 
     [Header("Components")]
-    [SerializeField] private List<Fragment> _fragments = new List<Fragment>();
+    public static List<Fragment> _fragments = new List<Fragment>();
 
     public void StartFragments()
     {

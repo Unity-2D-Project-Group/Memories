@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BookInteraction : Interact
 {
-    void Interact()
+    public override void Interaction()
     {
         Debug.Log("Book");
         this.gameObject.SetActive(false);

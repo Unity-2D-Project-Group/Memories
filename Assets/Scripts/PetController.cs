@@ -22,6 +22,12 @@ public class PetController : MonoBehaviour
         _player = GameObject.FindGameObjectWithTag("Player");
     }
 
+    private void Start()
+    {
+
+        transform.position = _player.transform.position + _offset;
+    }
+
     void Update()
     {
         if(_player.transform.position.x - transform.position.x > 0)
