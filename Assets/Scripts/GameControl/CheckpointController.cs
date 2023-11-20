@@ -9,9 +9,9 @@ public class CheckpointController : MonoBehaviour
     private GameObject _player;
 
     [Header("Components")]
-    public List<CheckPoint> _checkpoints = new List<CheckPoint>();
+    [SerializeField] private List<CheckPoint> _checkpoints = new List<CheckPoint>();
 
-    void Start()
+    public void StartCheckPoints()
     {
         _player = GameObject.FindGameObjectWithTag("Player");
 
@@ -29,11 +29,12 @@ public class CheckpointController : MonoBehaviour
                 }
             }
         }
+
+        TeleportToCheckPoint();
     }
 
     public void TeleportToCheckPoint()
     {
-        //print(SaveLoad._savedGame._currentCheckpoint);
         _player.transform.position = _checkpoints[SaveLoad._savedGame._currentCheckpoint].transform.position;
     }
 }

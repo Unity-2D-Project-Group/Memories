@@ -103,22 +103,14 @@ public class PlayerController : MonoBehaviour
 
     // Stored for next frame
     Vector2 overflow;
-
-    private void Awake()
-    {
-        SaveLoad.LoadSave();
-    }
     void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
         _lineRenderer = GetComponent<LineRenderer>();
         _lineRenderer.enabled = false;
         _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
-        _checkpointController = GetComponent<CheckpointController>();
         _dashAmountValue = _dashAmount;
 
-        _checkpointController.TeleportToCheckPoint();
-        Time.timeScale = 1;
         GameObject.FindGameObjectWithTag("Pet").GetComponent<PetController>().TeleportPetToPlayer();
     }
 

@@ -15,5 +15,6 @@ public class Game
 
         _currentCheckpoint = 0;
         _currentLevel = 1;
+        _currentFragment = 0;
     }
 }

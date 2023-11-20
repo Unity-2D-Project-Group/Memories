@@ -15,7 +15,7 @@ public class PetController : MonoBehaviour
 
     private Rigidbody2D _rb;
     private ParticleSystem _ps;
-    void Start()
+    void Awake()
     {
         _rb = GetComponent<Rigidbody2D>();
         _ps = GetComponent<ParticleSystem>();

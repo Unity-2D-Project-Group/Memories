@@ -3,24 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class CheckPoint : MonoBehaviour
+public class Fragment : MonoBehaviour
 {
-    public int _checkPointID;
+    public int _fragmentID;
     public bool _activated;
 
     [SerializeField] private LayerMask _playerMask;
 
     void FixedUpdate()
     {
-        RaycastHit2D boxHit = Physics2D.BoxCast(transform.position, transform.localScale, 0 , Vector2.zero, transform.localScale.x, _playerMask);
+        RaycastHit2D boxHit = Physics2D.BoxCast(transform.position, transform.localScale, 0, Vector2.zero, transform.localScale.x, _playerMask);
 
-        if(boxHit && _activated)
+        if (boxHit && _activated)
         {
-            SaveLoad._savedGame._currentCheckpoint = _checkPointID;
+            SaveLoad._savedGame._currentFragment = _fragmentID;
             SaveLoad._savedGame._currentLevel = SceneManager.GetActiveScene().buildIndex;
             SaveLoad.OverwriteSave();
+            print("Collected Fragment: " + _fragmentID);
             _activated = false;
-            print("Saved the game at: " + _checkPointID);
+            this.gameObject.SetActive(false);
         }
     }
 }
