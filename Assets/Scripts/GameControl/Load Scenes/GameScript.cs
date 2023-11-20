@@ -14,7 +14,7 @@ public class Game
         _instance = this;
 
         _currentCheckpoint = 0;
-        _currentLevel = 1;
+        _currentLevel = 0;
         _currentFragment = 0;
     }
 }

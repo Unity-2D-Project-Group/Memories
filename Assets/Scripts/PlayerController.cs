@@ -198,7 +198,7 @@ public class PlayerController : MonoBehaviour
             _rb.AddForce(new Vector2(_horizontalDirection, 0f) * _movementAcceleration);
 
             //Math.Abs always returns a positive number, that's why we use it here to compare with the max move speed, because if the player is moving backwards it will give a negative number and we dont wanna that
-            if (Mathf.Abs(_rb.velocity.x) > _maxMoveSpeed)
+            if (Mathf.Abs(_rb.velocity.x) > _maxMoveSpeed && !_isDashing)
             {
                 //Math.Sign returns always (-1,0 or 1), so we multiply this by the max move speed then we can have a linear speed 
                 _rb.velocity = new Vector2(Mathf.Sign(_rb.velocity.x) * _maxMoveSpeed, _rb.velocity.y);
@@ -265,7 +265,7 @@ public class PlayerController : MonoBehaviour
         while (Time.time < dashStartTime + _dashLenght)
         {
             _rb.velocity = direction * _dashForce;
-            yield return null;
+            yield return new WaitForSeconds(0.1f);
         }
         _dashCooldownValue = _dashCooldown;
         _dashAmountValue--;
@@ -456,8 +456,7 @@ public class PlayerController : MonoBehaviour
         _isRegreting = false;
         _isWallJumping = false;
         _isWallSliding = false;
-        Time.timeScale = 0;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        FindAnyObjectByType<SceneLoader>().LoadScene(SceneManager.GetActiveScene().name);
 
         yield return null;
     }

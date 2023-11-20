@@ -34,14 +34,16 @@ public class CamController : MonoBehaviour
     private Vector3 _initCamPos;
     private Vector3 _currentCamPos;
     private bool _isMoving;
+    private Camera _mainCam;
     void Start()
     {
         _player = GameObject.FindGameObjectWithTag("Player");
+        _mainCam = GetComponent<Camera>();
         //Put the colliders in the right position
-        _leftCollider.offset = new Vector3(-Camera.main.orthographicSize * 0.57f, 0f);
-        _leftCollider.size = new Vector2(0.5f, Camera.main.orthographicSize / 2);
-        _rightCollider.offset = new Vector3(Camera.main.orthographicSize * 0.57f, 0f);
-        _rightCollider.size = new Vector2(0.5f, Camera.main.orthographicSize / 2);
+        _leftCollider.offset = new Vector3(-_mainCam.orthographicSize * 0.57f, 0f);
+        _leftCollider.size = new Vector2(0.5f, _mainCam.orthographicSize / 2);
+        _rightCollider.offset = new Vector3(_mainCam.orthographicSize * 0.57f, 0f);
+        _rightCollider.size = new Vector2(0.5f, _mainCam.orthographicSize / 2);
     }
 
     private void Update()
