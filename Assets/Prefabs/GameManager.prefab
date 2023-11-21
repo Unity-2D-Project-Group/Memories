@@ -58,7 +58,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89af0c250f05b1e44ab059fd84bf5e73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _fragments: []
 --- !u!114 &9165786102928359625
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -71,4 +70,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0c60a476f276694d857f1e53759d97c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _checkpoints: []
+  _checkpoints:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}

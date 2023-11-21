@@ -17,7 +17,6 @@ public class Fragment : MonoBehaviour
         if (boxHit && _activated)
         {
             SaveLoad._savedGame._currentFragment = _fragmentID;
-            SaveLoad._savedGame._currentLevel = SceneManager.GetActiveScene().buildIndex;
             SaveLoad.OverwriteSave();
             print("Collected Fragment: " + _fragmentID);
             _activated = false;

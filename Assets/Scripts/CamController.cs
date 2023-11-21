@@ -44,7 +44,7 @@ public class CamController : MonoBehaviour
         _leftCollider.size = new Vector2(0.5f, _mainCam.orthographicSize / 2);
         _rightCollider.offset = new Vector3(_mainCam.orthographicSize * 0.57f, 0f);
         _rightCollider.size = new Vector2(0.5f, _mainCam.orthographicSize / 2);
-        SendToPlayer(_player.transform.position);
+        StartCoroutine(SendToPlayer(_player.transform.position));
     }
 
     private void Update()

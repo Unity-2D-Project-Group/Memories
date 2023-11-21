@@ -7,7 +7,7 @@ public class PortalInteraction : Interact
 {
     public override void Interaction()
     {
-        if(SaveLoad._savedGame._currentFragment == FragmentController._fragments.Count - 1)
+        if(SaveLoad._savedGame._currentFragment >= FragmentController._fragments.Count - 1)
         {
             SaveLoad._savedGame._currentLevel++;
             SaveLoad._savedGame._currentFragment = 0;

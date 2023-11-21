@@ -9,7 +9,8 @@ public class CheckpointController : MonoBehaviour
     private GameObject _player;
 
     [Header("Components")]
-    [SerializeField] private List<CheckPoint> _checkpoints = new List<CheckPoint>();
+    [SerializeField] private Hashtable _checkpoints = new Hashtable();
+    //[SerializeField] private List<CheckPoint> _checkpoints = new List<CheckPoint>();
 
     public void StartCheckPoints()
     {
@@ -17,16 +18,14 @@ public class CheckpointController : MonoBehaviour
 
         Game._instance = SaveLoad._savedGame;
 
-        _checkpoints = FindObjectsByType<CheckPoint>(FindObjectsSortMode.InstanceID).ToList();
-
-        if(SaveLoad._savedGame._currentCheckpoint >= 1)
+        foreach(GameObject checkPoint in GameObject.FindGameObjectsWithTag("CheckPoint"))
         {
-            foreach(CheckPoint checkpoint in _checkpoints)
+            _checkpoints.Add(checkPoint.GetComponent<CheckPoint>()._checkPointID.ToString(), checkPoint);
+            //print(_checkpoints[checkPoint.GetComponent<CheckPoint>()._checkPointID.ToString()]);
+
+            if (checkPoint.GetComponent<CheckPoint>()._checkPointID <= SaveLoad._savedGame._currentCheckpoint)
             {
-                if(checkpoint._checkPointID <= SaveLoad._savedGame._currentCheckpoint)
-                {
-                    checkpoint._activated = false;
-                }
+                checkPoint.GetComponent<CheckPoint>()._activated = false;
             }
         }
 
@@ -35,6 +34,8 @@ public class CheckpointController : MonoBehaviour
 
     public void TeleportToCheckPoint()
     {
-        _player.transform.position = _checkpoints[SaveLoad._savedGame._currentCheckpoint].transform.position;
+        print(SaveLoad._savedGame._currentCheckpoint);
+        GameObject temp = (GameObject)_checkpoints[SaveLoad._savedGame._currentCheckpoint.ToString()];
+        _player.transform.position = temp.transform.position;
     }
 }

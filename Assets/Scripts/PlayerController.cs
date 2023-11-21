@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public bool _isDashing = false;
     [HideInInspector] public bool _canInteract = false;
     [HideInInspector] public bool _isWallSliding;
+    [HideInInspector] public bool _isDead = false;
 
     [Header("Movement Variables")]
     [SerializeField] private float _movementAcceleration = 50f;
@@ -449,6 +450,7 @@ public class PlayerController : MonoBehaviour
     public IEnumerator Death()
     {
         _rb.velocity = Vector2.zero;
+        _isDead = true;
         _rb.angularVelocity = 0;
         _lineRenderer.enabled = false;
         _isDashing = false;

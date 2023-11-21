@@ -11,6 +11,7 @@ TagManager:
   - AngryBlock
   - Pet
   - Ground
+  - CheckPoint
   layers:
   - Default
   - TransparentFX
