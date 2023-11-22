@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class CheckpointController : MonoBehaviour
 {
-    public static CheckpointController Instance;
+    public static CheckpointController _instance;
     private GameObject _player;
 
     [Header("Components")]
@@ -15,13 +15,14 @@ public class CheckpointController : MonoBehaviour
     {
         _player = GameObject.FindGameObjectWithTag("Player");
 
-        Game._instance = SaveLoad._savedGame;
+        Save._instance = SaveLoad._savedGame;
+        Level temp = (Level)SaveLoad._savedGame.Levels[$"Level{SaveLoad._savedGame._currentLevel}"];
 
-        foreach(CheckPoint checkPoint in FindObjectsOfType<CheckPoint>().ToList())
+        foreach (CheckPoint checkPoint in FindObjectsOfType<CheckPoint>().ToList())
         {
             _checkpoints.Add(checkPoint._checkPointID.ToString(), checkPoint.gameObject);
 
-            if (checkPoint._checkPointID <= SaveLoad._savedGame._currentCheckpoint)
+            if (checkPoint._checkPointID <= temp._currentCheckpoint)
             {
                 checkPoint._activated = false;
             }
@@ -32,7 +33,8 @@ public class CheckpointController : MonoBehaviour
 
     public void TeleportToCheckPoint()
     {
-        GameObject temp = (GameObject)_checkpoints[SaveLoad._savedGame._currentCheckpoint.ToString()];
+        Level tempLevel = (Level)SaveLoad._savedGame.Levels[$"Level{SaveLoad._savedGame._currentLevel}"];
+        GameObject temp = (GameObject)_checkpoints[tempLevel._currentCheckpoint.ToString()];
         _player.transform.position = temp.transform.position;
     }
 }

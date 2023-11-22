@@ -5,13 +5,13 @@ using UnityEngine.SceneManagement;
 
 public class PortalInteraction : Interact
 {
+    public int _portalLevel;
     public override void Interaction()
     {
-        if(SaveLoad._savedGame._currentFragment >= FindObjectOfType<FragmentController>()._fragments.Count - 1)
+        Level temp = (Level)SaveLoad._savedGame.Levels[$"Level{_portalLevel}"];
+        if (temp._currentFragment >= FindObjectOfType<FragmentController>()._fragments.Count - 1)
         {
-            SaveLoad._savedGame._currentLevel++;
-            SaveLoad._savedGame._currentFragment = 0;
-            SaveLoad._savedGame._currentCheckpoint = 0;
+            SaveLoad._savedGame.FinishLevel(_portalLevel);
             SaveLoad.OverwriteSave();
             //It will be changed
             FindAnyObjectByType<SceneLoader>().LoadScene("MainMenuScene");

@@ -31,7 +31,6 @@ public class CamController : MonoBehaviour
     [SerializeField] private float _verMoveSpeed = 1f;
 
     private Vector3 _initMousePos;
-    private Vector3 _initCamPos;
     private Vector3 _currentCamPos;
     private bool _isMoving;
     private Camera _mainCam;
@@ -40,10 +39,10 @@ public class CamController : MonoBehaviour
         _player = GameObject.FindGameObjectWithTag("Player");
         _mainCam = GetComponent<Camera>();
         //Put the colliders in the right position
-        _leftCollider.offset = new Vector3(-_mainCam.orthographicSize * 0.57f, 0f);
-        _leftCollider.size = new Vector2(0.5f, _mainCam.orthographicSize / 2);
-        _rightCollider.offset = new Vector3(_mainCam.orthographicSize * 0.57f, 0f);
-        _rightCollider.size = new Vector2(0.5f, _mainCam.orthographicSize / 2);
+        _leftCollider.offset = new Vector3(-_mainCam.orthographicSize * 0.54f, 0f);
+        _leftCollider.size = new Vector2(0.7f, _mainCam.orthographicSize / 2);
+        _rightCollider.offset = new Vector3(_mainCam.orthographicSize * 0.54f, 0f);
+        _rightCollider.size = new Vector2(0.7f, _mainCam.orthographicSize / 2);
         StartCoroutine(SendToPlayer(_player.transform.position));
     }
 
@@ -52,17 +51,29 @@ public class CamController : MonoBehaviour
         if (Input.GetMouseButtonDown(1))
         {
             _initMousePos = Input.mousePosition;
-            _initCamPos = transform.position;
             _isMoving = true;
         }
         else if (Input.GetMouseButtonUp(1) && _isMoving)
         {
-            transform.position = _initCamPos;
             StartCoroutine(SendToPlayer(_player.transform.position));
             _isMoving = false;
         }
+        if (_isMoving)
+        {
+            _currentCamPos = _player.transform.position;
+            Vector3 moveDir = Input.mousePosition - _initMousePos;
+            float moveX = moveDir.x * _horMoveSpeed * Time.fixedDeltaTime;
+            float moveY = moveDir.y * _verMoveSpeed * Time.fixedDeltaTime;
 
-        
+            Vector3 newPos = transform.position + new Vector3(moveX, moveY, 0f);
+            newPos.x = Mathf.Clamp(newPos.x, _currentCamPos.x + _minOffset.x, _currentCamPos.x + _maxOffset.x);
+            newPos.y = Mathf.Clamp(newPos.y, _currentCamPos.y + _minOffset.y, _currentCamPos.y + _maxOffset.y);
+
+            newPos.x = Mathf.Clamp(newPos.x, _minValues.x, _maxValues.x);
+            newPos.y = Mathf.Clamp(newPos.y, _minValues.y, _maxValues.y);
+
+            transform.position = newPos;
+        }
     }
 
     void LateUpdate()
@@ -86,20 +97,6 @@ public class CamController : MonoBehaviour
             {
                 StartCoroutine(RealocateCamera("Left"));
             }
-        }
-
-        if (_isMoving)
-        {
-            _currentCamPos = _player.transform.position;
-            Vector3 moveDir = Input.mousePosition - _initMousePos;
-            float moveX = moveDir.x * _horMoveSpeed * Time.fixedDeltaTime;
-            float moveY = moveDir.y * _verMoveSpeed * Time.fixedDeltaTime;
-
-            Vector3 newPos = transform.position + new Vector3(moveX, moveY, 0f);
-            newPos.x = Mathf.Clamp(newPos.x, _initCamPos.x + _minOffset.x, _currentCamPos.x + _maxOffset.x);
-            newPos.y = Mathf.Clamp(newPos.y, _initCamPos.y + _minOffset.y, _currentCamPos.y + _maxOffset.y);
-
-            transform.position = newPos;
         }
     }
 

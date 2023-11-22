@@ -1,20 +1,46 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [System.Serializable]
-public class Game
+public class Save
 {
-    public static Game _instance;
-    public int _currentCheckpoint;
-    public int _currentLevel;
-    public int _currentFragment;
-    public Game()
+    public static Save _instance;
+    public float _currentLevel;
+    public Hashtable Levels = new Hashtable();
+    public Save()
     {
         _instance = this;
 
-        _currentCheckpoint = 0;
         _currentLevel = 0;
-        _currentFragment = 0;
+        Levels["Level0"] = new Level(0, true);
+        Levels["Level1"] = new Level(1, false);
+        Levels["Level2"] = new Level(2, false);
+        Levels["Level3"] = new Level(3, false);
+    }
+
+
+    public void FinishLevel(int level)
+    {
+        Level temp = (Level)_instance.Levels[$"Level{level}"];
+
+        temp._currentFragment = 0;
+        temp._currentCheckpoint = 0;
+        _instance.Levels[$"Level{level}"] = temp;
+
+        if(_instance._currentLevel == temp._levelID)
+        {
+            PassLevel(temp);
+        }
+    }
+
+    public void PassLevel(Level temp)
+    {
+        _instance._currentLevel++;
+
+        temp = (Level)_instance.Levels[$"Level{_instance._currentLevel}"];
+        temp._unlocked = true;
+        _instance.Levels[$"Level{_instance._currentLevel}"] = temp;
     }
 }

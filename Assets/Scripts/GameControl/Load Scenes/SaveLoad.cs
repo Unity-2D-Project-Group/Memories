@@ -7,7 +7,7 @@ using static Unity.Burst.Intrinsics.X86.Avx;
 
 public class SaveLoad : MonoBehaviour
 {
-    public static Game _savedGame;
+    public static Save _savedGame;
     public static void OverwriteSave()
     {
         BinaryFormatter bf = new BinaryFormatter();
@@ -17,7 +17,7 @@ public class SaveLoad : MonoBehaviour
     }
     public static void NewSave()
     {
-        _savedGame = new Game();
+        _savedGame = new Save();
         BinaryFormatter bf = new BinaryFormatter();
         FileStream file = File.Create(Path.Combine(Application.persistentDataPath, "GameSave.txt"));
         bf.Serialize(file, _savedGame);
@@ -30,7 +30,7 @@ public class SaveLoad : MonoBehaviour
         {
             BinaryFormatter bf = new BinaryFormatter();
             FileStream file = File.Open(Path.Combine(Application.persistentDataPath, "GameSave.txt"), FileMode.Open);
-            _savedGame = (Game)bf.Deserialize(file);
+            _savedGame = (Save)bf.Deserialize(file);
             file.Close();
         }
     }

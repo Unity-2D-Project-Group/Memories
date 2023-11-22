@@ -16,7 +16,9 @@ public class CheckPoint : MonoBehaviour
 
         if(boxHit && _activated)
         {
-            SaveLoad._savedGame._currentCheckpoint = _checkPointID;
+            Level temp = (Level)SaveLoad._savedGame.Levels[$"Level{SaveLoad._savedGame._currentLevel}"];
+            temp._currentCheckpoint = _checkPointID;
+            SaveLoad._savedGame.Levels[$"Level{SaveLoad._savedGame._currentLevel}"] = temp;
             SaveLoad.OverwriteSave();
             _activated = false;
             //print("Saved the game at: " + _checkPointID);

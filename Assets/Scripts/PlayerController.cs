@@ -7,15 +7,13 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     [Header("Components")]
-    private GameObject _mainCamera;
     private Rigidbody2D _rb;
-    private CheckpointController _checkpointController;
 
     [Header("Public Variables")]
     [HideInInspector] public bool _facingRight = true;
     [HideInInspector] public bool _onGround;
     [HideInInspector] public bool _isHooking;
-    [HideInInspector] public bool _isRegreting = false;
+    [HideInInspector] public bool _isRegretting = false;
     [HideInInspector] public bool _isDashing = false;
     [HideInInspector] public bool _canInteract = false;
     [HideInInspector] public bool _isWallSliding;
@@ -27,7 +25,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float _maxYSpeed = 30f;
     [SerializeField] private float _groundLinearDrag = 10f; //We could call it friction, but we don't bcz that's the way unity calls it, its easier to find it on unity like that
     private float _horizontalDirection;
-    private bool _canMove => (!_isWallSliding && !_isHooking && !_isRegreting && !_isDashing && !_isWallJumping);
+    private bool _canMove => (!_isWallSliding && !_isHooking && !_isRegretting && !_isDashing && !_isWallJumping);
     private bool _changingDirection => (_rb.velocity.x > 0f && _horizontalDirection < 0f) || (_rb.velocity.x < 0f && _horizontalDirection > 0f);
 
     [Header("Jump Variables")]
@@ -52,9 +50,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float _dashAmount = 1;
     [SerializeField] private float _dashAmountValue;
     private float _dashCooldownValue = 0f;
-    private bool _canDash => (_dashCooldownValue <= 0 && !_isGliding && _dashAmountValue > 0);
+    private bool _canDash => (_dashCooldownValue <= 0 /*&& !_isGliding*/ && _dashAmountValue > 0);
 
-    [SerializeField] private float _dashLenght = .3f;
+    [SerializeField] private float _dashLength = .3f;
 
     [Header("Collision Variables")]
     [SerializeField] private float _groundRaycastLength;
@@ -71,10 +69,10 @@ public class PlayerController : MonoBehaviour
     private bool _isWallJumping; 
     [SerializeField] private float _wallDirection = 0;
 
-    [Header("Gliding Variables")]
+    /*[Header("Gliding Variables")]
     [SerializeField] private float _glideGravity = 1f;
     [SerializeField] private bool _isGliding;
-    private bool _canGlide => (!_isWallSliding && !_onGround);
+    private bool _canGlide => (!_isWallSliding && !_onGround);*/
 
     [Header("Hook Variables")]
     [SerializeField] private LayerMask _hookableMask;
@@ -86,30 +84,29 @@ public class PlayerController : MonoBehaviour
     private Vector2 _target;
     private GameObject _targetGameObject;
     private LineRenderer _lineRenderer;
-    private bool _canHook => (!_isWallJumping && !_isWallSliding && !_isGliding && _hookCooldownValue <= 0);
+    private bool _canHook => (!_isWallJumping && !_isWallSliding /*&& !_isGliding*/ && _hookCooldownValue <= 0);
 
     [Header("Interaction Variables")]
     [SerializeField] private float _interactRadius = 2f;
     [SerializeField] private LayerMask _interactLayer;
 
     // Higher numbers for more mouse movement on joystick press. Warning: diagonal movement lost at lower sensitivity (<1000)
-    public Vector2 sensitivity = new Vector2(1500000f, 1500000f);
+    public Vector2 _sensitivity = new Vector2(1500000f, 1500000f);
     // Counteract tendency for cursor to move more easily in some directions
-    public Vector2 bias = new Vector2(0f, -1f);
+    public Vector2 _bias = new Vector2(0f, -1f);
 
     // Cached variables
-    Vector3 leftStick;
-    Vector2 mousePosition;
-    Vector2 warpPosition;
+    Vector3 _leftStick;
+    Vector2 _mousePosition;
+    Vector2 _warpPosition;
 
     // Stored for next frame
-    Vector2 overflow;
+    Vector2 _overflow;
     void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
         _lineRenderer = GetComponent<LineRenderer>();
         _lineRenderer.enabled = false;
-        _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
         _dashAmountValue = _dashAmount;
 
         GameObject.FindGameObjectWithTag("Pet").GetComponent<PetController>().TeleportPetToPlayer();
@@ -137,15 +134,15 @@ public class PlayerController : MonoBehaviour
         else if(Input.GetButtonDown("Jump") && _canWallJump) { StartCoroutine(WallJump()); }
 
         if (Input.GetButtonDown("Dash") && _canDash) { StartCoroutine(Dash()); }
-        if (Input.GetButtonDown("Glide") && _canGlide) { ActivateGlide(); }
-        if (Input.GetButtonUp("Glide") && _isGliding) { DeactivateGlide(); }
+        /*if (Input.GetButtonDown("Glide") && _canGlide) { ActivateGlide(); }
+        if (Input.GetButtonUp("Glide") && _isGliding) { DeactivateGlide(); }*/
 
         if (Input.GetMouseButtonDown(0) && _canHook){ Hook(); }
         else if (Input.GetButtonDown("Hook") && _canHook) { Hook(); }
 
         if (Input.GetButtonDown("Interact")){ CallInteraction(); }
 
-        if (_isRegreting)
+        if (_isRegretting)
         {
             GrabAction(_targetGameObject);
 
@@ -155,19 +152,19 @@ public class PlayerController : MonoBehaviour
         if (Gamepad.current != null)
         {
             // Get the joystick position
-            leftStick = Gamepad.current.leftStick.ReadValue();
+            _leftStick = Gamepad.current.leftStick.ReadValue();
             // Prevent annoying jitter when not using joystick
-            if (leftStick.magnitude < 0.1f) return;
+            if (_leftStick.magnitude < 0.1f) return;
             // Get the current mouse position to add to the joystick movement
-            mousePosition = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+            _mousePosition = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
             // Precise value for desired cursor position, which unfortunately cannot be used directly
-            warpPosition = mousePosition + bias + overflow + sensitivity * Time.deltaTime * leftStick;
+            _warpPosition = _mousePosition + _bias + _overflow + _sensitivity * Time.deltaTime * _leftStick;
             // Keep the cursor in the game screen (behavior gets weird out of bounds)
-            warpPosition = new Vector2(Mathf.Clamp(warpPosition.x, 0, Screen.width), Mathf.Clamp(warpPosition.y, 0, Screen.height));
+            _warpPosition = new Vector2(Mathf.Clamp(_warpPosition.x, 0, Screen.width), Mathf.Clamp(_warpPosition.y, 0, Screen.height));
             // Store floating point values so they are not lost in WarpCursorPosition (which applies FloorToInt)
-            overflow = new Vector2(warpPosition.x % 1, warpPosition.y % 1);
+            _overflow = new Vector2(_warpPosition.x % 1, _warpPosition.y % 1);
             // Move the cursor
-            Mouse.current.WarpCursorPosition(warpPosition);
+            Mouse.current.WarpCursorPosition(_warpPosition);
         }
     }
 
@@ -263,7 +260,7 @@ public class PlayerController : MonoBehaviour
         _rb.velocity = Vector2.zero;
         _rb.gravityScale = 0f;
         _rb.drag = 0f;
-        while (Time.time < dashStartTime + _dashLenght)
+        while (Time.time < dashStartTime + _dashLength)
         {
             _rb.velocity = direction * _dashForce;
             yield return new WaitForSeconds(0.1f);
@@ -296,7 +293,7 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(0.1f);
         _isWallJumping = false;
     }
-    private void ActivateGlide()
+    /*private void ActivateGlide()
     {
         _isGliding = true;
         _rb.gravityScale = _glideGravity;
@@ -304,7 +301,7 @@ public class PlayerController : MonoBehaviour
     private void DeactivateGlide()
     {
         _isGliding = false;
-    }
+    }*/
     private Vector2 GetAxis()
     {
         return new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
@@ -348,8 +345,8 @@ public class PlayerController : MonoBehaviour
     }
     private void FallMultiplier()
     {
-        if (!_isGliding)
-        {
+        //if (!_isGliding)
+        //{
             if (_rb.velocity.y < 0f)
             {
                 _rb.gravityScale = _fallMultiplier;
@@ -362,7 +359,7 @@ public class PlayerController : MonoBehaviour
             {
                 _rb.gravityScale = 1;
             }
-        }
+        //}
     }
     private void Hook()
     {
@@ -400,7 +397,7 @@ public class PlayerController : MonoBehaviour
         _lineRenderer.SetPosition(1, _target);
 
         _isHooking = true;
-        _isRegreting = true;
+        _isRegretting = true;
     }
     private void GrabAction(GameObject target)
     {
@@ -409,7 +406,7 @@ public class PlayerController : MonoBehaviour
             if (Mathf.Clamp(transform.position.x - target.transform.position.x, -1, 1) != (float)target.GetComponent<HookableController>()._moveDirection)
             {
                 _isHooking = false;
-                _isRegreting = false;
+                _isRegretting = false;
                 return;
             }
             
@@ -422,7 +419,7 @@ public class PlayerController : MonoBehaviour
             if (Vector2.Distance(transform.position, target.transform.position) <= 1f)
             {
                 _isHooking = false;
-                _isRegreting = false;
+                _isRegretting = false;
             }
         }
         else
@@ -434,7 +431,7 @@ public class PlayerController : MonoBehaviour
             if (Vector2.Distance(transform.position, _target) <= 1f)
             {
                 _isHooking = false;
-                _isRegreting = false;
+                _isRegretting = false;
             }
         }
 
@@ -455,7 +452,7 @@ public class PlayerController : MonoBehaviour
         _lineRenderer.enabled = false;
         _isDashing = false;
         _isHooking = false;
-        _isRegreting = false;
+        _isRegretting = false;
         _isWallJumping = false;
         _isWallSliding = false;
         FindAnyObjectByType<SceneLoader>().LoadScene(SceneManager.GetActiveScene().name);
@@ -486,7 +483,7 @@ public class PlayerController : MonoBehaviour
         if (_isHooking)
         {
             _isHooking = false;
-            _isRegreting = false;
+            _isRegretting = false;
         }
     }
     private void OnTriggerEnter2D(Collider2D collision)

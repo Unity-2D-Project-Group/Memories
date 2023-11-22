@@ -12,7 +12,7 @@ public class AngryBlocks : MonoBehaviour
     [SerializeField] private float _maxTimeToGetUp;
     private Rigidbody2D _rb;
     private float _timeToGetUp;
-    private Vector3 _inicialPosition;
+    private Vector3 _initialPosition;
     private bool _canFall;
     private bool _hasFallen;
 
@@ -23,7 +23,7 @@ public class AngryBlocks : MonoBehaviour
         _hasFallen = false;
         _rb.gravityScale = 0f;
 
-        _inicialPosition = transform.position;
+        _initialPosition = transform.position;
         _timeToGetUp = _maxTimeToGetUp;
     }
 
@@ -47,9 +47,9 @@ public class AngryBlocks : MonoBehaviour
         }
         else
         {
-            if (transform.position != _inicialPosition)
+            if (transform.position != _initialPosition)
             {
-                transform.position = Vector3.MoveTowards(transform.position, _inicialPosition, _speedToGetUp * Time.deltaTime);
+                transform.position = Vector3.MoveTowards(transform.position, _initialPosition, _speedToGetUp * Time.deltaTime);
                 _canFall = false;
             }
             else
