@@ -12,6 +12,7 @@ public class PetController : MonoBehaviour
     [SerializeField] private float _followingMaxSpeed;
     [SerializeField] private float _deaceleration;
     [SerializeField] private Vector3 _offset;
+    [SerializeField] private float _maxDistance;
 
     private Rigidbody2D _rb;
     private ParticleSystem _ps;
@@ -22,14 +23,9 @@ public class PetController : MonoBehaviour
         _player = GameObject.FindGameObjectWithTag("Player");
     }
 
-    private void Start()
-    {
-
-        transform.position = _player.transform.position + _offset;
-    }
-
     void Update()
     {
+        //Rotate the pet
         if(_player.transform.position.x - transform.position.x > 0)
         {
             transform.localScale = new Vector3(0.4f,0.4f,1);
@@ -38,19 +34,12 @@ public class PetController : MonoBehaviour
         {
             transform.localScale = new Vector3(-0.4f, 0.4f, 1);
         }
-
-        if (_rb.velocity.magnitude > 0.5f && !_ps.isPlaying)
-        {
-            _ps.Play();
-        }
-        else if( _rb.velocity.magnitude < 0.5f)
-        {
-            _ps.Stop();
-        }
+        
     }
 
     void FixedUpdate()
     {
+        //Follows the player
         Vector3 direction;
         if (!_player.GetComponent<PlayerController>()._isWallSliding)
         {
@@ -67,6 +56,22 @@ public class PetController : MonoBehaviour
 
         Vector3 velocity = direction.normalized * actualSpeed;
         _rb.velocity = velocity;
+
+        //Max Distance Verifying
+        if(distance > _maxDistance)
+        {
+            TeleportPetToPlayer();
+        }
+
+        //Particle System
+        if (_rb.velocity.magnitude > 0.5f && !_ps.isPlaying)
+        {
+            _ps.Play();
+        }
+        else if (_rb.velocity.magnitude < 0.5f)
+        {
+            _ps.Stop();
+        }
     }
 
     public void TeleportPetToPlayer()

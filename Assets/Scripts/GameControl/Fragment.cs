@@ -18,7 +18,7 @@ public class Fragment : MonoBehaviour
         {
             SaveLoad._savedGame._currentFragment = _fragmentID;
             SaveLoad.OverwriteSave();
-            print("Collected Fragment: " + _fragmentID);
+            //print("Collected Fragment: " + _fragmentID);
             _activated = false;
             this.gameObject.SetActive(false);
         }

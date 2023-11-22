@@ -9,7 +9,7 @@ public class AngryBlockActivator : MonoBehaviour
 
     private void Start()
     {
-        _angryBlock = GameObject.FindGameObjectWithTag("AngryBlock");
+        _angryBlock = GetComponentInParent<AngryBlocks>().gameObject;
     }
 
     private void OnTriggerStay2D(Collider2D collision)

@@ -7,11 +7,8 @@ TagManager:
   - Hookable
   - Slidable
   - WorldLimit
-  - Spike
-  - AngryBlock
   - Pet
   - Ground
-  - CheckPoint
   layers:
   - Default
   - TransparentFX

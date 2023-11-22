@@ -19,7 +19,7 @@ public class CheckPoint : MonoBehaviour
             SaveLoad._savedGame._currentCheckpoint = _checkPointID;
             SaveLoad.OverwriteSave();
             _activated = false;
-            print("Saved the game at: " + _checkPointID);
+            //print("Saved the game at: " + _checkPointID);
         }
     }
 }

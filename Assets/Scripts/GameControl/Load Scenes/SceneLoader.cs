@@ -32,7 +32,6 @@ public class SceneLoader : MonoBehaviour
 
     public void LoadGame()
     {
-        SaveLoad.LoadSave();
         if ( SaveLoad._savedGame._currentLevel == 0 )
         {
             LoadScene("TutorialScene");

@@ -6,26 +6,21 @@ using UnityEngine;
 public class FragmentController : MonoBehaviour
 {
     public static FragmentController Instance;
-    //private GameObject _player;
 
     [Header("Components")]
-    public static List<Fragment> _fragments = new List<Fragment>();
+    public Hashtable _fragments = new Hashtable();
 
     public void StartFragments()
     {
         Game._instance = SaveLoad._savedGame;
 
-        _fragments = FindObjectsByType<Fragment>(FindObjectsSortMode.InstanceID).ToList();
-
-        if (SaveLoad._savedGame._currentFragment >= 1 && _fragments.Count > 0)
+        foreach (Fragment fragment in FindObjectsOfType<Fragment>().ToList())
         {
-            foreach (Fragment fragment in _fragments)
+            _fragments.Add(fragment._fragmentID.ToString(), fragment.gameObject);
+
+            if (fragment._fragmentID < SaveLoad._savedGame._currentFragment)
             {
-                if (fragment._fragmentID <= SaveLoad._savedGame._currentFragment)
-                {
-                    fragment._activated = false;
-                    fragment.gameObject.SetActive(false);
-                }
+                fragment._activated = false;
             }
         }
     }
