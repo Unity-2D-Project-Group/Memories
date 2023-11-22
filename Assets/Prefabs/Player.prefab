@@ -98,7 +98,6 @@ GameObject:
   - component: {fileID: 5584407460979476751}
   - component: {fileID: 1284764206826805584}
   - component: {fileID: 1069483939796533357}
-  - component: {fileID: 8665683196036322554}
   m_Layer: 10
   m_Name: Player
   m_TagString: Player
@@ -251,9 +250,11 @@ MonoBehaviour:
   _facingRight: 1
   _onGround: 0
   _isHooking: 0
-  _isRegreting: 0
+  _isRegretting: 0
   _isDashing: 0
   _canInteract: 0
+  _isWallSliding: 0
+  _isDead: 0
   _movementAcceleration: 75
   _maxMoveSpeed: 8
   _maxYSpeed: 30
@@ -267,7 +268,7 @@ MonoBehaviour:
   _dashCooldown: 0.5
   _dashAmount: 1
   _dashAmountValue: 0
-  _dashLenght: 0.1
+  _dashLength: 0.3
   _groundRaycastLength: 1.05
   _groundRaycastOffset: {x: 0.4, y: 0, z: 0}
   _groundLayer:
@@ -280,10 +281,7 @@ MonoBehaviour:
   _wallLayer:
     serializedVersion: 2
     m_Bits: 72
-  _isWallSliding: 0
   _wallDirection: 0
-  _glideGravity: 1.5
-  _isGliding: 0
   _hookableMask:
     serializedVersion: 2
     m_Bits: 72
@@ -295,6 +293,8 @@ MonoBehaviour:
   _interactLayer:
     serializedVersion: 2
     m_Bits: 256
+  _sensitivity: {x: 1500000, y: 1500000}
+  _bias: {x: 0, y: -1}
 --- !u!120 &1069483939796533357
 LineRenderer:
   serializedVersion: 2
@@ -399,16 +399,3 @@ LineRenderer:
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
---- !u!114 &8665683196036322554
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3273498253242932800}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0c60a476f276694d857f1e53759d97c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _checkpoints: []
