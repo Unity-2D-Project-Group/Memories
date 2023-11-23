@@ -6,6 +6,7 @@ public class GUIController : MonoBehaviour
 {
     [SerializeField] private GameObject _player;
     [SerializeField] private GameObject _pauseMenu;
+    [SerializeField] private GameObject _confirmation;
     void Start()
     {
         _player = GameObject.FindGameObjectWithTag("Player");
@@ -30,10 +31,14 @@ public class GUIController : MonoBehaviour
         if(saveConfirm == "Yes")
         {
             SaveLoad.OverwriteSave();
-        }
+            FindAnyObjectByType<SceneLoader>().LoadScene("MainMenuScene");
 
-        FindAnyObjectByType<SceneLoader>().LoadScene("MainMenuScene");
-        Time.timeScale = 1.0f;
+            Time.timeScale = 1.0f;
+        }
+        else
+        {
+            _confirmation.SetActive(false);
+        }
     }
 
     public void Continue()
