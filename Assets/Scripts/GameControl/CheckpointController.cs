@@ -16,7 +16,7 @@ public class CheckpointController : MonoBehaviour
         _player = GameObject.FindGameObjectWithTag("Player");
 
         Save._instance = SaveLoad._savedGame;
-        Level temp = (Level)SaveLoad._savedGame.Levels[$"Level{SaveLoad._savedGame._currentLevel}"];
+        Level temp = (Level)SaveLoad._savedGame.Levels[$"Level{LoadingData.PlayingLevel}"];
 
         foreach (CheckPoint checkPoint in FindObjectsOfType<CheckPoint>().ToList())
         {
@@ -25,16 +25,16 @@ public class CheckpointController : MonoBehaviour
             if (checkPoint._checkPointID <= temp._currentCheckpoint)
             {
                 checkPoint._activated = false;
+                checkPoint.gameObject.GetComponent<SpriteRenderer>().color = Color.yellow;
             }
         }
 
-        TeleportToCheckPoint();
+        TeleportToCheckPoint(temp);
     }
 
-    public void TeleportToCheckPoint()
+    public void TeleportToCheckPoint(Level level)
     {
-        Level tempLevel = (Level)SaveLoad._savedGame.Levels[$"Level{SaveLoad._savedGame._currentLevel}"];
-        GameObject temp = (GameObject)_checkpoints[tempLevel._currentCheckpoint.ToString()];
+        GameObject temp = (GameObject)_checkpoints[level._currentCheckpoint.ToString()];
         _player.transform.position = temp.transform.position;
     }
 }

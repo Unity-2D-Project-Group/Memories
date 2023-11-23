@@ -7,4 +7,5 @@ public static class LoadingData
     public static string SceneToBeLoaded;
     public static string SceneToBeUnloaded;
     public static string LoadingScene = "LoadingScene";
+    public static int PlayingLevel;
 }

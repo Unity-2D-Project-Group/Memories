@@ -26,9 +26,6 @@ public class SelectLevel : MonoBehaviour
     }
     public void LoadLevel(int level)
     {
-        if(level != 0)
-            FindObjectOfType<SceneLoader>().LoadScene($"Level{level}Scene");
-        else
-            FindObjectOfType<SceneLoader>().LoadScene($"TutorialScene");
+        FindObjectOfType<SceneLoader>().LoadLevel(level);
     }
 }

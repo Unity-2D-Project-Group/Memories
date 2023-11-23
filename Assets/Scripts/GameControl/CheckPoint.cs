@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -16,12 +17,26 @@ public class CheckPoint : MonoBehaviour
 
         if(boxHit && _activated)
         {
-            Level temp = (Level)SaveLoad._savedGame.Levels[$"Level{SaveLoad._savedGame._currentLevel}"];
+            print(LoadingData.PlayingLevel);
+            Level temp = (Level)SaveLoad._savedGame.Levels[$"Level{LoadingData.PlayingLevel}"];
             temp._currentCheckpoint = _checkPointID;
-            SaveLoad._savedGame.Levels[$"Level{SaveLoad._savedGame._currentLevel}"] = temp;
+            SaveLoad._savedGame.Levels[$"Level{LoadingData.PlayingLevel}"] = temp;
             SaveLoad.OverwriteSave();
-            _activated = false;
-            //print("Saved the game at: " + _checkPointID);
+
+            TakeCheckpoint();
+        }
+    }
+
+    public void TakeCheckpoint()
+    {
+        CheckpointController checkpointController = FindObjectOfType<CheckpointController>().GetComponent<CheckpointController>();
+        foreach (CheckPoint check in FindObjectsOfType<CheckPoint>().ToList())
+        {
+            if (check._checkPointID <= _checkPointID)
+            {
+                check._activated = false;
+                check.gameObject.GetComponent<SpriteRenderer>().color = Color.yellow;
+            }
         }
     }
 }

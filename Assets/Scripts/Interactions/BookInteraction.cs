@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class BookInteraction : Interact
 {
+
+    private void Start()
+    {
+        _layerText = "Take book";
+    }
     public override void Interaction()
     {
         Debug.Log("Book");

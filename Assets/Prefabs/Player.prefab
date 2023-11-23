@@ -264,7 +264,7 @@ MonoBehaviour:
   _fallMultiplier: 7
   _lowJumpFallMultiplier: 5
   _extraJumps: 1
-  _dashForce: 25
+  _dashForce: 35
   _dashCooldown: 0.5
   _dashAmount: 1
   _dashAmountValue: 0

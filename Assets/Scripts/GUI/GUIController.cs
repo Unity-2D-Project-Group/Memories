@@ -8,6 +8,7 @@ public class GUIController : MonoBehaviour
     [SerializeField] private GameObject _pauseMenu;
     [SerializeField] private GameObject _confirmation;
     [SerializeField] private GameObject _interact;
+    [SerializeField] private GameObject _interactText;
     [SerializeField] private LayerMask _interactLayer;
     void Start()
     {
@@ -27,8 +28,11 @@ public class GUIController : MonoBehaviour
             Time.timeScale = 1.0f;
         }
 
-        if (Physics2D.CircleCast(_player.transform.position, 2, Vector2.zero, 2, _interactLayer))
+        RaycastHit2D hit = Physics2D.CircleCast(_player.transform.position, 2, Vector2.zero, 2, _interactLayer);
+
+        if (hit)
         {
+            _interactText.GetComponent<TMPro.TMP_Text>().text = hit.collider.gameObject.GetComponent<Interact>()._layerText;
             _interact.SetActive(true);
         }
         else

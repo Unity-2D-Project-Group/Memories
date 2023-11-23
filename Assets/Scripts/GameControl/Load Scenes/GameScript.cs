@@ -28,8 +28,9 @@ public class Save
         temp._currentFragment = 0;
         temp._currentCheckpoint = 0;
         _instance.Levels[$"Level{level}"] = temp;
+        LoadingData.PlayingLevel = -1;
 
-        if(_instance._currentLevel == temp._levelID)
+        if (_instance._currentLevel == temp._levelID)
         {
             PassLevel(temp);
         }

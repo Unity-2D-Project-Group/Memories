@@ -5274,7 +5274,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _smoothVelocity: 2
-  _minValues: {x: -800, y: -40, z: -10}
+  _minValues: {x: -800, y: -200, z: -10}
   _maxValues: {x: 1000, y: 1000, z: -10}
   _leftOffset: {x: -10, y: 0, z: -10}
   _rightOffset: {x: 0, y: 0, z: -10}
@@ -5284,7 +5284,7 @@ MonoBehaviour:
   _maxOffset: {x: 5, y: 5, z: 0}
   _minOffset: {x: -5, y: -5, z: 0}
   _horMoveSpeed: 1
-  _verMoveSpeed: 1
+  _maxMouseDistance: 100
 --- !u!114 &243292172
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5493,6 +5493,7 @@ MonoBehaviour:
   _pauseMenu: {fileID: 1789790726}
   _confirmation: {fileID: 810424606}
   _interact: {fileID: 234319867}
+  _interactText: {fileID: 0}
   _interactLayer:
     serializedVersion: 2
     m_Bits: 256

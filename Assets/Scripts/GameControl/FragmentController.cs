@@ -13,7 +13,7 @@ public class FragmentController : MonoBehaviour
     public void StartFragments()
     {
         Save._instance = SaveLoad._savedGame;
-        Level temp = (Level)SaveLoad._savedGame.Levels[$"Level{SaveLoad._savedGame._currentLevel}"];
+        Level temp = (Level)SaveLoad._savedGame.Levels[$"Level{LoadingData.PlayingLevel}"];
         foreach (Fragment fragment in FindObjectsOfType<Fragment>().ToList())
         {
             _fragments.Add(fragment._fragmentID.ToString(), fragment.gameObject);

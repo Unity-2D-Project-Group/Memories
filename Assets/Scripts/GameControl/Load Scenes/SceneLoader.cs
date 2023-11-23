@@ -18,4 +18,16 @@ public class SceneLoader : MonoBehaviour
         LoadingData.SceneToBeUnloaded = SceneManager.GetActiveScene().name;
         SceneManager.LoadScene("LoadingScene", LoadSceneMode.Additive);
     }
+
+    public void LoadLevel(int level)
+    {
+        if(level == 0)
+            LoadingData.SceneToBeLoaded = "TutorialScene";
+        else
+            LoadingData.SceneToBeLoaded = "Level" + level + "Scene";
+
+        LoadingData.PlayingLevel = level;
+        LoadingData.SceneToBeUnloaded = SceneManager.GetActiveScene().name;
+        SceneManager.LoadScene("LoadingScene", LoadSceneMode.Additive);
+    }
 }
