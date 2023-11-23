@@ -5275,7 +5275,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _smoothVelocity: 2
   _minValues: {x: -800, y: -40, z: -10}
-  _maxValues: {x: 300, y: 300, z: -10}
+  _maxValues: {x: 1000, y: 1000, z: -10}
   _leftOffset: {x: -10, y: 0, z: -10}
   _rightOffset: {x: 0, y: 0, z: -10}
   _yOffset: 0
