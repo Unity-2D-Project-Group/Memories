@@ -268,7 +268,7 @@ MonoBehaviour:
   _dashCooldown: 0.5
   _dashAmount: 1
   _dashAmountValue: 0
-  _dashLength: 0.3
+  _dashLength: 0.1
   _groundRaycastLength: 1.05
   _groundRaycastOffset: {x: 0.4, y: 0, z: 0}
   _groundLayer:

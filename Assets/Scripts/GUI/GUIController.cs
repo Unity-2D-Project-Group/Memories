@@ -7,6 +7,8 @@ public class GUIController : MonoBehaviour
     [SerializeField] private GameObject _player;
     [SerializeField] private GameObject _pauseMenu;
     [SerializeField] private GameObject _confirmation;
+    [SerializeField] private GameObject _interact;
+    [SerializeField] private LayerMask _interactLayer;
     void Start()
     {
         _player = GameObject.FindGameObjectWithTag("Player");
@@ -23,6 +25,15 @@ public class GUIController : MonoBehaviour
         {
             _pauseMenu.SetActive(false);
             Time.timeScale = 1.0f;
+        }
+
+        if (Physics2D.CircleCast(_player.transform.position, 2, Vector2.zero, 2, _interactLayer))
+        {
+            _interact.SetActive(true);
+        }
+        else
+        {
+            _interact.SetActive(false);
         }
     }
 
@@ -50,5 +61,10 @@ public class GUIController : MonoBehaviour
     {
         StartCoroutine(_player.GetComponent<PlayerController>().Death());
         Time.timeScale = 1.0f;
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(_player.transform.position, 2);
     }
 }
