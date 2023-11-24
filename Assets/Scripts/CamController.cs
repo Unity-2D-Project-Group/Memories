@@ -48,7 +48,7 @@ public class CamController : MonoBehaviour
 
     private void Update()
     {
-        if (_isMoving)
+        if (_isMoving && Time.timeScale == 1.0f)
         {
             _returnedToPlayer = false;
             _currentCamPos = _player.transform.position;
