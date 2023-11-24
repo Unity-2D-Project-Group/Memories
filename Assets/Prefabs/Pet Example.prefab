@@ -105,6 +105,22 @@ MonoBehaviour:
   _deaceleration: 2
   _offset: {x: 1.5, y: 0.5, z: 0}
   _maxDistance: 7
+  _dialogueCooldown: 5
+  _dialogueDelay: 3
+  _petHumor: 0
+  _petAngryReactions:
+  - '*grr*'
+  - '*humph*'
+  _petHappyReactions:
+  - '*whoosh*'
+  - '*blublublu*'
+  _playerAngryAnswers:
+  - Why u so mad?
+  - Can i help u?
+  _playerHappyAnswers:
+  - What happened?
+  - Are u ok?
+  _text: {fileID: 0}
 --- !u!58 &7177523106362919600
 CircleCollider2D:
   m_ObjectHideFlags: 0

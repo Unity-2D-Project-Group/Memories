@@ -2,10 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
+using TMPro;
+using static PetController;
 
 public class PetController : MonoBehaviour
 {
-
+    public enum PetHumor { Angry, Happy}
     private GameObject _player;
 
     [Header("Variables")]
@@ -13,6 +15,28 @@ public class PetController : MonoBehaviour
     [SerializeField] private float _deaceleration;
     [SerializeField] private Vector3 _offset;
     [SerializeField] private float _maxDistance;
+
+    [Header("Pet Dialogue")]
+    [SerializeField] private float _dialogueCooldown;
+    [SerializeField] private float _dialogueDelay;
+    [SerializeField] private PetHumor _petHumor;
+
+    [SerializeField] private List<string> _petAngryReactions;
+    [SerializeField] private List<string> _petHappyReactions;
+
+    [SerializeField] private List<string> _playerAngryAnswers;
+    [SerializeField] private List<string> _playerHappyAnswers;
+
+    private ArrayList _petSentences = new ArrayList();
+
+    private ArrayList _playerSentences = new ArrayList();
+
+    private List<TreeNode<DialogueSentence>> _dialogueTrees = new List<TreeNode<DialogueSentence>>();
+    private bool _talking = false;
+
+    [Header("UI")]
+    [SerializeField] private TMP_Text _text;
+
 
     private Rigidbody2D _rb;
     private ParticleSystem _ps;
@@ -22,19 +46,17 @@ public class PetController : MonoBehaviour
         _ps = GetComponent<ParticleSystem>();
         _player = GameObject.FindGameObjectWithTag("Player");
     }
-
+    private void Start()
+    {
+        LoadInteractions();
+    }
     void Update()
     {
-        //Rotate the pet
-        if(_player.transform.position.x - transform.position.x > 0)
+        RotatePet();
+        if(_dialogueCooldown >= 0)
         {
-            transform.localScale = new Vector3(0.4f,0.4f,1);
-        }
-        else
-        {
-            transform.localScale = new Vector3(-0.4f, 0.4f, 1);
-        }
-        
+            _dialogueCooldown -= Time.deltaTime;
+        }else if(!_talking) { StartCoroutine(DialogueAction()); }
     }
 
     void FixedUpdate()
@@ -73,9 +95,136 @@ public class PetController : MonoBehaviour
             _ps.Stop();
         }
     }
-
+    private void RotatePet()
+    {
+        //Rotate the pet
+        if (_player.transform.position.x - transform.position.x > 0)
+        {
+            transform.localScale = new Vector3(0.4f, 0.4f, 1);
+        }
+        else
+        {
+            transform.localScale = new Vector3(-0.4f, 0.4f, 1);
+        }
+    }
     public void TeleportPetToPlayer()
     {
         transform.position = _player.transform.position + _offset;
+    }
+    private void LoadInteractions()
+    {
+        foreach (string reaction in _petAngryReactions)
+        {
+            _petSentences.Add(new DialogueSentence(PetHumor.Angry, reaction));
+        }
+        foreach (string reaction in _petHappyReactions)
+        {
+            _petSentences.Add(new DialogueSentence(PetHumor.Happy, reaction));
+        }
+
+        foreach (string answer in _playerAngryAnswers)
+        {
+            _playerSentences.Add(new DialogueSentence(PetHumor.Angry, answer));
+        }
+        foreach (string answer in _playerHappyAnswers)
+        {
+            _playerSentences.Add(new DialogueSentence(PetHumor.Happy, answer));
+        }
+
+        foreach (DialogueSentence petSentence in _petSentences)
+        {
+            DialogueSentence[] temp = new DialogueSentence[3];
+            temp[0] = petSentence;
+
+            foreach (DialogueSentence playerSentence in _playerSentences)
+            {
+                if(playerSentence != null && playerSentence.Humor == petSentence.Humor)
+                {
+                    if (temp[1] == null) { temp[1] = playerSentence; }
+                    else 
+                    { 
+                        temp[2] = playerSentence; 
+                        _dialogueTrees.Add(new TreeNode<DialogueSentence>(temp[0],
+                            new TreeNode<DialogueSentence>(temp[1], null, null),
+                            new TreeNode<DialogueSentence>(temp[2], null, null))
+                            );
+                    }
+                }
+            }
+        }
+    }
+    IEnumerator DialogueAction()
+    {
+        _talking = true;
+
+        TreeNode<DialogueSentence> treeNode = new TreeNode<DialogueSentence>(null, null, null);
+
+        int temp = Random.Range(0, _dialogueTrees.Count);
+        while (_dialogueTrees[temp]._data.Humor != _petHumor || _dialogueTrees[temp] == null)
+        {
+            temp = Random.Range(0, _dialogueTrees.Count);
+            yield return null;
+        }
+
+        treeNode = _dialogueTrees[temp];
+        StartCoroutine(Type(treeNode._data.Text, "Pet"));
+
+        yield return new WaitForSeconds(_dialogueDelay);
+
+        int random = Random.Range(0, 2);
+        if (random == 0)
+        {
+            StartCoroutine(Type(treeNode._left._data.Text, "Ryo"));
+        }
+        else
+        {
+            StartCoroutine(Type(treeNode._right._data.Text, "Ryo"));
+        }
+
+        _dialogueCooldown = Random.Range(50,90);
+        _talking = false;
+        yield return null;
+    }
+
+    IEnumerator Type(string s, string speaker)
+    {
+        _text.text = "";
+        string temp = speaker + ": ";
+        for (int i = 0;  i < s.Length; i++)
+        {
+            temp += s[i];
+            _text.text = temp;
+            yield return new WaitForSeconds(0.04f);
+        }
+        yield return new WaitForSeconds(2);
+        for (int i = temp.Length - 1; i >= 0; i--)
+        {
+            temp = temp.Remove(i, 1);
+            _text.text = temp;
+            yield return new WaitForSeconds(0.04f);
+        }
+    }
+}
+
+public class DialogueSentence
+{
+    private PetHumor humor;
+    private string text;
+    public DialogueSentence(PetHumor _humor, string _text) 
+    { 
+        this.humor = _humor;
+        this.text = _text;
+    }
+
+    public PetHumor Humor
+    {
+        get { return humor; }
+        set { humor = value; }
+    }
+
+    public string Text
+    {
+        get { return text; }
+        set { text = value; }
     }
 }
