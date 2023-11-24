@@ -69,11 +69,6 @@ public class PlayerController : MonoBehaviour
     private bool _isWallJumping; 
     [SerializeField] private float _wallDirection = 0;
 
-    /*[Header("Gliding Variables")]
-    [SerializeField] private float _glideGravity = 1f;
-    [SerializeField] private bool _isGliding;
-    private bool _canGlide => (!_isWallSliding && !_onGround);*/
-
     [Header("Hook Variables")]
     [SerializeField] private LayerMask _hookableMask;
     [SerializeField] private float _hookThreshold = 7f;
@@ -84,7 +79,7 @@ public class PlayerController : MonoBehaviour
     private Vector2 _target;
     private GameObject _targetGameObject;
     private LineRenderer _lineRenderer;
-    private bool _canHook => (!_isWallJumping && !_isWallSliding /*&& !_isGliding*/ && _hookCooldownValue <= 0);
+    private bool _canHook => (!_isWallJumping && !_isWallSliding && _hookCooldownValue <= 0);
 
     [Header("Interaction Variables")]
     [SerializeField] private float _interactRadius = 2f;
@@ -134,8 +129,6 @@ public class PlayerController : MonoBehaviour
         else if(Input.GetButtonDown("Jump") && _canWallJump) { StartCoroutine(WallJump()); }
 
         if (Input.GetButtonDown("Dash") && _canDash) { StartCoroutine(Dash()); }
-        /*if (Input.GetButtonDown("Glide") && _canGlide) { ActivateGlide(); }
-        if (Input.GetButtonUp("Glide") && _isGliding) { DeactivateGlide(); }*/
 
         if (Input.GetMouseButtonDown(0) && _canHook){ Hook(); }
         else if (Input.GetButtonDown("Hook") && _canHook) { Hook(); }
@@ -149,6 +142,7 @@ public class PlayerController : MonoBehaviour
             _lineRenderer.SetPosition(1, transform.position);
             _lineRenderer.enabled = false;
         }
+
         if (Gamepad.current != null)
         {
             // Get the joystick position
@@ -157,6 +151,7 @@ public class PlayerController : MonoBehaviour
             if (_leftStick.magnitude < 0.1f) return;
             // Get the current mouse position to add to the joystick movement
             _mousePosition = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+            _mousePosition = new Vector2(Mathf.Clamp(_mousePosition.x, 80, Screen.width - 80), Mathf.Clamp(_mousePosition.y, 80, Screen.height - 80));
             // Precise value for desired cursor position, which unfortunately cannot be used directly
             _warpPosition = _mousePosition + _bias + _overflow + _sensitivity * Time.deltaTime * _leftStick;
             // Keep the cursor in the game screen (behavior gets weird out of bounds)
@@ -195,7 +190,7 @@ public class PlayerController : MonoBehaviour
             //Add a force in RB in horizontal direction in the velocity of acceleration that can be changed in the variable
             _rb.AddForce(new Vector2(_horizontalDirection, 0f) * _movementAcceleration);
 
-            //Math.Abs always returns a positive number, that's why we use it here to compare with the max move speed, because if the player is moving backwards it will give a negative number and we dont wanna that
+            //Math.Abs always returns a positive number, that's why we use it here to compare with the max move speed, because if the player is moving backwards it will give a negative number and we don't wanna that
             if (Mathf.Abs(_rb.velocity.x) > _maxMoveSpeed && !_isDashing)
             {
                 //Math.Sign returns always (-1,0 or 1), so we multiply this by the max move speed then we can have a linear speed 
@@ -293,15 +288,6 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(0.1f);
         _isWallJumping = false;
     }
-    /*private void ActivateGlide()
-    {
-        _isGliding = true;
-        _rb.gravityScale = _glideGravity;
-    }
-    private void DeactivateGlide()
-    {
-        _isGliding = false;
-    }*/
     private Vector2 GetAxis()
     {
         return new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));

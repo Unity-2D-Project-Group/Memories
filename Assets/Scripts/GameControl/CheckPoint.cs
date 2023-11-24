@@ -17,7 +17,7 @@ public class CheckPoint : MonoBehaviour
 
         if(boxHit && _activated)
         {
-            print(LoadingData.PlayingLevel);
+            //print(LoadingData.PlayingLevel);
             Level temp = (Level)SaveLoad._savedGame.Levels[$"Level{LoadingData.PlayingLevel}"];
             temp._currentCheckpoint = _checkPointID;
             SaveLoad._savedGame.Levels[$"Level{LoadingData.PlayingLevel}"] = temp;
