@@ -7,7 +7,7 @@ public class MovingPlat : MonoBehaviour
     public Transform _platform;
     public Transform _startPoint;
     public Transform _endPoint;
-    public float _speed = 0.1f;
+    public float _speed = 1.5f;
     int _direction = 1;
 
     private void FixedUpdate()
