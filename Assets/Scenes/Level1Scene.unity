@@ -6438,7 +6438,7 @@ MonoBehaviour:
   _pauseMenu: {fileID: 1789790726}
   _confirmation: {fileID: 810424606}
   _interact: {fileID: 234319867}
-  _interactText: {fileID: 0}
+  _interactText: {fileID: 1024322687}
   _interactLayer:
     serializedVersion: 2
     m_Bits: 256
@@ -8543,7 +8543,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 247526166}
         m_TargetAssemblyTypeName: GUIController, Assembly-CSharp
         m_MethodName: Continue
         m_Mode: 1
