@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 8140656020889352491}
   - component: {fileID: 5763923317402588921}
   m_Layer: 0
-  m_Name: Pet Example
+  m_Name: Pet Example 1
   m_TagString: Pet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -101,13 +101,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a200e91487aad614aaf998d09951d6b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _petsPrefabs:
+  - {fileID: 5856511961339684672}
+  - {fileID: 5856511961339684672, guid: d56a543ef71b12c46b92decb1df4c387, type: 3}
+  _petID: 0
   _followingMaxSpeed: 10
   _deaceleration: 2
   _offset: {x: 1.5, y: 0.5, z: 0}
   _maxDistance: 7
   _dialogueCooldown: 5
   _dialogueDelay: 3
-  _petHumor: 0
   _petAngryReactions:
   - '*grr*'
   - '*humph*'
@@ -121,6 +124,9 @@ MonoBehaviour:
   - What happened?
   - Are u ok?
   _text: {fileID: 0}
+  _interacting: 0
+  _typing: 0
+  _petHumor: 0
 --- !u!58 &7177523106362919600
 CircleCollider2D:
   m_ObjectHideFlags: 0

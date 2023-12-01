@@ -8,8 +8,12 @@ using UnityEngine.InputSystem;
 
 public class PetController : MonoBehaviour
 {
-    public enum PetHumor { Angry, Happy}
+    public enum PetHumor { Angry, Happy }
     private GameObject _player;
+
+    [Header("Pet Changing")]
+    [SerializeField] private List<GameObject> _petsPrefabs = new List<GameObject>();
+    [SerializeField] private int _petID;
 
     [Header("Following Variables")]
     [SerializeField] private float _followingMaxSpeed;
@@ -56,6 +60,14 @@ public class PetController : MonoBehaviour
     }
     void Update()
     {
+        if(_text == null)
+        {
+            foreach (GameObject temp in GameObject.FindGameObjectsWithTag("Pet"))
+            {
+                if (temp != this.gameObject)
+                    _text = temp.GetComponent<TMP_Text>();
+            }
+        }
         RotatePet();
         if(_dialogueCooldown >= 0)
         {
@@ -64,6 +76,14 @@ public class PetController : MonoBehaviour
         else if(!_interacting)
         {
             StartCoroutine(Dialogue());
+        }
+
+        if (Input.GetKeyDown(KeyCode.V))
+        {
+            if (_petID == 0)
+                ChangePet(1);
+            else if (_petID == 1)
+                ChangePet(0);
         }
     }
 
@@ -197,7 +217,6 @@ public class PetController : MonoBehaviour
         _interacting = false;
         yield return null;
     }
-
     public IEnumerator Type(string s, string speaker)
     {
         if (!_typing)
@@ -224,6 +243,13 @@ public class PetController : MonoBehaviour
             yield return null;
         }
         
+    }
+
+    void ChangePet(int index)
+    {
+        _text.text = "";
+        Instantiate(_petsPrefabs[index]);
+        Destroy(this.gameObject);
     }
 }
 
