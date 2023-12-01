@@ -129,6 +129,8 @@ public class PlayerController : MonoBehaviour
         else if(Input.GetButtonDown("Jump") && _canWallJump) { StartCoroutine(WallJump()); }
 
         if (Input.GetMouseButtonDown(0) && _canDash) { StartCoroutine(Dash()); }
+        else if (Input.GetButtonDown("Dash") && _canDash) { StartCoroutine(Dash()); }
+
 
         if (Input.GetMouseButtonDown(1) && _canHook){ Hook(); }
         else if (Input.GetButtonDown("Hook") && _canHook) { Hook(); }
