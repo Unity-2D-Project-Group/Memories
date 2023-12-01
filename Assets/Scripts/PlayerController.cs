@@ -128,7 +128,7 @@ public class PlayerController : MonoBehaviour
         //If the player cannot jump, then we verify if he can wall jump
         else if(Input.GetButtonDown("Jump") && _canWallJump) { StartCoroutine(WallJump()); }
 
-        if (Input.GetMouseButtonDown(0) && _canDash) { StartCoroutine(Dash()); }
+        if (Input.GetMouseButtonDown(1) && _canDash) { StartCoroutine(Dash()); }
 
         if (Input.GetMouseButtonDown(0) && _canHook){ Hook(); }
         else if (Input.GetButtonDown("Hook") && _canHook) { Hook(); }
