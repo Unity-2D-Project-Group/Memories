@@ -4,13 +4,14 @@ using System.Runtime.InteropServices;
 using UnityEngine;
 using TMPro;
 using static PetController;
+using UnityEngine.InputSystem;
 
 public class PetController : MonoBehaviour
 {
     public enum PetHumor { Angry, Happy}
     private GameObject _player;
 
-    [Header("Variables")]
+    [Header("Following Variables")]
     [SerializeField] private float _followingMaxSpeed;
     [SerializeField] private float _deaceleration;
     [SerializeField] private Vector3 _offset;
@@ -19,7 +20,6 @@ public class PetController : MonoBehaviour
     [Header("Pet Dialogue")]
     [SerializeField] private float _dialogueCooldown;
     [SerializeField] private float _dialogueDelay;
-    [SerializeField] private PetHumor _petHumor;
 
     [SerializeField] private List<string> _petAngryReactions;
     [SerializeField] private List<string> _petHappyReactions;
@@ -32,11 +32,15 @@ public class PetController : MonoBehaviour
     private ArrayList _playerSentences = new ArrayList();
 
     private List<TreeNode<DialogueSentence>> _dialogueTrees = new List<TreeNode<DialogueSentence>>();
-    private bool _talking = false;
+    
 
     [Header("UI")]
     [SerializeField] private TMP_Text _text;
 
+    [Header("Public Variables")]
+    [HideInInspector] public bool _interacting = false;
+    [HideInInspector] public bool _typing = false;
+    public PetHumor _petHumor;
 
     private Rigidbody2D _rb;
     private ParticleSystem _ps;
@@ -56,7 +60,11 @@ public class PetController : MonoBehaviour
         if(_dialogueCooldown >= 0)
         {
             _dialogueCooldown -= Time.deltaTime;
-        }else if(!_talking) { StartCoroutine(DialogueAction()); }
+        }
+        else if(!_interacting)
+        {
+            StartCoroutine(Dialogue());
+        }
     }
 
     void FixedUpdate()
@@ -153,56 +161,69 @@ public class PetController : MonoBehaviour
             }
         }
     }
-    IEnumerator DialogueAction()
+    public IEnumerator Dialogue()
     {
-        _talking = true;
-
+        _interacting = true;
         TreeNode<DialogueSentence> treeNode = new TreeNode<DialogueSentence>(null, null, null);
 
         int temp = Random.Range(0, _dialogueTrees.Count);
-        while (_dialogueTrees[temp]._data.Humor != _petHumor || _dialogueTrees[temp] == null)
+
+        while (_dialogueTrees[temp]._data.Humor != _petHumor)
         {
             temp = Random.Range(0, _dialogueTrees.Count);
             yield return null;
         }
 
-        treeNode = _dialogueTrees[temp];
-        StartCoroutine(Type(treeNode._data.Text, "Pet"));
-
-        yield return new WaitForSeconds(_dialogueDelay);
-
-        int random = Random.Range(0, 2);
-        if (random == 0)
+        if(_dialogueTrees[temp]._data.Humor == _petHumor)
         {
-            StartCoroutine(Type(treeNode._left._data.Text, "Ryo"));
-        }
-        else
-        {
-            StartCoroutine(Type(treeNode._right._data.Text, "Ryo"));
+            treeNode = _dialogueTrees[temp];
+            StartCoroutine(Type(treeNode._data.Text, "Pet"));
+
+            yield return new WaitForSeconds(_dialogueDelay);
+
+            int random = Random.Range(0, 2);
+            if (random == 0)
+            {
+                StartCoroutine(Type(treeNode._left._data.Text, "Ryo"));
+            }
+            else
+            {
+                StartCoroutine(Type(treeNode._right._data.Text, "Ryo"));
+            }
+
+            _dialogueCooldown = Random.Range(50, 90);
         }
 
-        _dialogueCooldown = Random.Range(50,90);
-        _talking = false;
+        _interacting = false;
         yield return null;
     }
 
-    IEnumerator Type(string s, string speaker)
+    public IEnumerator Type(string s, string speaker)
     {
-        _text.text = "";
-        string temp = speaker + ": ";
-        for (int i = 0;  i < s.Length; i++)
+        if (!_typing)
         {
-            temp += s[i];
-            _text.text = temp;
-            yield return new WaitForSeconds(0.04f);
+            _typing = true;
+            _text.text = "";
+            string temp = speaker + ": ";
+
+            for (int i = 0; i < s.Length; i++)
+            {
+                temp += s[i];
+                _text.text = temp;
+                yield return new WaitForSeconds(0.04f);
+            }
+            yield return new WaitForSeconds(1f);
+
+            for (int i = temp.Length - 1; i >= 0; i--)
+            {
+                temp = temp.Remove(i, 1);
+                _text.text = temp;
+                yield return new WaitForSeconds(0.04f);
+            }
+            _typing = false;
+            yield return null;
         }
-        yield return new WaitForSeconds(2);
-        for (int i = temp.Length - 1; i >= 0; i--)
-        {
-            temp = temp.Remove(i, 1);
-            _text.text = temp;
-            yield return new WaitForSeconds(0.04f);
-        }
+        
     }
 }
 

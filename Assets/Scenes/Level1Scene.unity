@@ -6192,7 +6192,7 @@ MonoBehaviour:
   _rightCollider: {fileID: 243292170}
   _maxOffset: {x: 5, y: 5, z: 0}
   _minOffset: {x: -5, y: -5, z: 0}
-  _horMoveSpeed: 1
+  _horMoveSpeed: 0.02
   _maxMouseDistance: 100
 --- !u!114 &243292172
 MonoBehaviour:
