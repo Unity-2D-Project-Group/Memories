@@ -13,7 +13,6 @@ public class PetController : MonoBehaviour
 
     [Header("Pet Changing")]
     [SerializeField] private List<GameObject> _petsPrefabs = new List<GameObject>();
-    [SerializeField] private int _petID;
 
     [Header("Following Variables")]
     [SerializeField] private float _followingMaxSpeed;
@@ -44,6 +43,7 @@ public class PetController : MonoBehaviour
     [Header("Public Variables")]
     [HideInInspector] public bool _interacting = false;
     [HideInInspector] public bool _typing = false;
+    public int _petID;
     public PetHumor _petHumor;
 
     private Rigidbody2D _rb;
@@ -57,6 +57,7 @@ public class PetController : MonoBehaviour
     private void Start()
     {
         LoadInteractions();
+        TeleportPetToPlayer();
     }
     void Update()
     {
@@ -244,7 +245,6 @@ public class PetController : MonoBehaviour
         }
         
     }
-
     void ChangePet(int index)
     {
         _text.text = "";

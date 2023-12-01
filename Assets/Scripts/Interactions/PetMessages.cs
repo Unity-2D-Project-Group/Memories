@@ -10,9 +10,16 @@ public class PetMessages : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        PetController pet = null;
         if (collision.gameObject.tag == "Player" && _active)
-        {;
-            PetController pet = GameObject.FindGameObjectWithTag("Pet").GetComponent<PetController>();
+        {
+            foreach(GameObject temp in GameObject.FindGameObjectsWithTag("Pet"))
+            {
+                if(temp.GetComponent<PetController>() != null)
+                {
+                    pet = temp.GetComponent<PetController>();
+                }
+            }
 
             if (!pet._interacting)
             {

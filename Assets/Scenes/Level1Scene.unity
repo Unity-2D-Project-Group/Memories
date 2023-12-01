@@ -15538,6 +15538,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameManager
       objectReference: {fileID: 0}
+    - target: {fileID: 2822031949141754625, guid: 770b835562118b241980aa8751e5860d, type: 3}
+      propertyPath: _petsPrefabs.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2822031949141754625, guid: 770b835562118b241980aa8751e5860d, type: 3}
+      propertyPath: _petsPrefabs.Array.data[0]
+      value: 
+      objectReference: {fileID: 5856511961339684672, guid: 6bd984a89ce77da43b18a49b2d386a39, type: 3}
+    - target: {fileID: 2822031949141754625, guid: 770b835562118b241980aa8751e5860d, type: 3}
+      propertyPath: _petsPrefabs.Array.data[1]
+      value: 
+      objectReference: {fileID: 5856511961339684672, guid: d56a543ef71b12c46b92decb1df4c387, type: 3}
     - target: {fileID: 9165786102928359625, guid: 770b835562118b241980aa8751e5860d, type: 3}
       propertyPath: _checkpoints.Array.size
       value: 5
@@ -31952,67 +31964,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 322529506363346118, guid: d3c71c266a5aa0746aeb0faf23a9c071, type: 3}
   m_PrefabInstance: {fileID: 1288030386}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &1289020820
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 4284003383395424294, guid: 6bd984a89ce77da43b18a49b2d386a39, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -109.240326
-      objectReference: {fileID: 0}
-    - target: {fileID: 4284003383395424294, guid: 6bd984a89ce77da43b18a49b2d386a39, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -7.156687
-      objectReference: {fileID: 0}
-    - target: {fileID: 4284003383395424294, guid: 6bd984a89ce77da43b18a49b2d386a39, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4284003383395424294, guid: 6bd984a89ce77da43b18a49b2d386a39, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4284003383395424294, guid: 6bd984a89ce77da43b18a49b2d386a39, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4284003383395424294, guid: 6bd984a89ce77da43b18a49b2d386a39, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4284003383395424294, guid: 6bd984a89ce77da43b18a49b2d386a39, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4284003383395424294, guid: 6bd984a89ce77da43b18a49b2d386a39, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4284003383395424294, guid: 6bd984a89ce77da43b18a49b2d386a39, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4284003383395424294, guid: 6bd984a89ce77da43b18a49b2d386a39, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4511541074739925865, guid: 6bd984a89ce77da43b18a49b2d386a39, type: 3}
-      propertyPath: _text
-      value: 
-      objectReference: {fileID: 1793211250}
-    - target: {fileID: 5856511961339684672, guid: 6bd984a89ce77da43b18a49b2d386a39, type: 3}
-      propertyPath: m_Name
-      value: Pet Example
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 6bd984a89ce77da43b18a49b2d386a39, type: 3}
 --- !u!1001 &1290579826
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -44831,7 +44782,7 @@ GameObject:
   - component: {fileID: 1793211250}
   m_Layer: 0
   m_Name: Text (TMP)
-  m_TagString: Untagged
+  m_TagString: Pet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -53889,7 +53840,6 @@ SceneRoots:
   - {fileID: 243292175}
   - {fileID: 247526167}
   - {fileID: 282869318}
-  - {fileID: 1289020820}
   - {fileID: 2008893980}
   - {fileID: 866131621}
   - {fileID: 1705617670}

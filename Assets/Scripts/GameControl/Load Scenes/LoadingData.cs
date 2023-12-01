@@ -8,4 +8,6 @@ public static class LoadingData
     public static string SceneToBeUnloaded;
     public static string LoadingScene = "LoadingScene";
     public static int PlayingLevel;
+    public static bool LoggedIn = false;
+    public static int CurrentPetID = -1;
 }

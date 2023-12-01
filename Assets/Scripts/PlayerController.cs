@@ -103,8 +103,6 @@ public class PlayerController : MonoBehaviour
         _lineRenderer = GetComponent<LineRenderer>();
         _lineRenderer.enabled = false;
         _dashAmountValue = _dashAmount;
-
-        GameObject.FindGameObjectWithTag("Pet").GetComponent<PetController>().TeleportPetToPlayer();
     }
 
     void Update()
