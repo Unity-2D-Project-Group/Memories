@@ -10,15 +10,18 @@ public class PetCollect : Interact
     {
         _layerText = "Collect Pet";
         if (!LoadingData.LoggedIn) { this.gameObject.SetActive(false); }
+    }
+
+    private void FixedUpdate()
+    {
         foreach (PetController temp in FindObjectsByType<PetController>(FindObjectsSortMode.InstanceID))
         {
-            if(temp._petID == _petCollectID)
+            if (temp._petID == _petCollectID)
             {
                 this.gameObject.SetActive(false);
             }
         }
     }
-
 
     public override void Interaction()
     {

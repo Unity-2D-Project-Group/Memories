@@ -21,6 +21,10 @@ public class LoadingScreen : MonoBehaviour
     private AsyncOperation _unloadingOp;
     private AsyncOperation _loadingOp;
 
+    private void Start()
+    {
+        Time.timeScale = 1f;
+    }
     void Update()
     {
         _loadTimer += Time.deltaTime;

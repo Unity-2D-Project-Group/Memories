@@ -50,7 +50,6 @@ public class GUIController : MonoBehaviour
     {
         if(saveConfirm == "Yes")
         {
-            SaveLoad.OverwriteSave();
             FindAnyObjectByType<SceneLoader>().LoadScene("MainMenuScene");
             Time.timeScale = 1.0f;
         }
@@ -68,7 +67,6 @@ public class GUIController : MonoBehaviour
     public void ResetPlayer()
     {
         StartCoroutine(_player.GetComponent<PlayerController>().Death());
-        Time.timeScale = 1.0f;
     }
 
     private void OnDrawGizmos()

@@ -104,7 +104,6 @@ MonoBehaviour:
   _petsPrefabs:
   - {fileID: 5856511961339684672}
   - {fileID: 5856511961339684672, guid: d56a543ef71b12c46b92decb1df4c387, type: 3}
-  _petID: 0
   _followingMaxSpeed: 10
   _deaceleration: 2
   _offset: {x: 1.5, y: 0.5, z: 0}
@@ -126,7 +125,8 @@ MonoBehaviour:
   _text: {fileID: 0}
   _interacting: 0
   _typing: 0
-  _petHumor: 0
+  _petID: 0
+  _petHumor: 1
 --- !u!58 &7177523106362919600
 CircleCollider2D:
   m_ObjectHideFlags: 0
