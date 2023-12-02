@@ -11,7 +11,7 @@ public class BookInteraction : Interact
     }
     public override void Interaction()
     {
-        Debug.Log("Book");
+        Debug.Log("Player collected the book");
         this.gameObject.SetActive(false);
     }
 }

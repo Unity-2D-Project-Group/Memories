@@ -13,23 +13,28 @@ public class CheckPoint : MonoBehaviour
 
     void FixedUpdate()
     {
+        //Verify if it collides with the player
         RaycastHit2D boxHit = Physics2D.BoxCast(transform.position, transform.localScale, 0 , Vector2.zero, transform.localScale.x, _playerMask);
 
         if(boxHit && _activated)
         {
-            //print(LoadingData.PlayingLevel);
+            print("Saved game on checkpoint: " + _checkPointID);
+
+            //Get the current level info
             Level temp = (Level)SaveLoad._savedGame.Levels[$"Level{LoadingData.PlayingLevel}"];
+            //Update the current Checkpoint
             temp._currentCheckpoint = _checkPointID;
+            //Update the actual info to the new info
             SaveLoad._savedGame.Levels[$"Level{LoadingData.PlayingLevel}"] = temp;
             SaveLoad.OverwriteSave();
 
+            //Take the current checkpoint and unactive all the others that is before it
             TakeCheckpoint();
         }
     }
 
     public void TakeCheckpoint()
     {
-        CheckpointController checkpointController = FindObjectOfType<CheckpointController>().GetComponent<CheckpointController>();
         foreach (CheckPoint check in FindObjectsOfType<CheckPoint>().ToList())
         {
             if (check._checkPointID <= _checkPointID)

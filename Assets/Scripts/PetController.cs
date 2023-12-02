@@ -9,6 +9,7 @@ using UnityEngine.InputSystem;
 public class PetController : MonoBehaviour
 {
     public enum PetHumor { Angry, Happy }
+    [Header("Components")]
     private GameObject _player;
 
     [Header("Pet Changing")]
@@ -31,7 +32,6 @@ public class PetController : MonoBehaviour
     [SerializeField] private List<string> _playerHappyAnswers;
 
     private ArrayList _petSentences = new ArrayList();
-
     private ArrayList _playerSentences = new ArrayList();
 
     private List<TreeNode<DialogueSentence>> _dialogueTrees = new List<TreeNode<DialogueSentence>>();
@@ -48,19 +48,19 @@ public class PetController : MonoBehaviour
 
     private Rigidbody2D _rb;
     private ParticleSystem _ps;
-    void Awake()
+    private void Start()
     {
+        //Get the components
         _rb = GetComponent<Rigidbody2D>();
         _ps = GetComponent<ParticleSystem>();
         _player = GameObject.FindGameObjectWithTag("Player");
-    }
-    private void Start()
-    {
+
         LoadInteractions();
         TeleportPetToPlayer();
     }
     void Update()
     {
+        //Get the text field for interactions
         if(_text == null)
         {
             foreach (GameObject temp in GameObject.FindGameObjectsWithTag("Pet"))
@@ -69,7 +69,11 @@ public class PetController : MonoBehaviour
                     _text = temp.GetComponent<TMP_Text>();
             }
         }
+
+        //Rotate the pet according to player's direction and state
         RotatePet();
+
+        //Calls the dialogue
         if(_dialogueCooldown >= 0)
         {
             _dialogueCooldown -= Time.deltaTime;
@@ -79,6 +83,7 @@ public class PetController : MonoBehaviour
             StartCoroutine(Dialogue());
         }
 
+        //Switch the pet (Temporary)
         if (Input.GetKeyDown(KeyCode.V))
         {
             if (_petID == 0)
@@ -142,24 +147,28 @@ public class PetController : MonoBehaviour
     }
     private void LoadInteractions()
     {
+        //Load the pet's angry reactions
         foreach (string reaction in _petAngryReactions)
         {
             _petSentences.Add(new DialogueSentence(PetHumor.Angry, reaction));
         }
+        //Load the pet's happy reactions
         foreach (string reaction in _petHappyReactions)
         {
             _petSentences.Add(new DialogueSentence(PetHumor.Happy, reaction));
         }
-
+        //Load the players's angry reactions
         foreach (string answer in _playerAngryAnswers)
         {
             _playerSentences.Add(new DialogueSentence(PetHumor.Angry, answer));
         }
+        //Load the player's happy reactions
         foreach (string answer in _playerHappyAnswers)
         {
             _playerSentences.Add(new DialogueSentence(PetHumor.Happy, answer));
         }
 
+        //Create a Tree for each combination of dialogues
         foreach (DialogueSentence petSentence in _petSentences)
         {
             DialogueSentence[] temp = new DialogueSentence[3];
@@ -185,35 +194,40 @@ public class PetController : MonoBehaviour
     public IEnumerator Dialogue()
     {
         _interacting = true;
+        //Create a new node
         TreeNode<DialogueSentence> treeNode = new TreeNode<DialogueSentence>(null, null, null);
 
+        //Take a random tree node
         int temp = Random.Range(0, _dialogueTrees.Count);
 
+        //Verifys if the selected node has the same humor as the pet
         while (_dialogueTrees[temp]._data.Humor != _petHumor)
         {
             temp = Random.Range(0, _dialogueTrees.Count);
             yield return null;
         }
 
-        if(_dialogueTrees[temp]._data.Humor == _petHumor)
+        //Load the node info
+        treeNode = _dialogueTrees[temp];
+        //Type the pet's reaction
+        StartCoroutine(Type(treeNode._data.Text, "Pet"));
+
+        //Wait for the delay of the response
+        yield return new WaitForSeconds(_dialogueDelay);
+
+        //Take a random response from the player
+        int random = Random.Range(0, 2);
+        if (random == 0)
         {
-            treeNode = _dialogueTrees[temp];
-            StartCoroutine(Type(treeNode._data.Text, "Pet"));
-
-            yield return new WaitForSeconds(_dialogueDelay);
-
-            int random = Random.Range(0, 2);
-            if (random == 0)
-            {
-                StartCoroutine(Type(treeNode._left._data.Text, "Ryo"));
-            }
-            else
-            {
-                StartCoroutine(Type(treeNode._right._data.Text, "Ryo"));
-            }
-
-            _dialogueCooldown = Random.Range(50, 90);
+            StartCoroutine(Type(treeNode._left._data.Text, "Ryo"));
         }
+        else
+        {
+            StartCoroutine(Type(treeNode._right._data.Text, "Ryo"));
+        }
+
+        //Set the cooldown of the dialogue as random also
+        _dialogueCooldown = Random.Range(50, 90);
 
         _interacting = false;
         yield return null;

@@ -12,15 +12,21 @@ public class Fragment : MonoBehaviour
 
     void FixedUpdate()
     {
+        //Verify if it collides with the player
         RaycastHit2D boxHit = Physics2D.BoxCast(transform.position, transform.localScale, 0, Vector2.zero, transform.localScale.x, _playerMask);
 
         if (boxHit && _activated)
         {
+            print("Collected Fragment: " + _fragmentID);
+
+            //Get the current level info
             Level temp = (Level)SaveLoad._savedGame.Levels[$"Level{LoadingData.PlayingLevel}"];
+            //Update the current fragment
             temp._currentFragment = _fragmentID;
+            //Update the actual info to the new info
             SaveLoad._savedGame.Levels[$"Level{LoadingData.PlayingLevel}"] = temp;
             SaveLoad.OverwriteSave();
-            //print("Collected Fragment: " + _fragmentID);
+
             _activated = false;
             this.gameObject.SetActive(false);
         }

@@ -12,12 +12,14 @@ public class PortalInteraction : Interact
     }
     public override void Interaction()
     {
+        //Get the level info
         Level temp = (Level)SaveLoad._savedGame.Levels[$"Level{LoadingData.PlayingLevel}"];
         if (temp._currentFragment >= FindObjectOfType<FragmentController>()._fragments.Count - 1)
         {
+            //Finish the level
             SaveLoad._savedGame.FinishLevel(LoadingData.PlayingLevel);
             SaveLoad.OverwriteSave();
-            //It will be changed
+            //Calls the main menu scene
             FindAnyObjectByType<SceneLoader>().LoadScene("MainMenuScene");
         }
     }

@@ -10,10 +10,12 @@ public class PetMessages : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        PetController pet = null;
+        //If it detects the player, then the pet interact with it
         if (collision.gameObject.tag == "Player" && _active)
         {
-            foreach(GameObject temp in GameObject.FindGameObjectsWithTag("Pet"))
+            //Get the pet
+            PetController pet = null;
+            foreach (GameObject temp in GameObject.FindGameObjectsWithTag("Pet"))
             {
                 if(temp.GetComponent<PetController>() != null)
                 {
@@ -21,6 +23,7 @@ public class PetMessages : MonoBehaviour
                 }
             }
 
+            //If the pet isn't already interacting with the player, then it is called
             if (!pet._interacting)
             {
                 pet._interacting = true;

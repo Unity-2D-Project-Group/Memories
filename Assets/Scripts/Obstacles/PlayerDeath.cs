@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class PlayerDeath : MonoBehaviour
 {
+    [Header("Components")]
     private GameObject _player;
 
     void Start()
     {
+        //Get the components
         _player = GameObject.FindGameObjectWithTag("Player");
     }
 

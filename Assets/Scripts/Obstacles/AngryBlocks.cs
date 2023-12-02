@@ -6,23 +6,27 @@ using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class AngryBlocks : MonoBehaviour
 {
-    [Header("Angry Block Variables")]
+    [Header("Components")]
+    private Rigidbody2D _rb;
+
+    [Header("Falling/Getting Up Variables")]
     [SerializeField] private float _gravity;
     [SerializeField] private float _speedToGetUp;
     [SerializeField] private float _maxTimeToGetUp;
-    private Rigidbody2D _rb;
+
     private float _timeToGetUp;
     private Vector3 _initialPosition;
     private bool _canFall;
     private bool _hasFallen;
-
     private void Start()
     {
+        //Get the components
         _rb = GetComponent<Rigidbody2D>();
+
+        //Reset all the variables
         _canFall = false;
         _hasFallen = false;
         _rb.gravityScale = 0f;
-
         _initialPosition = transform.position;
         _timeToGetUp = _maxTimeToGetUp;
     }
@@ -36,12 +40,14 @@ public class AngryBlocks : MonoBehaviour
     {
         if (_hasFallen) 
         {
+            //Decrease the time to get up
             _timeToGetUp -= Time.deltaTime;
 
             if ( _timeToGetUp <= 0)
             {
-                _hasFallen= false;
-                _rb.gravityScale= 0f;
+                //Reset the variables again
+                _hasFallen = false;
+                _rb.gravityScale = 0f;
                 _timeToGetUp = _maxTimeToGetUp;
             }
         }

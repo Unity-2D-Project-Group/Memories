@@ -216,7 +216,7 @@ public class PlayerController : MonoBehaviour
             else if (_rb.velocity.x < 0) { _facingRight = false; }
         }
 
-        //Change the scale according to facing direction
+        //Change the scale according to facing direction (if it is sliding its reversed)
         if (_isWallSliding)
         {
             transform.localScale = new Vector3(_wallDirection * -1, 1, 1);
@@ -248,18 +248,21 @@ public class PlayerController : MonoBehaviour
 
         _isDashing = true;
 
+        //Take the position of the cursor and calculate the direction
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mousePosition.z = 0f;
         Vector3 direction = (mousePosition - transform.position).normalized;
-
+        //Reset the rb properties
         _rb.velocity = Vector2.zero;
         _rb.gravityScale = 0f;
         _rb.drag = 0f;
+        //Increase the velocity
         while (Time.time < dashStartTime + _dashLength)
         {
             _rb.velocity = direction * _dashForce;
             yield return new WaitForSeconds(0.1f);
         }
+
         _dashCooldownValue = _dashCooldown;
         _dashAmountValue--;
         _isDashing = false;
@@ -285,6 +288,7 @@ public class PlayerController : MonoBehaviour
             _rb.velocity = new Vector2(_jumpingDirection * _wallJumpForce.x, _wallJumpForce.y);
             yield return null;
         }
+
         yield return new WaitForSeconds(0.1f);
         _isWallJumping = false;
     }
@@ -331,26 +335,24 @@ public class PlayerController : MonoBehaviour
     }
     private void FallMultiplier()
     {
-        //if (!_isGliding)
-        //{
-            if (_rb.velocity.y < 0f)
-            {
-                _rb.gravityScale = _fallMultiplier;
-            }
-            else if (_rb.velocity.y > 0 && !Input.GetButton("Jump"))
-            {
-                _rb.gravityScale = _lowJumpFallMultiplier;
-            }
-            else
-            {
-                _rb.gravityScale = 1;
-            }
-        //}
+        if (_rb.velocity.y < 0f)
+        {
+            _rb.gravityScale = _fallMultiplier;
+        }
+        else if (_rb.velocity.y > 0 && !Input.GetButton("Jump"))
+        {
+            _rb.gravityScale = _lowJumpFallMultiplier;
+        }
+        else
+        {
+            _rb.gravityScale = 1;
+        }
     }
     private void Hook()
     {
+        //Calculate the direction of the cursor
         Vector2 direction = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
-
+        //Verify if there's any possible hook place
         RaycastHit2D hitHookable = Physics2D.Raycast(transform.position, direction, _hookThreshold, _hookableMask);
             
         if (hitHookable.collider != null)
@@ -370,8 +372,10 @@ public class PlayerController : MonoBehaviour
 
         Vector2 newPos;
 
+        //Set the endpoint to the player
         _lineRenderer.SetPosition(1, transform.position);
 
+        //Increase the endpoint slowly
         for (; t < time; t += _hookSpeed * Time.deltaTime)
         {
             newPos = Vector2.Lerp(transform.position, _target, t / time);
@@ -389,19 +393,20 @@ public class PlayerController : MonoBehaviour
     {
         if (target.tag == "Hookable")
         {
+            //Verify if you're not trying to pull the object to the wrong direction
             if (Mathf.Clamp(transform.position.x - target.transform.position.x, -1, 1) != (float)target.GetComponent<HookableController>()._moveDirection)
             {
                 _isHooking = false;
                 _isRegretting = false;
                 return;
             }
-            
+            //Put the object between the player and the original position of the object (Multiple times)
             Vector2 hookPos = Vector2.Lerp(new Vector2(target.transform.position.x, target.transform.position.y), new Vector2(transform.position.x, target.transform.position.y), _objSpeed * Time.deltaTime);
-
             target.transform.position = hookPos;
 
             _lineRenderer.SetPosition(1, target.transform.position);
 
+            //If the object is close to the player then it finishes
             if (Vector2.Distance(transform.position, target.transform.position) <= 1f)
             {
                 _isHooking = false;
@@ -410,10 +415,11 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
+            //Put the player between the player's original position and the object (Multiple times)
             Vector2 hookPos = Vector2.Lerp(transform.position, _target, _objSpeed * Time.deltaTime);
-
             transform.position = hookPos;
 
+            //If the player is close to the object then it finishes
             if (Vector2.Distance(transform.position, _target) <= 1f)
             {
                 _isHooking = false;
@@ -423,15 +429,10 @@ public class PlayerController : MonoBehaviour
 
         _hookCooldownValue = _hookCooldown;
     }
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawLine(transform.position + _groundRaycastOffset, transform.position + _groundRaycastOffset + Vector3.down * _groundRaycastLength);
-        Gizmos.DrawLine(transform.position - _groundRaycastOffset, transform.position - _groundRaycastOffset + Vector3.down * _groundRaycastLength);
-        Gizmos.DrawLine(transform.position - new Vector3(_wallSlidingCheckSize, 0, 0), transform.position + Vector3.right * _wallSlidingCheckSize);
-    }
+
     public IEnumerator Death()
     {
+        //Reset all the player's properties
         _rb.velocity = Vector2.zero;
         _isDead = true;
         _rb.angularVelocity = 0;
@@ -441,21 +442,32 @@ public class PlayerController : MonoBehaviour
         _isRegretting = false;
         _isWallJumping = false;
         _isWallSliding = false;
-        FindAnyObjectByType<SceneLoader>().LoadScene(SceneManager.GetActiveScene().name);
 
+        //Reload the scene
+        FindAnyObjectByType<SceneLoader>().LoadScene(SceneManager.GetActiveScene().name);
         yield return null;
     }
     private void CallInteraction()
     {
+        //Verify if there's any collider with the tag "Interactable"
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, _interactRadius, _interactLayer);
 
+        //If it finds any object, calls the method "Interaction" inside the object
         if (colliders.Length > 0)
         {
-            foreach(Collider2D collider in colliders)
+            foreach (Collider2D collider in colliders)
             {
                 collider.gameObject.GetComponent<Interact>().Interaction();
             }
         }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(transform.position + _groundRaycastOffset, transform.position + _groundRaycastOffset + Vector3.down * _groundRaycastLength);
+        Gizmos.DrawLine(transform.position - _groundRaycastOffset, transform.position - _groundRaycastOffset + Vector3.down * _groundRaycastLength);
+        Gizmos.DrawLine(transform.position - new Vector3(_wallSlidingCheckSize, 0, 0), transform.position + Vector3.right * _wallSlidingCheckSize);
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
