@@ -4,9 +4,12 @@ using UnityEngine;
 
 public class PetMessages : MonoBehaviour
 {
+    private enum MessageType { PetMessage, RyoMonologue}
     private bool _active = true;
     [SerializeField] private string _happyMessage;
     [SerializeField] private string _angryMessage;
+    [SerializeField] private string _monologueMessage;
+    [SerializeField] private MessageType _systemMessage;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -24,14 +27,17 @@ public class PetMessages : MonoBehaviour
             }
 
             //If the pet isn't already interacting with the player, then it is called
-            if (!pet._interacting)
+            if (_systemMessage == MessageType.PetMessage && pet != null && !pet._interacting)
             {
                 pet._interacting = true;
                 if(pet._petHumor == PetController.PetHumor.Happy)
-                    StartCoroutine(pet.Type(_happyMessage, "Pet"));
+                    StartCoroutine(FindAnyObjectByType<GameManager>().Type(_happyMessage, "Pet"));
                 else
-                    StartCoroutine(pet.Type(_angryMessage, "Pet"));
+                    StartCoroutine(FindAnyObjectByType<GameManager>().Type(_angryMessage, "Pet"));
                 pet._interacting = false;
+            }else if(_systemMessage == MessageType.RyoMonologue)
+            {
+                StartCoroutine(FindAnyObjectByType<GameManager>().Type(_monologueMessage, "Ryo"));
             }
 
             _active = false;

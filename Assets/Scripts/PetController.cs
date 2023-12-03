@@ -8,6 +8,7 @@ using UnityEngine.InputSystem;
 
 public class PetController : MonoBehaviour
 {
+    public static PetController _instance;
     public enum PetHumor { Angry, Happy }
     [Header("Components")]
     private GameObject _player;
@@ -35,14 +36,9 @@ public class PetController : MonoBehaviour
     private ArrayList _playerSentences = new ArrayList();
 
     private List<TreeNode<DialogueSentence>> _dialogueTrees = new List<TreeNode<DialogueSentence>>();
-    
-
-    [Header("UI")]
-    [SerializeField] private TMP_Text _text;
 
     [Header("Public Variables")]
     [HideInInspector] public bool _interacting = false;
-    [HideInInspector] public bool _typing = false;
     public int _petID;
     public PetHumor _petHumor;
 
@@ -60,16 +56,6 @@ public class PetController : MonoBehaviour
     }
     void Update()
     {
-        //Get the text field for interactions
-        if(_text == null)
-        {
-            foreach (GameObject temp in GameObject.FindGameObjectsWithTag("Pet"))
-            {
-                if (temp != this.gameObject)
-                    _text = temp.GetComponent<TMP_Text>();
-            }
-        }
-
         //Rotate the pet according to player's direction and state
         RotatePet();
 
@@ -87,9 +73,9 @@ public class PetController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.V))
         {
             if (_petID == 0)
-                ChangePet(1);
+                StartCoroutine(ChangePet(1));
             else if (_petID == 1)
-                ChangePet(0);
+                StartCoroutine(ChangePet(0));
         }
     }
 
@@ -210,7 +196,7 @@ public class PetController : MonoBehaviour
         //Load the node info
         treeNode = _dialogueTrees[temp];
         //Type the pet's reaction
-        StartCoroutine(Type(treeNode._data.Text, "Pet"));
+        StartCoroutine(FindAnyObjectByType<GameManager>().Type(treeNode._data.Text, "Pet"));
 
         //Wait for the delay of the response
         yield return new WaitForSeconds(_dialogueDelay);
@@ -219,11 +205,11 @@ public class PetController : MonoBehaviour
         int random = Random.Range(0, 2);
         if (random == 0)
         {
-            StartCoroutine(Type(treeNode._left._data.Text, "Ryo"));
+            StartCoroutine(FindAnyObjectByType<GameManager>().Type(treeNode._left._data.Text, "Ryo"));
         }
         else
         {
-            StartCoroutine(Type(treeNode._right._data.Text, "Ryo"));
+            StartCoroutine(FindAnyObjectByType<GameManager>().Type(treeNode._right._data.Text, "Ryo"));
         }
 
         //Set the cooldown of the dialogue as random also
@@ -232,37 +218,14 @@ public class PetController : MonoBehaviour
         _interacting = false;
         yield return null;
     }
-    public IEnumerator Type(string s, string speaker)
+    
+    IEnumerator ChangePet(int index)
     {
-        if (!_typing)
-        {
-            _typing = true;
-            _text.text = "";
-            string temp = speaker + ": ";
-
-            for (int i = 0; i < s.Length; i++)
-            {
-                temp += s[i];
-                _text.text = temp;
-                yield return new WaitForSeconds(0.04f);
-            }
-            yield return new WaitForSeconds(1f);
-
-            for (int i = temp.Length - 1; i >= 0; i--)
-            {
-                temp = temp.Remove(i, 1);
-                _text.text = temp;
-                yield return new WaitForSeconds(0.04f);
-            }
-            _typing = false;
-            yield return null;
-        }
-        
-    }
-    void ChangePet(int index)
-    {
-        _text.text = "";
         Instantiate(_petsPrefabs[index]);
+        if (FindAnyObjectByType<GameManager>()._typing)
+        {
+            yield return new WaitForSeconds(7f);
+        }
         Destroy(this.gameObject);
     }
 }
