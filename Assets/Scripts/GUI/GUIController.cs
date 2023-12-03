@@ -8,6 +8,7 @@ public class GUIController : MonoBehaviour
     [SerializeField] private GameObject _player;
     [SerializeField] private GameObject _pauseMenu;
     [SerializeField] private GameObject _confirmation;
+    [SerializeField] private GameObject _resetConfirmation;
     [SerializeField] private GameObject _interact;
     [SerializeField] private GameObject _interactText;
     [SerializeField] private LayerMask _interactLayer;
@@ -64,9 +65,25 @@ public class GUIController : MonoBehaviour
         Time.timeScale = 1.0f;
     }
 
-    public void ResetPlayer()
+    public void ResetPlayer(string saveConfirm)
     {
-        StartCoroutine(_player.GetComponent<PlayerController>().Death());
+        if (saveConfirm == "Yes")
+        {
+            //Get the current level info
+            Level temp = (Level)SaveLoad._savedGame.Levels[$"Level{LoadingData.PlayingLevel}"];
+            //Update the current Checkpoint
+            temp._currentCheckpoint = 0;
+            temp._currentFragment = -1;
+            //Update the actual info to the new info
+            SaveLoad._savedGame.Levels[$"Level{LoadingData.PlayingLevel}"] = temp;
+            SaveLoad.OverwriteSave();
+
+            StartCoroutine(_player.GetComponent<PlayerController>().Death());
+        }
+        else
+        {
+            _resetConfirmation.SetActive(false);
+        }
     }
 
     private void OnDrawGizmos()

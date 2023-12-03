@@ -25,7 +25,7 @@ public class Save
     {
         Level temp = (Level)_instance.Levels[$"Level{level}"];
 
-        temp._currentFragment = 0;
+        temp._currentFragment = -1;
         temp._currentCheckpoint = 0;
         _instance.Levels[$"Level{level}"] = temp;
         LoadingData.PlayingLevel = -1;
