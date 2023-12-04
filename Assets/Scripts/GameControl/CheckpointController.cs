@@ -11,14 +11,10 @@ public class CheckpointController : MonoBehaviour
     private GameObject _player;
     public Hashtable _checkpoints = new Hashtable();
 
-    private void Start()
+    public void StartCheckPoints()
     {
         //Get the components
         _player = GameObject.FindGameObjectWithTag("Player");
-    }
-
-    public void StartCheckPoints()
-    {
         Save._instance = SaveLoad._savedGame;
         //Get the current level info
         Level temp = (Level)SaveLoad._savedGame.Levels[$"Level{LoadingData.PlayingLevel}"];
