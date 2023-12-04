@@ -5178,7 +5178,7 @@ Transform:
   m_GameObject: {fileID: 630578096}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 13.19, y: 7.45, z: 2.2987769}
+  m_LocalPosition: {x: 12.78, y: 6.66, z: 2.2987769}
   m_LocalScale: {x: 1, y: 13.508199, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6820,8 +6820,8 @@ Transform:
   m_GameObject: {fileID: 796279347}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 7.49, y: 7.5095, z: 2.2987769}
-  m_LocalScale: {x: 0.8232275, y: 18.12443, z: 1}
+  m_LocalPosition: {x: 7.8083, y: 7.5095, z: 2.2987769}
+  m_LocalScale: {x: 1.039901, y: 18.12443, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1893742331}
@@ -17182,10 +17182,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1284764206826805584, guid: 86c8ae0e9a8a99d41b2c0355f7d8e248, type: 3}
-      propertyPath: _jumpForce
-      value: 13
-      objectReference: {fileID: 0}
     - target: {fileID: 3273498253242932800, guid: 86c8ae0e9a8a99d41b2c0355f7d8e248, type: 3}
       propertyPath: m_Name
       value: Player
