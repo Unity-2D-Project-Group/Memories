@@ -415,16 +415,8 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            //Put the player between the player's original position and the object (Multiple times)
-            Vector2 hookPos = Vector2.Lerp(transform.position, _target, _objSpeed * Time.deltaTime);
-            transform.position = hookPos;
-
-            //If the player is close to the object then it finishes
-            if (Vector2.Distance(transform.position, _target) <= 1f)
-            {
-                _isHooking = false;
-                _isRegretting = false;
-            }
+            _isHooking = false;
+            _isRegretting = false;
         }
 
         _hookCooldownValue = _hookCooldown;

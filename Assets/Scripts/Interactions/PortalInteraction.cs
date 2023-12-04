@@ -19,8 +19,8 @@ public class PortalInteraction : Interact
             //Finish the level
             SaveLoad._savedGame.FinishLevel(LoadingData.PlayingLevel);
             SaveLoad.OverwriteSave();
-            //Calls the main menu scene
-            FindAnyObjectByType<SceneLoader>().LoadScene("MainMenuScene");
+            //Calls the end level scene
+            FindAnyObjectByType<SceneLoader>().LoadScene("EndLevelScene");
         }
     }
 }
