@@ -26,7 +26,7 @@ public class CheckpointController : MonoBehaviour
         //Search for all the Checkpoints on the scene
         foreach (CheckPoint checkPoint in FindObjectsOfType<CheckPoint>().ToList())
         {
-            //Save the checkpoints in the list
+            //Save the checkpoints in the hashtable
             _checkpoints.Add(checkPoint._checkPointID.ToString(), checkPoint.gameObject);
 
             //If the Checkpoint was already collected before, set it to unactive
@@ -36,14 +36,16 @@ public class CheckpointController : MonoBehaviour
                 checkPoint.gameObject.GetComponent<SpriteRenderer>().color = Color.yellow;
             }
         }
-
-        //Teleport the player to the checkpoint
-        TeleportToCheckPoint(temp);
+        TeleportToCheckPoint((Level)SaveLoad._savedGame.Levels[$"Level{LoadingData.PlayingLevel}"]);
     }
 
     public void TeleportToCheckPoint(Level level)
     {
-        GameObject temp = (GameObject)_checkpoints[level._currentCheckpoint.ToString()];
-        _player.transform.position = temp.transform.position;
+        foreach(GameObject checkPoint in _checkpoints.Values) {
+            if (level._currentCheckpoint == checkPoint.GetComponent<CheckPoint>()._checkPointID)
+            {
+                _player.transform.position = checkPoint.transform.position;
+            }
+        }
     }
 }

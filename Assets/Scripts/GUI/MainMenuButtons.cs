@@ -20,7 +20,6 @@ public class MainMenuButtons : MonoBehaviour
     {
         SaveLoad.NewSave();
     }
-
     public void LoadGame()
     {
         SaveLoad.LoadSave();
