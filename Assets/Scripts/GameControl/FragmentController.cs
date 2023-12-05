@@ -23,7 +23,7 @@ public class FragmentController : MonoBehaviour
             _fragments.Add(fragment._fragmentID.ToString(), fragment.gameObject);
 
             //If the fragment was already collected before, set it to unactive
-            if (fragment._fragmentID < temp._currentFragment)
+            if (fragment._fragmentID <= temp._currentFragment)
             {
                 fragment.gameObject.SetActive(false);
                 fragment._activated = false;

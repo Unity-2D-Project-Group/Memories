@@ -23,6 +23,11 @@ public class Cheats : MonoBehaviour
         {
             NextFragment();
         }
+
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            GoToFinal();
+        }
     }
 
     private void NextCheckpoint()
@@ -49,6 +54,12 @@ public class Cheats : MonoBehaviour
                 _player.transform.position = fragment.transform.position;
             }
         }
+        StartCoroutine(GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CamController>().SendToPosition(_player.transform.position));
+    }
+    private void GoToFinal()
+    {
+        _player.transform.position = FindAnyObjectByType<PortalInteraction>().gameObject.transform.position;
+
         StartCoroutine(GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CamController>().SendToPosition(_player.transform.position));
     }
 }
