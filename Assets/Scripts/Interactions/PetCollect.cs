@@ -6,6 +6,7 @@ using UnityEngine;
 public class PetCollect : Interact
 {
     [SerializeField] private int _petCollectID;
+    [SerializeField] private GameObject _petPrefab;
     private void Start()
     {
         _layerText = "Collect Pet";
@@ -28,6 +29,7 @@ public class PetCollect : Interact
         print("Player collected the pet");
         // We should change this to the database input on 3rd delivery
         LoadingData.CurrentPetID = _petCollectID;
+        Instantiate(_petPrefab);
         this.gameObject.SetActive(false);
     }
 }

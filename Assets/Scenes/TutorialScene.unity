@@ -17165,6 +17165,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1434316271013841616, guid: 8381bbd3c5662524eafe791c785764af, type: 3}
+      propertyPath: _petPrefab
+      value: 
+      objectReference: {fileID: 5856511961339684672, guid: 6bd984a89ce77da43b18a49b2d386a39, type: 3}
     - target: {fileID: 8947086186590121318, guid: 8381bbd3c5662524eafe791c785764af, type: 3}
       propertyPath: m_Name
       value: Pet Collect

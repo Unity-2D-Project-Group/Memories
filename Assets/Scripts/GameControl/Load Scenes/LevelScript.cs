@@ -16,7 +16,7 @@ public class Level
         _instance = this;
         _levelID = levelID;
         _currentCheckpoint = 0;
-        _currentFragment = 0;
+        _currentFragment = -1;
         _unlocked = unlocked;
     }
 }
