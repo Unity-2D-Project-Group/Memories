@@ -73,8 +73,11 @@ public class GUIController : MonoBehaviour
             //Get the current level info
             Level temp = (Level)SaveLoad._savedGame.Levels[$"Level{LoadingData.PlayingLevel}"];
             //Update the current Checkpoint
-            temp._currentCheckpoint = 0;
-            temp._currentFragment = -1;
+            temp._currentCheckpoint = 0; 
+            for (int i = 0; i < temp._collectedFragments.Length; i++)
+            {
+                temp._collectedFragments[i] = null;
+            }
             //Update the actual info to the new info
             SaveLoad._savedGame.Levels[$"Level{LoadingData.PlayingLevel}"] = temp;
             SaveLoad.OverwriteSave();

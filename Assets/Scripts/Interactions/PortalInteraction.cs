@@ -24,7 +24,6 @@ public class PortalInteraction : Interact
                 _collectedAll = false;
             }
         }
-        Level temp = (Level)SaveLoad._savedGame.Levels[$"Level{LoadingData.PlayingLevel}"];
         if (_collectedAll)
         {
             //Finish the level

@@ -21,8 +21,8 @@ public class Fragment : MonoBehaviour
 
             //Get the current level info
             Level temp = (Level)SaveLoad._savedGame.Levels[$"Level{LoadingData.PlayingLevel}"];
-            //Update the current fragment
-            temp._currentFragment = _fragmentID;
+            //Update the fragment info
+            temp._collectedFragments[_fragmentID] = _fragmentID;
             //Update the actual info to the new info
             SaveLoad._savedGame.Levels[$"Level{LoadingData.PlayingLevel}"] = temp;
             SaveLoad.OverwriteSave();

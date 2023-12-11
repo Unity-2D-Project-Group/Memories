@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using static Cinemachine.DocumentationSortingAttribute;
 
@@ -45,15 +46,24 @@ public class Cheats : MonoBehaviour
     }
     private void NextFragment()
     {
+        bool found = false;
         FragmentController temp = FindAnyObjectByType<FragmentController>();
         Level currentLevelInfo = (Level)SaveLoad._savedGame.Levels[$"Level{LoadingData.PlayingLevel}"];
-        foreach (GameObject fragment in temp._fragments.Values)
+
+        for(int i = 0; i < currentLevelInfo._collectedFragments.Length; i++)
         {
-            if (fragment.GetComponent<Fragment>()._fragmentID == currentLevelInfo._currentFragment + 1)
+            foreach (GameObject fragmentGameObject in temp._fragments.Values)
             {
-                _player.transform.position = fragment.transform.position;
+                if (fragmentGameObject.GetComponent<Fragment>()._fragmentID == i && currentLevelInfo._collectedFragments[fragmentGameObject.GetComponent<Fragment>()._fragmentID] == null)
+                {
+                    _player.transform.position = fragmentGameObject.transform.position;
+                    found = true;
+                }
+                if(found) break;
             }
+            if (found) break;
         }
+        
         StartCoroutine(GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CamController>().SendToPosition(_player.transform.position));
     }
     private void GoToFinal()
