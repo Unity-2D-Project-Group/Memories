@@ -28,4 +28,9 @@ public class MainMenuButtons : MonoBehaviour
     {
         Application.Quit();
     }
+
+    public void LoginButton()
+    {
+        FindObjectOfType<SceneLoader>().LoadScene("LoginScene");
+    }
 }
