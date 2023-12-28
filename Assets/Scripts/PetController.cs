@@ -5,16 +5,14 @@ using UnityEngine;
 using TMPro;
 using static PetController;
 using UnityEngine.InputSystem;
+using UnityEditor.Build.Content;
 
 public class PetController : MonoBehaviour
 {
     public static PetController _instance;
-    public enum PetHumor { Angry, Happy }
+    public enum PetHumor { Happy, Sad }
     [Header("Components")]
     private GameObject _player;
-
-    [Header("Pet Changing")]
-    [SerializeField] private List<GameObject> _petsPrefabs = new List<GameObject>();
 
     [Header("Following Variables")]
     [SerializeField] private float _followingMaxSpeed;
@@ -26,10 +24,10 @@ public class PetController : MonoBehaviour
     [SerializeField] private float _dialogueCooldown;
     [SerializeField] private float _dialogueDelay;
 
-    [SerializeField] private List<string> _petAngryReactions;
+    [SerializeField] private List<string> _petSadReactions;
     [SerializeField] private List<string> _petHappyReactions;
 
-    [SerializeField] private List<string> _playerAngryAnswers;
+    [SerializeField] private List<string> _playerSadAnswers;
     [SerializeField] private List<string> _playerHappyAnswers;
 
     private ArrayList _petSentences = new ArrayList();
@@ -51,6 +49,8 @@ public class PetController : MonoBehaviour
         _ps = GetComponent<ParticleSystem>();
         _player = GameObject.FindGameObjectWithTag("Player");
 
+        LoadInfo();
+
         LoadInteractions();
         TeleportPetToPlayer();
     }
@@ -67,15 +67,6 @@ public class PetController : MonoBehaviour
         else if(!_interacting)
         {
             StartCoroutine(Dialogue());
-        }
-
-        //Switch the pet (Temporary)
-        if (Input.GetKeyDown(KeyCode.V))
-        {
-            if (_petID == 0)
-                StartCoroutine(ChangePet(1));
-            else if (_petID == 1)
-                StartCoroutine(ChangePet(0));
         }
     }
 
@@ -134,9 +125,9 @@ public class PetController : MonoBehaviour
     private void LoadInteractions()
     {
         //Load the pet's angry reactions
-        foreach (string reaction in _petAngryReactions)
+        foreach (string reaction in _petSadReactions)
         {
-            _petSentences.Add(new DialogueSentence(PetHumor.Angry, reaction));
+            _petSentences.Add(new DialogueSentence(PetHumor.Sad, reaction));
         }
         //Load the pet's happy reactions
         foreach (string reaction in _petHappyReactions)
@@ -144,9 +135,9 @@ public class PetController : MonoBehaviour
             _petSentences.Add(new DialogueSentence(PetHumor.Happy, reaction));
         }
         //Load the players's angry reactions
-        foreach (string answer in _playerAngryAnswers)
+        foreach (string answer in _playerSadAnswers)
         {
-            _playerSentences.Add(new DialogueSentence(PetHumor.Angry, answer));
+            _playerSentences.Add(new DialogueSentence(PetHumor.Sad, answer));
         }
         //Load the player's happy reactions
         foreach (string answer in _playerHappyAnswers)
@@ -218,15 +209,17 @@ public class PetController : MonoBehaviour
         _interacting = false;
         yield return null;
     }
-    
-    IEnumerator ChangePet(int index)
+
+    private void LoadInfo()
     {
-        Instantiate(_petsPrefabs[index]);
-        if (FindAnyObjectByType<GameManager>()._typing)
+        if(LoadingData.CurrentPet.humor == "Happy")
         {
-            yield return new WaitForSeconds(7f);
+            _petHumor = PetHumor.Happy;
         }
-        Destroy(this.gameObject);
+        else
+        {
+            _petHumor = PetHumor.Sad;
+        }
     }
 }
 

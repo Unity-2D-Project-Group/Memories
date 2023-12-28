@@ -6,29 +6,28 @@ using UnityEngine;
 using UnityEngine.Networking;
 using static Cinemachine.DocumentationSortingAttribute;
 
-public class LoginScreen : MonoBehaviour
+public class RegisterScreen : MonoBehaviour
 {
     [SerializeField] private TMP_Text _warningTxt;
     [SerializeField] private TMP_InputField _usernameIF;
     [SerializeField] private TMP_InputField _passwordIF;
-    public void Login()
+
+    public void Register()
     {
-        UserData user = new UserData(_usernameIF.text, _passwordIF.text);
-        StartCoroutine(LoginAPI(user));
+        StartCoroutine(RegisterAPI(new UserData(_usernameIF.text, _passwordIF.text)));
     }
     public void Pass()
     {
         FindObjectOfType<SceneLoader>().LoadScene("MainMenuScene");
     }
-
     public void ClearWarning()
     {
         _warningTxt.text = "";
     }
 
-    IEnumerator LoginAPI(UserData user)
+    IEnumerator RegisterAPI(UserData user)
     {
-        UnityWebRequest request = new UnityWebRequest(LoadingData.url + "users/auth", "GET");
+        UnityWebRequest request = new UnityWebRequest(LoadingData.url + "users/auth", "POST");
 
         string JSONData = JsonUtility.ToJson(user);
         byte[] JSONToSend = new System.Text.UTF8Encoding().GetBytes(JSONData);
@@ -39,14 +38,14 @@ public class LoginScreen : MonoBehaviour
 
         yield return request.SendWebRequest();
 
-        if(request.result == UnityWebRequest.Result.ConnectionError)
+        if (request.result == UnityWebRequest.Result.ConnectionError)
         {
             Debug.Log("Error: " + request.error);
         }
         else
         {
             DataFromServer temp = JsonUtility.FromJson<DataFromServer>(request.downloadHandler.text);
-            if (request.responseCode != 200)
+            if(request.responseCode != 200)
             {
                 _warningTxt.text = temp.msg;
             }
@@ -58,23 +57,5 @@ public class LoginScreen : MonoBehaviour
                 FindObjectOfType<SceneLoader>().LoadScene("MainMenuScene");
             }
         }
-
-        yield return null;
-    }
-
-}
-class DataFromServer
-{
-    public string msg;
-    public int user_id;
-}
-public class UserData
-{
-    public string username;
-    public string password;
-    public UserData(string username, string password)
-    {
-        this.username = username;
-        this.password = password;
     }
 }
