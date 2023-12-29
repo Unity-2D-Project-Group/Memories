@@ -10,6 +10,10 @@ public class SceneLoader : MonoBehaviour
 {
     void Start()
     {
+        if (FindObjectsOfType<SceneLoader>().Length > 1)
+        {
+            Destroy(this.gameObject);
+        }
         DontDestroyOnLoad(this.gameObject);
     }
     public void LoadScene(string sceneName)

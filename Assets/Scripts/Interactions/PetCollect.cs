@@ -11,36 +11,38 @@ public class PetCollect : Interact
     private void Start()
     {
         _layerText = "Collect Pet";
-        if (!LoadingData.LoggedIn || LoadingData.CurrentPet.id == _petCollectID) { this.gameObject.SetActive(false); }
     }
 
     public override void Interaction()
     {
-        print("Player collected the pet");
-        // We should change this to the database input on 3rd delivery
-        //LoadingData.CurrentPetID = _petCollectID;
         StartCoroutine(AddPet());
-        this.gameObject.SetActive(false);
+    }
+
+    private void FixedUpdate()
+    {
+        if (!LoadingData.LoggedIn || LoadingData.CurrentPet != null && LoadingData.CurrentPet.pet_id > 0 && LoadingData.CurrentPet.pet_id == _petCollectID) { this.gameObject.SetActive(false); }
     }
 
     IEnumerator AddPet()
     {
-        UnityWebRequest request = new UnityWebRequest(LoadingData.url + "pets/", "POST");
+        WWWForm form = new WWWForm();
+        form.AddField("user_id", LoadingData.PlayerUserObj.user_id);
+        form.AddField("pet_id", _petCollectID);
 
-        string JSONData = JsonUtility.ToJson(new PetToAdd(_petCollectID));
-        byte[] JSONToSend = new System.Text.UTF8Encoding().GetBytes(JSONData);
-
-        request.uploadHandler = (UploadHandler)new UploadHandlerRaw(JSONToSend);
-        request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
-        request.SetRequestHeader("Content-Type", "application/json");
-
+        UnityWebRequest request = UnityWebRequest.Post(LoadingData.url + "pets/", form);
         yield return request.SendWebRequest();
 
-        if (request.result == UnityWebRequest.Result.ConnectionError)
+        
+        if (request.result != UnityWebRequest.Result.Success)
         {
             Debug.Log("Error: " + request.error);
         }
-        yield return null;
+        else
+        {
+            Debug.Log("Player collected the pet");
+
+            this.gameObject.SetActive(false);
+        }
     }
 }
 

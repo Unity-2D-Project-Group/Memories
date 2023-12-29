@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using TMPro;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -20,7 +21,6 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        //If the player is logged-in and it has a pet, Loads the pet info
         if (LoadingData.LoggedIn)
         {
             StartCoroutine(SearchPetInfo());
@@ -31,15 +31,13 @@ public class GameManager : MonoBehaviour
         //Start the checkpoints and fragments when the scene is loaded
         this.GetComponent<FragmentController>().StartFragments();
         this.GetComponent<CheckpointController>().StartCheckPoints();
-
-        Time.timeScale = 1.0f;
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
-        if (LoadingData.LoggedIn && LoadingData.CurrentPet.id != 0 && !_summoned)
+        if (LoadingData.CurrentPet != null && LoadingData.CurrentPet.pet_id > 0 && !_summoned)
         {
-            GameObject pet = Instantiate(_petsPrefabs[LoadingData.CurrentPet.id - 1], this.gameObject.transform);
+            GameObject pet = Instantiate(_petsPrefabs[LoadingData.CurrentPet.pet_id - 1], this.gameObject.transform);
             pet.transform.SetParent(null);
             _summoned = true;
         }
@@ -63,7 +61,8 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            LoadingData.CurrentPet = JsonUtility.FromJson<Pet>(request.downloadHandler.text);
+            if(JsonUtility.FromJson<Pet>(request.downloadHandler.text) != null)
+                LoadingData.CurrentPet = JsonUtility.FromJson<Pet>(request.downloadHandler.text);
         }
         yield return null;
     }
@@ -93,4 +92,27 @@ public class GameManager : MonoBehaviour
             yield return null;
         }
     }
+}
+
+public class User
+{
+    public string username;
+    public int user_id;
+    public User(int id, string name)
+    {
+        this.user_id = id;
+        this.username = name;
+    }
+}
+public class Pet
+{
+    public int id;
+    public string name;
+    public int user_id;
+    public int pet_id;
+    public int hungry;
+    public int happiness;
+    public int hygiene;
+    public string state;
+    public string humor;
 }
