@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class CheckPoint : MonoBehaviour
+public class Checkpoint : MonoBehaviour
 {
     public int _checkPointID;
     public bool _activated;
@@ -35,7 +35,7 @@ public class CheckPoint : MonoBehaviour
 
     public void TakeCheckpoint()
     {
-        foreach (CheckPoint check in FindObjectsOfType<CheckPoint>().ToList())
+        foreach (Checkpoint check in FindObjectsOfType<Checkpoint>().ToList())
         {
             if (check._checkPointID <= _checkPointID)
             {

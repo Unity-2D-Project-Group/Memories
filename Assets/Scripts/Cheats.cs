@@ -37,7 +37,7 @@ public class Cheats : MonoBehaviour
         Level currentLevelInfo = (Level)SaveLoad._savedGame.Levels[$"Level{LoadingData.PlayingLevel}"];
         foreach (GameObject checkPoint in temp._checkpoints.Values)
         {
-            if(checkPoint.GetComponent<CheckPoint>()._checkPointID == currentLevelInfo._currentCheckpoint + 1)
+            if(checkPoint.GetComponent<Checkpoint>()._checkPointID == currentLevelInfo._currentCheckpoint + 1)
             {
                 _player.transform.position = checkPoint.transform.position;
             }

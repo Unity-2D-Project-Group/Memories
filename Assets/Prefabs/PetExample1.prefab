@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 8140656020889352491}
   - component: {fileID: 5763923317402588921}
   m_Layer: 0
-  m_Name: Pet Example 2
+  m_Name: PetExample1
   m_TagString: Pet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -79,7 +79,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 5
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 1, g: 0.04150939, b: 0.04150939, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -102,8 +102,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _petsPrefabs:
-  - {fileID: 5856511961339684672, guid: 6bd984a89ce77da43b18a49b2d386a39, type: 3}
   - {fileID: 5856511961339684672}
+  - {fileID: 5856511961339684672, guid: d56a543ef71b12c46b92decb1df4c387, type: 3}
   _followingMaxSpeed: 10
   _deaceleration: 2
   _offset: {x: 1.5, y: 0.5, z: 0}
@@ -125,8 +125,8 @@ MonoBehaviour:
   _text: {fileID: 0}
   _interacting: 0
   _typing: 0
-  _petID: 1
-  _petHumor: 0
+  _petID: 0
+  _petHumor: 1
 --- !u!58 &7177523106362919600
 CircleCollider2D:
   m_ObjectHideFlags: 0

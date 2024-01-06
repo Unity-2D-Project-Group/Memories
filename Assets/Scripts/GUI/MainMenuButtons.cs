@@ -10,9 +10,17 @@ public class MainMenuButtons : MonoBehaviour
     [SerializeField] private Button _loadSaveButton;
     [SerializeField] private GameObject _loginSection;
     [SerializeField] private GameObject _authSection;
+    [SerializeField] private GameObject _playScreen;
+    [SerializeField] private GameObject _selectScreen;
     [SerializeField] private TMP_Text _usernameTxt;
     void Start()
     {
+        if (LoadingData.LoadingSelection)
+        {
+            _playScreen.SetActive(false);
+            _selectScreen.SetActive(true);
+            LoadingData.LoadingSelection = false;
+        }
         SaveLoad.LoadSave();
         if (!File.Exists(Path.Combine(Application.persistentDataPath, "GameSave.txt")) || SaveLoad._savedGame._currentLevel == 0)
         {
@@ -39,7 +47,7 @@ public class MainMenuButtons : MonoBehaviour
     }
     public void LoginButton()
     {
-        FindObjectOfType<SceneLoader>().LoadScene("LoginScene");
+        FindObjectOfType<SceneLoader>().LoadScene("Login");
     }
     public void LogoutButton()
     {
@@ -51,6 +59,6 @@ public class MainMenuButtons : MonoBehaviour
     }
     public void RegisterButton()
     {
-        FindObjectOfType<SceneLoader>().LoadScene("RegisterScene");
+        FindObjectOfType<SceneLoader>().LoadScene("Register");
     }
 }

@@ -8,6 +8,9 @@ public class PlayerController : MonoBehaviour
 {
     [Header("Components")]
     private Rigidbody2D _rb;
+    private SpriteRenderer _spriteRenderer;
+    private LineRenderer _lineRenderer;
+    private Animator _anim;
 
     [Header("Public Variables")]
     [HideInInspector] public bool _facingRight = true;
@@ -78,7 +81,6 @@ public class PlayerController : MonoBehaviour
     private float _hookCooldownValue;
     private Vector2 _target;
     private GameObject _targetGameObject;
-    private LineRenderer _lineRenderer;
     private bool _canHook => (!_isWallJumping && !_isWallSliding && _hookCooldownValue <= 0);
 
     [Header("Interaction Variables")]
@@ -100,7 +102,9 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
+        _spriteRenderer = GetComponent<SpriteRenderer>();
         _lineRenderer = GetComponent<LineRenderer>();
+        _anim = GetComponent<Animator>();
         _lineRenderer.enabled = false;
         _dashAmountValue = _dashAmount;
     }
@@ -111,6 +115,7 @@ public class PlayerController : MonoBehaviour
         CheckCollisions();
         ChangeFacingDirection();
         FallMultiplier();
+        //Animations();
 
         //Decrease the cooldown of dash
         if (_dashCooldownValue > 0)
@@ -162,7 +167,6 @@ public class PlayerController : MonoBehaviour
             Mouse.current.WarpCursorPosition(_warpPosition);
         }
     }
-
     void FixedUpdate()
     {
         MoveCharacter();
@@ -179,7 +183,7 @@ public class PlayerController : MonoBehaviour
         else
         {
             if( _hangTimeCounter > 0)
-                _hangTimeCounter -= Time.deltaTime;
+                _hangTimeCounter -= Time.fixedDeltaTime;
             ApplyAirLinearDrag();
         }
     }
@@ -202,6 +206,7 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+
     private void ChangeFacingDirection()
     {
         //Facing Direction
@@ -219,18 +224,22 @@ public class PlayerController : MonoBehaviour
         //Change the scale according to facing direction (if it is sliding its reversed)
         if (_isWallSliding)
         {
-            transform.localScale = new Vector3(_wallDirection * -1, 1, 1);
+            if (_wallDirection == 1)
+                _spriteRenderer.flipX = true;
+            else
+                _spriteRenderer.flipX = false;
         }
         else if (_facingRight)
         {
-            transform.localScale = new Vector3(1, 1, 1);
+            _spriteRenderer.flipX = false;
         }
         else
         {
-            transform.localScale = new Vector3(-1, 1, 1);
+            _spriteRenderer.flipX = true;
         }
         
     }
+
     private void Jump()
     {
         if (!_onGround)
@@ -241,6 +250,7 @@ public class PlayerController : MonoBehaviour
         _rb.AddForce(Vector2.up * _jumpForce, ForceMode2D.Impulse);
         _hangTimeCounter = 0f;
     }
+
     IEnumerator Dash()
     {
         //Save the start time of the dash
@@ -256,7 +266,7 @@ public class PlayerController : MonoBehaviour
         _rb.velocity = Vector2.zero;
         _rb.gravityScale = 0f;
         _rb.drag = 0f;
-        //Increase the velocity
+        //Increase the velocity 
         while (Time.time < dashStartTime + _dashLength)
         {
             _rb.velocity = direction * _dashForce;
@@ -268,6 +278,7 @@ public class PlayerController : MonoBehaviour
         _isDashing = false;
         yield return null;
     }
+
     IEnumerator WallJump()
     {
         //Set the wall jump variable
@@ -277,11 +288,13 @@ public class PlayerController : MonoBehaviour
         //Save the start time of the wall jump
         float jumpStartTime = Time.time;
         //Take the direction of the jump and set all the values to zero
-        float _jumpingDirection = transform.localScale.x;
+        float _jumpingDirection = 1;
         _rb.velocity = Vector2.zero;
         _rb.gravityScale = 0f;
         _rb.drag = 0f;
 
+        if (_spriteRenderer.flipX)
+            _jumpingDirection = -1;
 
         while (Time.time < jumpStartTime + _wallJumpLength)
         {
@@ -292,10 +305,12 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(0.1f);
         _isWallJumping = false;
     }
+
     private Vector2 GetAxis()
     {
         return new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
     }
+
     private void ApplyGroundLinearDrag()
     {
         if (Mathf.Abs(_horizontalDirection) < 0.4f || _changingDirection)
@@ -307,10 +322,12 @@ public class PlayerController : MonoBehaviour
             _rb.drag = 0;
         }
     }
+
     private void ApplyAirLinearDrag()
     {
         _rb.drag = _airLinearDrag;
     }
+
     private void CheckCollisions()
     {
         //Why do we do like that? Simple, if we do only 1 raycast in the middle of the player, when the player was in a corner of a platform, the raycast wouldn't identify the collision, so, we need 2 raycast, 1 in each side of the player, detecting the ground
@@ -325,6 +342,7 @@ public class PlayerController : MonoBehaviour
         }
         else { _isWallSliding = false; }
     }
+
     private void WallSlide()
     {
         if(_isWallSliding && !_isDashing)
@@ -333,6 +351,7 @@ public class PlayerController : MonoBehaviour
             _rb.velocity = new Vector2(0f, Mathf.Clamp(_rb.velocity.y, -_wallSlidingSpeed, float.MaxValue));
         }
     }
+
     private void FallMultiplier()
     {
         if (_rb.velocity.y < 0f)
@@ -348,6 +367,7 @@ public class PlayerController : MonoBehaviour
             _rb.gravityScale = 1;
         }
     }
+
     private void Hook()
     {
         //Calculate the direction of the cursor
@@ -365,6 +385,7 @@ public class PlayerController : MonoBehaviour
             StartCoroutine(ThrowGrab());
         }
     }
+
     IEnumerator ThrowGrab()
     {
         float t = 0;
@@ -389,6 +410,7 @@ public class PlayerController : MonoBehaviour
         _isHooking = true;
         _isRegretting = true;
     }
+
     private void GrabAction(GameObject target)
     {
         if (target.tag == "Hookable")
@@ -437,8 +459,10 @@ public class PlayerController : MonoBehaviour
 
         //Reload the scene
         FindAnyObjectByType<SceneLoader>().LoadScene(SceneManager.GetActiveScene().name);
+        this.gameObject.SetActive(false);
         yield return null;
     }
+
     private void CallInteraction()
     {
         //Verify if there's any collider with the tag "Interactable"
@@ -454,6 +478,11 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void Animations()
+    {
+        _anim.SetFloat("Walk", Mathf.Abs(_horizontalDirection));
+    }
+
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
@@ -461,6 +490,7 @@ public class PlayerController : MonoBehaviour
         Gizmos.DrawLine(transform.position - _groundRaycastOffset, transform.position - _groundRaycastOffset + Vector3.down * _groundRaycastLength);
         Gizmos.DrawLine(transform.position - new Vector3(_wallSlidingCheckSize, 0, 0), transform.position + Vector3.right * _wallSlidingCheckSize);
     }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.collider.gameObject.layer == 6 || collision.collider.gameObject.layer == 3)
@@ -476,6 +506,7 @@ public class PlayerController : MonoBehaviour
             _isRegretting = false;
         }
     }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "WorldLimit")
@@ -483,4 +514,5 @@ public class PlayerController : MonoBehaviour
             StartCoroutine(Death());
         }   
     }
+
 }

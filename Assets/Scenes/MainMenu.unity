@@ -4671,6 +4671,8 @@ MonoBehaviour:
   _loadSaveButton: {fileID: 1148040911}
   _loginSection: {fileID: 900795059}
   _authSection: {fileID: 880701655}
+  _playScreen: {fileID: 866128676}
+  _selectScreen: {fileID: 659051781}
   _usernameTxt: {fileID: 1423383902}
 --- !u!4 &2013682774
 Transform:

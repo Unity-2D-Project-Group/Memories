@@ -366,7 +366,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6394264997337690961}
   m_Layer: 0
-  m_Name: Angry Block
+  m_Name: AngryBlock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -30,7 +30,7 @@ public class PortalInteraction : Interact
             SaveLoad._savedGame.FinishLevel(LoadingData.PlayingLevel);
             SaveLoad.OverwriteSave();
             //Calls the end level scene
-            FindAnyObjectByType<SceneLoader>().LoadScene("EndLevelScene");
+            FindAnyObjectByType<SceneLoader>().LoadScene("EndLevel");
         }
         else
         {

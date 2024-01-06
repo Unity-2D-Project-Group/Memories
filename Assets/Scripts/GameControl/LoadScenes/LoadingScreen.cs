@@ -12,6 +12,7 @@ public class LoadingScreen : MonoBehaviour
     [SerializeField] private float _fadeOutTime;
     [SerializeField] private CanvasGroup _canvasGroup;
     [SerializeField] private Slider _slider;
+    [SerializeField] private GameObject _camera;
 
     private float _fadeTimer;
     private bool _fadeIn = true;
@@ -24,9 +25,12 @@ public class LoadingScreen : MonoBehaviour
     private void Start()
     {
         Time.timeScale = 1f;
+        _camera = FindAnyObjectByType<Camera>().gameObject;
+        _camera.SetActive(false);
     }
     void Update()
     {
+        
         _loadTimer += Time.deltaTime;
         _fadeTimer += Time.deltaTime;
         if (_fadeIn)
@@ -44,6 +48,7 @@ public class LoadingScreen : MonoBehaviour
                     {
                         _unloadingOp = SceneManager.UnloadSceneAsync(LoadingData.SceneToBeUnloaded, UnloadSceneOptions.UnloadAllEmbeddedSceneObjects);
                         _unloadingScene = false;
+                        _camera.SetActive(true);
                     }
 
                     if (_unloadingOp.isDone)

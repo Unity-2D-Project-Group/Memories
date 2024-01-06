@@ -5,12 +5,12 @@ using UnityEngine;
 public class AngryBlockActivator : MonoBehaviour
 {
     [Header("Components")]
-    private GameObject _angryBlock;
+    private AngryBlock _angryBlock;
 
     private void Start()
     {
         //Get the components
-        _angryBlock = GetComponentInParent<AngryBlocks>().gameObject;
+        _angryBlock = GetComponentInParent<AngryBlock>();
     }
 
     private void OnTriggerStay2D(Collider2D collision)
@@ -18,7 +18,7 @@ public class AngryBlockActivator : MonoBehaviour
         //If it verifys a collision with the player, it falls
         if (collision.gameObject.CompareTag("Player"))
         {
-            _angryBlock.gameObject.GetComponent<AngryBlocks>().ActivateGravity();
+            _angryBlock.ActivateGravity();
         }
     }
 }

@@ -13,9 +13,9 @@ public class Save
     {
         _instance = this;
 
-        _currentLevel = 0;
+        _currentLevel = 1;
         Levels["Level0"] = new Level(0, true);
-        Levels["Level1"] = new Level(1, false);
+        Levels["Level1"] = new Level(1, true);
         Levels["Level2"] = new Level(2, false);
         Levels["Level3"] = new Level(3, false);
     }

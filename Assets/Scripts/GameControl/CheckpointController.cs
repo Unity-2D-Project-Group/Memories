@@ -22,7 +22,7 @@ public class CheckpointController : MonoBehaviour
         Level temp = (Level)SaveLoad._savedGame.Levels[$"Level{LoadingData.PlayingLevel}"];
 
         //Search for all the Checkpoints on the scene
-        foreach (CheckPoint checkPoint in FindObjectsOfType<CheckPoint>().ToList())
+        foreach (Checkpoint checkPoint in FindObjectsOfType<Checkpoint>().ToList())
         {
             //Save the checkpoints in the hashtable
             _checkpoints.Add(checkPoint._checkPointID.ToString(), checkPoint.gameObject);
@@ -40,7 +40,7 @@ public class CheckpointController : MonoBehaviour
     public void TeleportToCheckPoint(Level level)
     {
         foreach(GameObject checkPoint in _checkpoints.Values) {
-            if (level._currentCheckpoint == checkPoint.GetComponent<CheckPoint>()._checkPointID)
+            if (level._currentCheckpoint == checkPoint.GetComponent<Checkpoint>()._checkPointID)
             {
                 _player.transform.position = checkPoint.transform.position;
             }
