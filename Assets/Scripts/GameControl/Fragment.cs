@@ -20,11 +20,11 @@ public class Fragment : MonoBehaviour
             print("Collected Fragment: " + _fragmentID);
 
             //Get the current level info
-            Level temp = (Level)SaveLoad._savedGame.Levels[$"Level{LoadingData.PlayingLevel}"];
+            Level temp = (Level)SaveLoad._savedGame.Levels.getNode(LoadingData.PlayingLevel).data;
             //Update the fragment info
             temp._collectedFragments[_fragmentID] = _fragmentID;
             //Update the actual info to the new info
-            SaveLoad._savedGame.Levels[$"Level{LoadingData.PlayingLevel}"] = temp;
+            SaveLoad._savedGame.Levels.getNode(LoadingData.PlayingLevel).data = temp;
             SaveLoad.OverwriteSave();
 
             _activated = false;

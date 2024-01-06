@@ -48,7 +48,6 @@ public class LoadingScreen : MonoBehaviour
                     {
                         _unloadingOp = SceneManager.UnloadSceneAsync(LoadingData.SceneToBeUnloaded, UnloadSceneOptions.UnloadAllEmbeddedSceneObjects);
                         _unloadingScene = false;
-                        _camera.SetActive(true);
                     }
 
                     if (_unloadingOp.isDone)

@@ -52,7 +52,7 @@ public class GUIController : MonoBehaviour
     {
         if(saveConfirm == "Yes")
         {
-            FindAnyObjectByType<SceneLoader>().LoadScene("MainMenuScene");
+            FindAnyObjectByType<SceneLoader>().LoadScene("MainMenu");
             Time.timeScale = 1.0f;
         }
         else
@@ -71,7 +71,7 @@ public class GUIController : MonoBehaviour
         if (saveConfirm == "Yes")
         {
             //Get the current level info
-            Level temp = (Level)SaveLoad._savedGame.Levels[$"Level{LoadingData.PlayingLevel}"];
+            Level temp = (Level)SaveLoad._savedGame.Levels.getNode(LoadingData.PlayingLevel).data;
             //Update the current Checkpoint
             temp._currentCheckpoint = 0; 
             for (int i = 0; i < temp._collectedFragments.Length; i++)
@@ -79,7 +79,7 @@ public class GUIController : MonoBehaviour
                 temp._collectedFragments[i] = null;
             }
             //Update the actual info to the new info
-            SaveLoad._savedGame.Levels[$"Level{LoadingData.PlayingLevel}"] = temp;
+            SaveLoad._savedGame.Levels.getNode(LoadingData.PlayingLevel).data = temp;
             SaveLoad.OverwriteSave();
 
             StartCoroutine(_player.GetComponent<PlayerController>().Death());

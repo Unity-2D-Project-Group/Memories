@@ -19,7 +19,7 @@ public class CheckpointController : MonoBehaviour
 
         Save._instance = SaveLoad._savedGame;
         //Get the current level info
-        Level temp = (Level)SaveLoad._savedGame.Levels[$"Level{LoadingData.PlayingLevel}"];
+        Level temp = (Level)SaveLoad._savedGame.Levels.getNode(LoadingData.PlayingLevel).data;
 
         //Search for all the Checkpoints on the scene
         foreach (Checkpoint checkPoint in FindObjectsOfType<Checkpoint>().ToList())
@@ -34,7 +34,7 @@ public class CheckpointController : MonoBehaviour
                 checkPoint.gameObject.GetComponent<SpriteRenderer>().color = Color.yellow;
             }
         }
-        TeleportToCheckPoint((Level)SaveLoad._savedGame.Levels[$"Level{LoadingData.PlayingLevel}"]);
+        TeleportToCheckPoint((Level)SaveLoad._savedGame.Levels.getNode(LoadingData.PlayingLevel).data);
     }
 
     public void TeleportToCheckPoint(Level level)

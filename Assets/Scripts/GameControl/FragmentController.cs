@@ -14,7 +14,7 @@ public class FragmentController : MonoBehaviour
     {
         Save._instance = SaveLoad._savedGame;
         //Get the current level info
-        Level temp = (Level)SaveLoad._savedGame.Levels[$"Level{LoadingData.PlayingLevel}"];
+        Level temp = (Level)SaveLoad._savedGame.Levels.getNode(LoadingData.PlayingLevel).data;
 
         //Search for all the fragments on the scene
         foreach (Fragment fragment in FindObjectsOfType<Fragment>().ToList())

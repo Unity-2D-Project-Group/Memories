@@ -14,7 +14,7 @@ public class SelectLevel : MonoBehaviour
     {
         for(int i = 0; i < 4; i++)
         {
-            Level temp = (Level)SaveLoad._savedGame.Levels[$"Level{i}"];
+            Level temp = (Level)SaveLoad._savedGame.Levels.getNode(i).data;
             if (!temp._unlocked)
             {
                 _levelButtons[i].GetComponentsInChildren<Image>()[1].sprite = _lockedSprite;

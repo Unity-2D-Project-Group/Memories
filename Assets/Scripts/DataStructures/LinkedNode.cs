@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+[System.Serializable]
 public class LinkedNode<T>
 {
     public LinkedNode<T> next;
@@ -22,6 +22,8 @@ public class LinkedNode<T>
         set { next = value; }
     }
 }
+
+[System.Serializable]
 public class LinkedList<T>
 {
     public LinkedNode<T> head;
@@ -64,7 +66,7 @@ public class LinkedList<T>
             }
             else
             {
-                current_node = current_node.Next;
+                current = current_node.Next;
             }
         }
         return null;
@@ -73,7 +75,7 @@ public class LinkedList<T>
     {
         if (index == 0)
         {
-            head.Next = new_node;
+            head = new_node;
         }
         LinkedNode<T> current = head.Next;
         for (int i = 1; i <= index; i++)

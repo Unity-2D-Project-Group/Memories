@@ -21,11 +21,11 @@ public class Checkpoint : MonoBehaviour
             print("Saved game on checkpoint: " + _checkPointID);
 
             //Get the current level info
-            Level temp = (Level)SaveLoad._savedGame.Levels[$"Level{LoadingData.PlayingLevel}"];
+            Level temp = (Level)SaveLoad._savedGame.Levels.getNode(LoadingData.PlayingLevel).data;
             //Update the current Checkpoint
             temp._currentCheckpoint = _checkPointID;
             //Update the actual info to the new info
-            SaveLoad._savedGame.Levels[$"Level{LoadingData.PlayingLevel}"] = temp;
+            SaveLoad._savedGame.Levels.getNode(LoadingData.PlayingLevel).data = temp;
             SaveLoad.OverwriteSave();
 
             //Take the current checkpoint and unactive all the others that is before it
