@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class CheckPoint : MonoBehaviour
+public class Checkpoint : MonoBehaviour
 {
     public int _checkPointID;
     public bool _activated;
@@ -21,11 +21,11 @@ public class CheckPoint : MonoBehaviour
             print("Saved game on checkpoint: " + _checkPointID);
 
             //Get the current level info
-            Level temp = (Level)SaveLoad._savedGame.Levels[$"Level{LoadingData.PlayingLevel}"];
+            Level temp = (Level)SaveLoad._savedGame.Levels.getNode(LoadingData.PlayingLevel).data;
             //Update the current Checkpoint
             temp._currentCheckpoint = _checkPointID;
             //Update the actual info to the new info
-            SaveLoad._savedGame.Levels[$"Level{LoadingData.PlayingLevel}"] = temp;
+            SaveLoad._savedGame.Levels.getNode(LoadingData.PlayingLevel).data = temp;
             SaveLoad.OverwriteSave();
 
             //Take the current checkpoint and unactive all the others that is before it
@@ -35,7 +35,7 @@ public class CheckPoint : MonoBehaviour
 
     public void TakeCheckpoint()
     {
-        foreach (CheckPoint check in FindObjectsOfType<CheckPoint>().ToList())
+        foreach (Checkpoint check in FindObjectsOfType<Checkpoint>().ToList())
         {
             if (check._checkPointID <= _checkPointID)
             {

@@ -18,7 +18,7 @@ public class LoginScreen : MonoBehaviour
     }
     public void Pass()
     {
-        FindObjectOfType<SceneLoader>().LoadScene("MainMenuScene");
+        FindObjectOfType<SceneLoader>().LoadScene("MainMenu");
     }
 
     public void ClearWarning()
@@ -55,7 +55,7 @@ public class LoginScreen : MonoBehaviour
                 LoadingData.LoggedIn = true;
 
                 LoadingData.PlayerUserObj = new User(temp.user_id, user.username);
-                FindObjectOfType<SceneLoader>().LoadScene("MainMenuScene");
+                FindObjectOfType<SceneLoader>().LoadScene("MainMenu");
             }
         }
 

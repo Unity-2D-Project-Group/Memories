@@ -8,6 +8,7 @@ public class LoadingData
     public static string SceneToBeLoaded;
     public static string SceneToBeUnloaded;
     public static string LoadingScene = "LoadingScene";
+    public static bool LoadingSelection = false;
     public static int PlayingLevel;
 
     public static bool LoggedIn = false;

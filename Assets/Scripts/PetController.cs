@@ -42,12 +42,14 @@ public class PetController : MonoBehaviour
 
     private Rigidbody2D _rb;
     private ParticleSystem _ps;
+    private PlayerController _playerController;
     private void Start()
     {
         //Get the components
         _rb = GetComponent<Rigidbody2D>();
         _ps = GetComponent<ParticleSystem>();
         _player = GameObject.FindGameObjectWithTag("Player");
+        _playerController = _player.GetComponent<PlayerController>();
 
         LoadInfo();
 
@@ -74,7 +76,7 @@ public class PetController : MonoBehaviour
     {
         //Follows the player
         Vector3 direction;
-        if (!_player.GetComponent<PlayerController>()._isWallSliding)
+        if (!_playerController._isWallSliding)
         {
             direction = _player.transform.position + new Vector3(_offset.x * -_player.transform.localScale.x, _offset.y, _offset.z) - transform.position;
         }

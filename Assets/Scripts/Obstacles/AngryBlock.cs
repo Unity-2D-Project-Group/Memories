@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
-public class AngryBlocks : MonoBehaviour
+public class AngryBlock : MonoBehaviour
 {
     [Header("Components")]
     private Rigidbody2D _rb;

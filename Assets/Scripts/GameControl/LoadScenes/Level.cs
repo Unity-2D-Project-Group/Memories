@@ -9,7 +9,6 @@ public class Level
     public int _levelID;
 
     public int _currentCheckpoint;
-    //public int _currentFragment;
     public int?[] _collectedFragments;
     public bool _unlocked;
     public Level(int levelID, bool unlocked)

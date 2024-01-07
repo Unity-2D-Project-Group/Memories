@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MovingPlat : MonoBehaviour
+public class MovingPlatform : MonoBehaviour
 {
     [SerializeField] private Transform _platform;
     [SerializeField] private Transform _startPoint;

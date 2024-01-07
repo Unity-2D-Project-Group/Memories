@@ -2,12 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class CamController : MonoBehaviour
 {
     [Header("Components")]
     private GameObject _player;
     private Camera _mainCam;
+    private Collider2D _playerCollider;
 
     [Header ("Movement Variables")]
     [Range (0f, 2f)]
@@ -37,11 +39,12 @@ public class CamController : MonoBehaviour
     private Vector3 _currentCamPos;
     private bool _returnedToPlayer = true;
     private bool _isMoving;
-    void Start()
+    void OnEnable()
     {
         //Get the components
         _player = GameObject.FindGameObjectWithTag("Player");
         _mainCam = GetComponent<Camera>();
+        _playerCollider = _player.GetComponent<Collider2D>();
 
         //Put the colliders in the right position
         _leftCollider.offset = new Vector3(-_mainCam.orthographicSize * 0.54f, 0f);
@@ -50,12 +53,12 @@ public class CamController : MonoBehaviour
         _rightCollider.size = new Vector2(0.7f, _mainCam.orthographicSize / 2);
 
         //Send the camera to the player
-        StartCoroutine(SendToPosition(_player.transform.position));
+        StartCoroutine(ReallocateCamera("Right"));
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
-        if (_isMoving)
+        if (_isMoving && _player.activeSelf == true)
         {
             _returnedToPlayer = false;
 
@@ -78,7 +81,11 @@ public class CamController : MonoBehaviour
             transform.position = newPos;
         }
         //Send it back to the player
-        else if(!_returnedToPlayer){ StartCoroutine(SendToPosition(_player.transform.position)); _returnedToPlayer = true; }
+        else if(!_returnedToPlayer && _player.activeSelf == true){ StartCoroutine(SendToPosition(_player.transform.position)); _returnedToPlayer = true; } 
+        else
+        {
+            transform.position = transform.position;
+        }
     }
 
     void LateUpdate()
@@ -95,11 +102,11 @@ public class CamController : MonoBehaviour
             transform.position = boundPosition;
 
             //Verify if the colliders receive any collision with the player
-            if (_rightCollider.IsTouching(_player.GetComponent<CapsuleCollider2D>()))
+            if (_rightCollider.IsTouching(_playerCollider))
             {
                 StartCoroutine(ReallocateCamera("Right"));
             }
-            else if (_leftCollider.IsTouching(_player.GetComponent<CapsuleCollider2D>()))
+            else if (_leftCollider.IsTouching(_playerCollider))
             {
                 StartCoroutine(ReallocateCamera("Left"));
             }

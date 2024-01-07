@@ -34,10 +34,10 @@ public class Cheats : MonoBehaviour
     private void NextCheckpoint()
     {
         CheckpointController temp = FindAnyObjectByType<CheckpointController>();
-        Level currentLevelInfo = (Level)SaveLoad._savedGame.Levels[$"Level{LoadingData.PlayingLevel}"];
+        Level currentLevelInfo = (Level)SaveLoad._savedGame.Levels.getNode(LoadingData.PlayingLevel).data;
         foreach (GameObject checkPoint in temp._checkpoints.Values)
         {
-            if(checkPoint.GetComponent<CheckPoint>()._checkPointID == currentLevelInfo._currentCheckpoint + 1)
+            if(checkPoint.GetComponent<Checkpoint>()._checkPointID == currentLevelInfo._currentCheckpoint + 1)
             {
                 _player.transform.position = checkPoint.transform.position;
             }
@@ -48,7 +48,7 @@ public class Cheats : MonoBehaviour
     {
         bool found = false;
         FragmentController temp = FindAnyObjectByType<FragmentController>();
-        Level currentLevelInfo = (Level)SaveLoad._savedGame.Levels[$"Level{LoadingData.PlayingLevel}"];
+        Level currentLevelInfo = (Level)SaveLoad._savedGame.Levels.getNode(LoadingData.PlayingLevel).data;
 
         for(int i = 0; i < currentLevelInfo._collectedFragments.Length; i++)
         {

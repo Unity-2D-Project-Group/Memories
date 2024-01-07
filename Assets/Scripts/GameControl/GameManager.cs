@@ -78,15 +78,15 @@ public class GameManager : MonoBehaviour
             {
                 temp += s[i];
                 _text.text = temp;
-                yield return new WaitForSeconds(0.04f);
+                yield return new WaitForSeconds(0.01f);
             }
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(0.7f);
 
             for (int i = temp.Length - 1; i >= 0; i--)
             {
                 temp = temp.Remove(i, 1);
                 _text.text = temp;
-                yield return new WaitForSeconds(0.04f);
+                yield return new WaitForSeconds(0.01f);
             }
             _typing = false;
             yield return null;
