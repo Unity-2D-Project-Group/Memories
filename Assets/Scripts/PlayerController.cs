@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D _rb;
     private SpriteRenderer _spriteRenderer;
     private LineRenderer _lineRenderer;
+    private TrailRenderer _trailRenderer;
     private Animator _anim;
 
     [Header("Public Variables")]
@@ -104,6 +105,7 @@ public class PlayerController : MonoBehaviour
         _rb = GetComponent<Rigidbody2D>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _lineRenderer = GetComponent<LineRenderer>();
+        _trailRenderer = GetComponent<TrailRenderer>();
         _anim = GetComponent<Animator>();
         _lineRenderer.enabled = false;
         _dashAmountValue = _dashAmount;
@@ -261,6 +263,7 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator Dash()
     {
+        _trailRenderer.enabled = true;
         //Save the start time of the dash
         float dashStartTime = Time.time;
 
@@ -284,6 +287,8 @@ public class PlayerController : MonoBehaviour
         _dashCooldownValue = _dashCooldown;
         _dashAmountValue--;
         _isDashing = false;
+        yield return new WaitForSeconds(0.6f);
+        _trailRenderer.enabled = false;
         yield return null;
     }
 
@@ -500,6 +505,8 @@ public class PlayerController : MonoBehaviour
         {
             _anim.SetBool("isHooking", false);
         }
+        _anim.SetBool("isSliding", _isWallSliding);
+        _anim.SetBool("isDashing", _isDashing);
     }
 
     private void OnDrawGizmos()
