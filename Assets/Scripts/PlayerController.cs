@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D _rb;
     private SpriteRenderer _spriteRenderer;
     private LineRenderer _lineRenderer;
+    private TrailRenderer _trailRenderer;
     private Animator _anim;
 
     [Header("Public Variables")]
@@ -104,6 +105,7 @@ public class PlayerController : MonoBehaviour
         _rb = GetComponent<Rigidbody2D>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _lineRenderer = GetComponent<LineRenderer>();
+        _trailRenderer = GetComponent<TrailRenderer>();
         _anim = GetComponent<Animator>();
         _lineRenderer.enabled = false;
         _dashAmountValue = _dashAmount;
@@ -115,7 +117,7 @@ public class PlayerController : MonoBehaviour
         CheckCollisions();
         ChangeFacingDirection();
         FallMultiplier();
-        //Animations();
+        Animations();
 
         //Decrease the cooldown of dash
         if (_dashCooldownValue > 0)
@@ -178,12 +180,18 @@ public class PlayerController : MonoBehaviour
             _hangTimeCounter = _hangTime;
             _isWallJumping = false;
             _dashAmountValue = _dashAmount;
+            _anim.SetBool("isFalling", false);
+            _anim.SetBool("isJumping", false);
             ApplyGroundLinearDrag(); 
         } 
         else
         {
             if( _hangTimeCounter > 0)
                 _hangTimeCounter -= Time.fixedDeltaTime;
+            if (_rb.velocity.y < 0)
+            {
+                _anim.SetBool("isFalling", true);
+            }
             ApplyAirLinearDrag();
         }
     }
@@ -249,10 +257,13 @@ public class PlayerController : MonoBehaviour
         _rb.velocity = new Vector2(_rb.velocity.x, 0f);
         _rb.AddForce(Vector2.up * _jumpForce, ForceMode2D.Impulse);
         _hangTimeCounter = 0f;
+        _anim.SetBool("isJumping", true);
+        _anim.SetBool("isFalling", false);
     }
 
     IEnumerator Dash()
     {
+        _trailRenderer.enabled = true;
         //Save the start time of the dash
         float dashStartTime = Time.time;
 
@@ -276,6 +287,8 @@ public class PlayerController : MonoBehaviour
         _dashCooldownValue = _dashCooldown;
         _dashAmountValue--;
         _isDashing = false;
+        yield return new WaitForSeconds(0.6f);
+        _trailRenderer.enabled = false;
         yield return null;
     }
 
@@ -429,7 +442,7 @@ public class PlayerController : MonoBehaviour
             _lineRenderer.SetPosition(1, target.transform.position);
 
             //If the object is close to the player then it finishes
-            if (Vector2.Distance(transform.position, target.transform.position) <= 1f)
+            if (Vector2.Distance(transform.position, target.transform.position) <= 3f)
             {
                 _isHooking = false;
                 _isRegretting = false;
@@ -480,7 +493,20 @@ public class PlayerController : MonoBehaviour
 
     private void Animations()
     {
-        _anim.SetFloat("Walk", Mathf.Abs(_horizontalDirection));
+        if (_onGround)
+        {
+            _anim.SetFloat("horizontalDirection", Mathf.Abs(_horizontalDirection));
+        }
+        if (_isHooking)
+        {
+            _anim.SetBool("isHooking", true);
+        }
+        else
+        {
+            _anim.SetBool("isHooking", false);
+        }
+        _anim.SetBool("isSliding", _isWallSliding);
+        _anim.SetBool("isDashing", _isDashing);
     }
 
     private void OnDrawGizmos()
