@@ -19835,11 +19835,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9180127409959360938, guid: 86c8ae0e9a8a99d41b2c0355f7d8e248, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -114.5
+      value: -69.39
       objectReference: {fileID: 0}
     - target: {fileID: 9180127409959360938, guid: 86c8ae0e9a8a99d41b2c0355f7d8e248, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -8.1
+      value: -77.19
       objectReference: {fileID: 0}
     - target: {fileID: 9180127409959360938, guid: 86c8ae0e9a8a99d41b2c0355f7d8e248, type: 3}
       propertyPath: m_LocalPosition.z
@@ -36991,10 +36991,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2175378358858660408, guid: 2f61d398da01e5b4da76a000828d3b73, type: 3}
-      propertyPath: _fragmentID
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 4226748926861840041, guid: 2f61d398da01e5b4da76a000828d3b73, type: 3}
       propertyPath: m_Name
       value: Fragment
@@ -37005,7 +37001,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8742547932775394477, guid: 2f61d398da01e5b4da76a000828d3b73, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -63.14478
+      value: -63.36
       objectReference: {fileID: 0}
     - target: {fileID: 8742547932775394477, guid: 2f61d398da01e5b4da76a000828d3b73, type: 3}
       propertyPath: m_LocalPosition.z

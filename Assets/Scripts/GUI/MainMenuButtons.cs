@@ -24,7 +24,7 @@ public class MainMenuButtons : MonoBehaviour
         SaveLoad.LoadSave();
         if (!File.Exists(Path.Combine(Application.persistentDataPath, "GameSave.txt")) || SaveLoad._savedGame._currentLevel == 0)
         {
-            _loadSaveButton.interactable = false;
+            _loadSaveButton.gameObject.SetActive(false);
         }
         if (LoadingData.LoggedIn)
         {
