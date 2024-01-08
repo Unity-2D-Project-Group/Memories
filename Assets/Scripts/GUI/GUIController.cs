@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using TMPro.EditorUtilities;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -13,6 +15,7 @@ public class GUIController : MonoBehaviour
     [SerializeField] private GameObject _interact;
     [SerializeField] private GameObject _interactText;
     [SerializeField] private LayerMask _interactLayer;
+    [SerializeField] private TMP_Text[] polaroids;
     void Start()
     {
         //Get the components
@@ -25,6 +28,19 @@ public class GUIController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape) && _pauseMenu.activeSelf == false)
         {
             _pauseMenu.SetActive(true);
+            for(int i = 0; i < SaveLoad._savedGame.Levels.getNode(LoadingData.PlayingLevel).data._collectedFragments.Length; i++)
+            {
+                if(SaveLoad._savedGame.Levels.getNode(LoadingData.PlayingLevel).data._collectedFragments[i] != null)
+                {
+                    polaroids[i].text = "- Collected";
+                    polaroids[i].color = new Color(0f, 0.5f, 0f);
+                }
+                else
+                {
+                    polaroids[i].text = "- Not Collected";
+                    polaroids[i].color = Color.red;
+                }
+            }
             Time.timeScale = 0.0f;
         }
         else if (Input.GetKeyDown(KeyCode.Escape) && _pauseMenu.activeSelf == true)
