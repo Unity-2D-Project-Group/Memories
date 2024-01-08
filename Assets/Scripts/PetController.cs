@@ -43,13 +43,17 @@ public class PetController : MonoBehaviour
     private Rigidbody2D _rb;
     private ParticleSystem _ps;
     private PlayerController _playerController;
+    private SpriteRenderer _playerSpriteRenderer;
+    private Animator _anim;
     private void Start()
     {
         //Get the components
         _rb = GetComponent<Rigidbody2D>();
         _ps = GetComponent<ParticleSystem>();
+        _anim = GetComponent<Animator>();
         _player = GameObject.FindGameObjectWithTag("Player");
         _playerController = _player.GetComponent<PlayerController>();
+        _playerSpriteRenderer = _player.GetComponent<SpriteRenderer>();
 
         LoadInfo();
 
@@ -78,11 +82,17 @@ public class PetController : MonoBehaviour
         Vector3 direction;
         if (!_playerController._isWallSliding)
         {
-            direction = _player.transform.position + new Vector3(_offset.x * -_player.transform.localScale.x, _offset.y, _offset.z) - transform.position;
+            if (_playerSpriteRenderer.flipX == false)
+                direction = _player.transform.position + new Vector3(_offset.x * -1, _offset.y, _offset.z) - transform.position;
+            else
+                direction = _player.transform.position + new Vector3(_offset.x * 1, _offset.y, _offset.z) - transform.position;
         }
         else
         {
-            direction = _player.transform.position + new Vector3(_offset.x * _player.transform.localScale.x, _offset.y, _offset.z) - transform.position;
+            if (_playerSpriteRenderer.flipX == false)
+                direction = _player.transform.position + new Vector3(_offset.x * 1, _offset.y, _offset.z) - transform.position;
+            else
+                direction = _player.transform.position + new Vector3(_offset.x * -1, _offset.y, _offset.z) - transform.position;
         }
         
         float distance = direction.magnitude;
@@ -101,10 +111,12 @@ public class PetController : MonoBehaviour
         //Particle System
         if (_rb.velocity.magnitude > 0.5f && !_ps.isPlaying)
         {
+            _anim.SetBool("Walk", true);
             _ps.Play();
         }
         else if (_rb.velocity.magnitude < 0.5f)
         {
+            _anim.SetBool("Walk", false);
             _ps.Stop();
         }
     }
