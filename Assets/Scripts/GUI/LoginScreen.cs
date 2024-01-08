@@ -28,7 +28,7 @@ public class LoginScreen : MonoBehaviour
 
     IEnumerator LoginAPI(UserData user)
     {
-        UnityWebRequest request = new UnityWebRequest(LoadingData.url + "users/auth", "GET");
+        UnityWebRequest request = new UnityWebRequest(LoadingData.url + $"users/auth?username={user.username}&password={user.password}", "GET");
 
         string JSONData = JsonUtility.ToJson(user);
         byte[] JSONToSend = new System.Text.UTF8Encoding().GetBytes(JSONData);

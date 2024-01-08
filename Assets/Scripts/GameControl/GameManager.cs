@@ -44,7 +44,7 @@ public class GameManager : MonoBehaviour
     }
     IEnumerator SearchPetInfo()
     {
-        UnityWebRequest request = new UnityWebRequest(LoadingData.url + "pets/current", "GET");
+        UnityWebRequest request = new UnityWebRequest(LoadingData.url + $"pets/current?user_id={LoadingData.PlayerUserObj.user_id}", "GET");
 
         string JSONData = JsonUtility.ToJson(LoadingData.PlayerUserObj);
         byte[] JSONToSend = new System.Text.UTF8Encoding().GetBytes(JSONData);
