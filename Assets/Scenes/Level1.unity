@@ -721,7 +721,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2175378358858660408, guid: 2f61d398da01e5b4da76a000828d3b73, type: 3}
       propertyPath: _fragmentID
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4226748926861840041, guid: 2f61d398da01e5b4da76a000828d3b73, type: 3}
       propertyPath: m_Name
@@ -27817,17 +27817,9 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 866131621}
     m_Modifications:
-    - target: {fileID: 3858241403328271585, guid: 10a481a96e4123544a594e894d00d836, type: 3}
-      propertyPath: _checkPointID
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 5678243781702201146, guid: 10a481a96e4123544a594e894d00d836, type: 3}
       propertyPath: m_Name
       value: Checkpoint
-      objectReference: {fileID: 0}
-    - target: {fileID: 5678243781702201146, guid: 10a481a96e4123544a594e894d00d836, type: 3}
-      propertyPath: m_TagString
-      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 7669979148753817362, guid: 10a481a96e4123544a594e894d00d836, type: 3}
       propertyPath: m_LocalPosition.x
@@ -36991,6 +36983,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2175378358858660408, guid: 2f61d398da01e5b4da76a000828d3b73, type: 3}
+      propertyPath: _fragmentID
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 4226748926861840041, guid: 2f61d398da01e5b4da76a000828d3b73, type: 3}
       propertyPath: m_Name
       value: Fragment
@@ -64016,6 +64012,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2175378358858660408, guid: 2f61d398da01e5b4da76a000828d3b73, type: 3}
+      propertyPath: _fragmentID
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4226748926861840041, guid: 2f61d398da01e5b4da76a000828d3b73, type: 3}
       propertyPath: m_Name
       value: Fragment (1)

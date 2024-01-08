@@ -8,9 +8,14 @@ public class Checkpoint : MonoBehaviour
 {
     public int _checkPointID;
     public bool _activated;
-
+    [SerializeField] private SpriteRenderer _spriteRenderer;
+    [SerializeField] private Sprite _collectedSprite;
     [SerializeField] private LayerMask _playerMask;
 
+    private void Start()
+    {
+        _spriteRenderer = GetComponent<SpriteRenderer>();
+    }
     void FixedUpdate()
     {
         //Verify if it collides with the player
@@ -40,7 +45,7 @@ public class Checkpoint : MonoBehaviour
             if (check._checkPointID <= _checkPointID)
             {
                 check._activated = false;
-                check.gameObject.GetComponent<SpriteRenderer>().color = Color.yellow;
+                _spriteRenderer.sprite = _collectedSprite;
             }
         }
     }

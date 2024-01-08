@@ -16572,6 +16572,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1534473378}
     m_Modifications:
+    - target: {fileID: 2175378358858660408, guid: 2f61d398da01e5b4da76a000828d3b73, type: 3}
+      propertyPath: _fragmentID
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4226748926861840041, guid: 2f61d398da01e5b4da76a000828d3b73, type: 3}
       propertyPath: m_Name
       value: Fragment
