@@ -20,7 +20,10 @@ public class LoginScreen : MonoBehaviour
     {
         FindObjectOfType<SceneLoader>().LoadScene("MainMenu");
     }
-
+    public void GoToRegister()
+    {
+        FindObjectOfType<SceneLoader>().LoadScene("Register");
+    }
     public void ClearWarning()
     {
         _warningTxt.text = "";
