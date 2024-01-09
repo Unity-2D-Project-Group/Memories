@@ -352,6 +352,10 @@ public class PlayerController : MonoBehaviour
         if(hit && hit.collider.gameObject.tag == "Slidable" && !_onGround && !_isWallJumping)
         {
             _isWallSliding = true;
+            if(hit.collider.transform.position.x - transform.position.x < 0) 
+            { _wallDirection = -1; }
+            else 
+            { _wallDirection = 1; }
         }
         else { _isWallSliding = false; }
     }
@@ -387,6 +391,7 @@ public class PlayerController : MonoBehaviour
         Vector2 direction = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
         //Verify if there's any possible hook place
         RaycastHit2D hitHookable = Physics2D.Raycast(transform.position, direction, _hookThreshold, _hookableMask);
+
             
         if (hitHookable.collider != null)
         {
@@ -519,13 +524,6 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.collider.gameObject.layer == 6 || collision.collider.gameObject.layer == 3)
-        {
-            if (collision.gameObject.transform.position.x - transform.position.x < 0)
-            { _wallDirection = -1; }
-            else
-            { _wallDirection = 1; }
-        }
         if (_isHooking)
         {
             _isHooking = false;
