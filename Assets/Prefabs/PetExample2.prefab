@@ -103,17 +103,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a200e91487aad614aaf998d09951d6b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _followingMaxSpeed: 10
+  _followingMaxSpeed: 40
   _deaceleration: 2
   _offset: {x: 4.85, y: 4.39, z: 0}
   _maxDistance: 30
   _dialogueCooldown: 5
   _dialogueDelay: 3
-  _petSadReactions: []
+  _petSadReactions:
+  - '*:(*'
+  - '*:(*'
   _petHappyReactions:
   - '*whoosh*'
   - '*blublublu*'
-  _playerSadAnswers: []
+  _playerSadAnswers:
+  - What Happened?
+  - What Happened?
   _playerHappyAnswers:
   - What happened?
   - Are u ok?
