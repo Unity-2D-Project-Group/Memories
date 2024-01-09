@@ -12,6 +12,9 @@ public class PlayerController : MonoBehaviour
     private LineRenderer _lineRenderer;
     private TrailRenderer _trailRenderer;
     private Animator _anim;
+    [SerializeField] private AudioSource _dashSound;
+    [SerializeField] private AudioSource _walkSound;
+    [SerializeField] private AudioSource _jumpSound;
 
     [Header("Public Variables")]
     [HideInInspector] public bool _facingRight = true;
@@ -213,6 +216,10 @@ public class PlayerController : MonoBehaviour
                 _rb.velocity = new Vector2(_rb.velocity.x, Mathf.Sign(_rb.velocity.y) * _maxYSpeed);
             }
         }
+        if (_horizontalDirection != 0 && !_isDashing && _onGround && !_isWallJumping && !_walkSound.isPlaying)
+            _walkSound.Play();
+        else if (_horizontalDirection == 0 || _isDashing || !_onGround || _isWallJumping)
+            _walkSound.Stop();
     }
 
     private void ChangeFacingDirection()
@@ -250,6 +257,9 @@ public class PlayerController : MonoBehaviour
 
     private void Jump()
     {
+        _jumpSound.Stop();
+        _jumpSound.time = 0.8f;
+        _jumpSound.Play();
         if (!_onGround)
         {
             _extraJumpsValue--;
@@ -263,6 +273,7 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator Dash()
     {
+        _dashSound.Play();
         _trailRenderer.enabled = true;
         //Save the start time of the dash
         float dashStartTime = Time.time;
@@ -294,6 +305,7 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator WallJump()
     {
+        _jumpSound.Play();
         //Set the wall jump variable
         _isWallJumping = true;
         _isWallSliding = false;
@@ -404,7 +416,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    IEnumerator ThrowGrab()
+    IEnumerator ThrowGrab() 
     {
         float t = 0;
         float time = 10;
