@@ -80,7 +80,7 @@ public class GameManager : MonoBehaviour
                 _text.text = temp;
                 yield return new WaitForSeconds(0.01f);
             }
-            yield return new WaitForSeconds(0.7f);
+            yield return new WaitForSeconds(1.2f);
 
             for (int i = temp.Length - 1; i >= 0; i--)
             {
