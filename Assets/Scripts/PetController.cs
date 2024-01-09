@@ -78,6 +78,7 @@ public class PetController : MonoBehaviour
 
     void FixedUpdate()
     {
+        transform.localScale = new Vector3(0.7401682f, 0.7312546f, 1);
         //Follows the player
         Vector3 direction;
         if (!_playerController._isWallSliding)

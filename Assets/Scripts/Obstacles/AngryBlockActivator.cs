@@ -13,7 +13,7 @@ public class AngryBlockActivator : MonoBehaviour
         _angryBlock = GetComponentInParent<AngryBlock>();
     }
 
-    private void OnTriggerStay2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
         //If it verifys a collision with the player, it falls
         if (collision.gameObject.CompareTag("Player"))

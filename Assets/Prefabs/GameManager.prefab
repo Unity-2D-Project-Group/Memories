@@ -46,6 +46,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fbdac3d15eb522b46aa6bac9ca1179a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _petsPrefabs:
+  - {fileID: 5856511961339684672, guid: d56a543ef71b12c46b92decb1df4c387, type: 3}
+  - {fileID: 5856511961339684672, guid: 6bd984a89ce77da43b18a49b2d386a39, type: 3}
+  _summoned: 0
+  _text: {fileID: 0}
+  _typing: 0
 --- !u!114 &2924812101187517752
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -70,7 +76,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0c60a476f276694d857f1e53759d97c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _checkpoints:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}

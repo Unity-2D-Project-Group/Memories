@@ -5,6 +5,7 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Networking;
 
 public class GameManager : MonoBehaviour
@@ -36,7 +37,7 @@ public class GameManager : MonoBehaviour
     private void FixedUpdate()
     {
         if (LoadingData.CurrentPet != null && LoadingData.CurrentPet.pet_id > 0 && !_summoned)
-        {
+        {   
             GameObject pet = Instantiate(_petsPrefabs[LoadingData.CurrentPet.pet_id - 1], this.gameObject.transform);
             pet.transform.SetParent(null);
             _summoned = true;
