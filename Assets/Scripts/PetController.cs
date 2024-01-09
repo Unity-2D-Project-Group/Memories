@@ -5,7 +5,6 @@ using UnityEngine;
 using TMPro;
 using static PetController;
 using UnityEngine.InputSystem;
-using UnityEditor.Build.Content;
 
 public class PetController : MonoBehaviour
 {
