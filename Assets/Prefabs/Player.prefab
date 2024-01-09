@@ -174,10 +174,10 @@ MonoBehaviour:
   _isWallSliding: 0
   _isDead: 0
   _movementAcceleration: 150
-  _maxMoveSpeed: 16
+  _maxMoveSpeed: 25
   _maxYSpeed: 70
   _groundLinearDrag: 10
-  _jumpForce: 26
+  _jumpForce: 35
   _airLinearDrag: 5
   _fallMultiplier: 14
   _lowJumpFallMultiplier: 5
@@ -193,12 +193,12 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 72
   _wallSlidingSpeed: 1.7
-  _wallSlidingCheckSize: 0.55
-  _wallJumpForce: {x: 12, y: 10}
+  _wallSlidingCheckSize: 2
+  _wallJumpForce: {x: 40, y: 25}
   _wallJumpLength: 0.2
   _wallLayer:
     serializedVersion: 2
-    m_Bits: 72
+    m_Bits: 64
   _wallDirection: 0
   _hookableMask:
     serializedVersion: 2
