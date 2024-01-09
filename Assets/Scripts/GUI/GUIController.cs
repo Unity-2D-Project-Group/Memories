@@ -108,6 +108,6 @@ public class GUIController : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        Gizmos.DrawWireSphere(_player.transform.position, 2);
+        Gizmos.DrawWireSphere(_player.transform.position, 7);
     }
 }

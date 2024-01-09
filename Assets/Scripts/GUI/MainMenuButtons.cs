@@ -4,6 +4,7 @@ using System.IO;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Video;
 
 public class MainMenuButtons : MonoBehaviour
 {
@@ -12,6 +13,8 @@ public class MainMenuButtons : MonoBehaviour
     [SerializeField] private GameObject _authSection;
     [SerializeField] private GameObject _playScreen;
     [SerializeField] private GameObject _selectScreen;
+    [SerializeField] private GameObject _canvas;
+    [SerializeField] private GameObject _videoPlayer;
     [SerializeField] private TMP_Text _usernameTxt;
     void Start()
     {
@@ -33,9 +36,10 @@ public class MainMenuButtons : MonoBehaviour
             _usernameTxt.text = LoadingData.PlayerUserObj.username;
         }
     }
-        public void NewGame()
+    public void NewGame()
     {
         SaveLoad.NewSave();
+        StartCoroutine(Animation());
     }
     public void LoadGame()
     {
@@ -60,5 +64,16 @@ public class MainMenuButtons : MonoBehaviour
     public void RegisterButton()
     {
         FindObjectOfType<SceneLoader>().LoadScene("Register");
+    }
+
+    IEnumerator Animation()
+    {
+        _canvas.SetActive(false);
+        _videoPlayer.SetActive(true);
+        _videoPlayer.GetComponent<VideoPlayer>().Play();
+        yield return new WaitForSeconds(12f);
+        _videoPlayer.GetComponent<VideoPlayer>().Stop();
+        _videoPlayer.SetActive(false);
+        _canvas.SetActive(true);
     }
 }
